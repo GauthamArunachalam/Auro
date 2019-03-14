@@ -1,6 +1,8 @@
 package com.example.auro;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -21,22 +23,27 @@ import com.google.firebase.database.ValueEventListener;
 public class MainActivity extends AppCompatActivity {
 
     public static Button login;
-    public static EditText name, pass, desig;
+    public static EditText name, pass;
 
-    public static String userName, password, desi;
-
-    public static DatabaseReference df = FirebaseDatabase.getInstance().getReference();
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
+    public String username, designation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        login = (Button) findViewById(R.id.login);
-        name = (EditText) findViewById(R.id.name);
-        pass = (EditText) findViewById(R.id.pass);
+        login = findViewById(R.id.login);
+        name = findViewById(R.id.name);
+        pass = findViewById(R.id.pass);
 
-        System.out.println("Hello World");
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        username = prefs.getString("UserName",null);
+        designation = prefs.getString("Designation",null);
+
+        if(username != null){
+            startActivity(new Intent(getApplicationContext(),HomePage.class));
+        }
         
         login.setOnClickListener(new View.OnClickListener() {
             @Override
