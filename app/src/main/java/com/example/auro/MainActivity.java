@@ -50,8 +50,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String userName = name.getText().toString();
                 String password = pass.getText().toString();
+                if(userName.isEmpty()){
+                    name.setError("Enter userID");
+                    name.requestFocus();
+                    return;
+                }if (password.isEmpty()){
+                    pass.setError("Enter password");
+                    pass.requestFocus();
+                    return;
+                }
                 Context con = getApplicationContext();
-                Database.login(userName, password, con);
+                Database.login(userName, password, con, name , pass);
             }
         });
     }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.auro.Adapter.UserDetails;
@@ -23,14 +24,15 @@ public class Database {
     public static final String MY_PREFS_NAME = "MyPrefsFile";
 
 
-    public static void login(final String userName, final String password, final Context con){
+    public static void login(final String userName, final String password, final Context con, final EditText name, final EditText pass){
         dr.child("Users").child(userName).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                    UserDetails ud = dataSnapshot.getValue(UserDetails.class);
                    if(ud == null){
-                       Toast.makeText(con, "No Account", Toast.LENGTH_SHORT).show();
+                       name.setError("User not found");
+                       name.requestFocus();
                    }
                     else if(userName.equals(ud.getName()) && password.equals(ud.getPass())){
                         Toast.makeText(con, "Login Successfull", Toast.LENGTH_SHORT).show();
@@ -45,7 +47,8 @@ public class Database {
                        con.startActivity(i);
                     }
                     else{
-                        Toast.makeText(con, "Invalid Password", Toast.LENGTH_SHORT).show();
+                        pass.setError("Invalid password");
+                        pass.requestFocus();
                     }
             }
             @Override

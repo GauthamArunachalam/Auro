@@ -5,9 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".HomePage">
-    <fragment android:name="com.example.auro.Center_Incharge.Center_Incharge_Home_Page"
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/frag"/>
+        android:id="@+id/fragment_container"
+        android:orientation="vertical">
+
+    </LinearLayout>
 
 </RelativeLayout>
