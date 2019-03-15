@@ -8,6 +8,7 @@ public class UserDetails {
     public String name;
     public String pass;
     public String designation;
+    public String reporting;
 
     public void setReporting(String reporting) {
         this.reporting = reporting;
@@ -17,7 +18,6 @@ public class UserDetails {
         return reporting;
     }
 
-    public String reporting;
 
     public void setName(String name) {
         this.name = name;

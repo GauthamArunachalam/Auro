@@ -9,7 +9,9 @@ import android.support.annotation.NonNull;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.auro.Adapter.Standards;
 import com.example.auro.Adapter.UserDetails;
+import com.example.auro.Director.Add_Standard;
 import com.example.auro.Director.Registration;
 import com.example.auro.HomePage;
 import com.google.firebase.database.DataSnapshot;
@@ -144,5 +146,42 @@ public class Database {
 
             }
         });
+    }
+
+    public static void getStandards(final Add_Standard r, final Context c){
+        dr.child("CourseDetails").child("Standards").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> list = new ArrayList<String>();
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    Standards u = postSnap.getValue(Standards.class);
+
+                    list.add(u.getStd());
+
+                }
+                r.setStandardsSpinner(list, c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void createStandard(final String standard, final Context con){
+
+        Standards sd = new Standards();
+
+        sd.setStd(standard);
+
+        dr.child("CourseDetails").child("Standards").child(standard).setValue(sd);
+
+    }
+
+    public static void createTopic(final String standard,final String topic, final Context con){
+
+        dr.child("CourseDetails").child("Lessons").child(standard).child(topic).setValue(topic);
+
     }
 }

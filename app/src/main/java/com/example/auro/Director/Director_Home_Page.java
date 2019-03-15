@@ -13,7 +13,7 @@ import android.widget.Button;
 import com.example.auro.R;
 
 public class Director_Home_Page extends Fragment {
-    private Button registration;
+    private Button registration,addStandard;
 
     @Nullable
     @Override
@@ -22,11 +22,19 @@ public class Director_Home_Page extends Fragment {
         View view = inflater.inflate(R.layout.director_home_page, container, false);
 
         registration = view.findViewById(R.id.registration);
+        addStandard = view.findViewById(R.id.addStandard);
 
         registration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getContext(),Registration.class));
+            }
+        });
+
+        addStandard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(),Add_Standard.class));
             }
         });
         
