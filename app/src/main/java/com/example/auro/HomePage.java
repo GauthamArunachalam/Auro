@@ -1,10 +1,14 @@
 package com.example.auro;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.example.auro.Center_Incharge.Center_Incharge_Home_Page;
 import com.example.auro.Director.Director_Home_Page;
@@ -49,5 +53,35 @@ public class HomePage extends AppCompatActivity {
             fragmentTransaction.commit();
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.popup_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        if(id == R.id.logout){
+
+            SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).edit();
+            editor.putString("UserName",null);
+            editor.putString("Designation",null);
+            editor.putString("Reporting",null);
+            editor.apply();
+
+            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+            finish();
+
+
+        }else if(id == R.id.changePassword){
+            startActivity(new Intent(getApplicationContext(),Change_Password.class));
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

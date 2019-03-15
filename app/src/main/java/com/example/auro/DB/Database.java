@@ -1,6 +1,7 @@
 package com.example.auro.DB;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -44,11 +45,13 @@ public class Database {
                         SharedPreferences.Editor editor = con.getSharedPreferences(MY_PREFS_NAME,Context.MODE_PRIVATE).edit();
                         editor.putString("UserName",ud.getName());
                         editor.putString("Designation",ud.getDesignation());
-                        editor.commit();
+                        editor.putString("Reporting",ud.getReporting());
+                        editor.apply();
 
                        Intent i = new Intent(con, HomePage.class);
                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                        con.startActivity(i);
+
                     }
                     else{
                         pass.setError("Invalid password");
@@ -87,6 +90,34 @@ public class Database {
                     Toast.makeText(con, "User Id already Exist", Toast.LENGTH_SHORT).show();
                 }
             }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void changePassword(final String username, final String oldpass, final String newpass, final Context con){
+        dr.child("Users").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserDetails ud = dataSnapshot.getValue(UserDetails.class);
+
+                if(oldpass.equals(ud.getPass()))
+                {
+                    ud.setPass(newpass);
+                    dr.child("Users").child(username).setValue(ud);
+
+                    Intent i = new Intent(con, HomePage.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    con.startActivity(i);
+                }
+                else
+                {
+                    Toast.makeText(con,"Old pass mismatch",Toast.LENGTH_LONG).show();
+                }
+            }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 

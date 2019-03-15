@@ -96,13 +96,9 @@ public class Registration extends AppCompatActivity implements AdapterView.OnIte
                 if(desig.equals("Center Incharge")){
                     Database.getProjectManagerList(this, getApplicationContext());
                 }
-
             }else{
                 repor = data;
             }
-
-
-
     }
 
     @Override
