@@ -63,7 +63,7 @@ public class Database {
     }
 
     public static void register(final String userName, final String pass, final String desig, final String reporting, final Context con){
-        dr.child("Users").child(userName).addValueEventListener(new ValueEventListener() {
+        dr.child("Users").child(userName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 UserDetails u = dataSnapshot.getValue(UserDetails.class);
@@ -87,6 +87,27 @@ public class Database {
                     Toast.makeText(con, "User Id already Exist", Toast.LENGTH_SHORT).show();
                 }
             }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getProjectManagerList(final Registration r, final Context c){
+        dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> list = new ArrayList<String>();
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    UserDetails u = postSnap.getValue(UserDetails.class);
+                    if(u.getDesignation().equals("Project Manager")){
+                        list.add(u.getName());
+                    }
+                }
+                r.setProjectManagerSpinner(list, c);
+            }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 

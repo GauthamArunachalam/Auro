@@ -77,45 +77,26 @@ public class Registration extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+    public void setProjectManagerSpinner(List<String> list, Context c){
+        ArrayAdapter projectAdp = new ArrayAdapter(c, android.R.layout.simple_spinner_item, list);
+        projectAdp.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        project.setAdapter(projectAdp);
+
+        project.setVisibility(View.VISIBLE);
+    }
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
             String data = (String)parent.getItemAtPosition(position);
 
-            if(data.equals("Project Manager") || data.equals("Center Incharge") || data.equals("Choose")){
+            if(data.equals("Project Manager") || data.equals("Center Incharge") || data.equals("Choose")) {
                 desig = (String) parent.getItemAtPosition(position);
-                if(desig.equals("Center Incharge")) {
-
-                    DatabaseReference dr = FirebaseDatabase.getInstance().getReference();
-                    dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                             List<String> projectList = new ArrayList<String>();
-                            for(DataSnapshot postSnap : dataSnapshot.getChildren()){
-                                UserDetails u = postSnap.getValue(UserDetails.class);
-                                if(u.getDesignation().equals("Project Manager")){
-                                    projectList.add(u.getName());
-                                }
-                            }
-
-                            ArrayAdapter projectAdap = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, projectList);
-                            projectAdap.setDropDownViewResource(android.R.layout.simple_spinner_item);
-                            project.setAdapter(projectAdap);
-
-                            project.setVisibility(View.VISIBLE);
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-
-
-
-
-
+                if(desig.equals("Center Incharge")){
+                    Database.getProjectManagerList(this, getApplicationContext());
                 }
+
             }else{
                 repor = data;
             }
