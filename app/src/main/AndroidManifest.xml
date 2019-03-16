@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Director.Add_Standard"></activity>
+        <activity android:name=".Director.Assign_Batch"></activity>
+        <activity android:name=".Director.Add_Standard" />
         <activity android:name=".Change_Password" />
         <activity android:name=".Director.Registration" />
         <activity android:name=".HomePage" />

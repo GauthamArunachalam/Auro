@@ -20,7 +20,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add Standard"
-            android:id="@+id/addStandard"/>
+            android:id="@+id/addStandard"/>\
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Assign Batch"
+            android:id="@+id/assignBatch"/>
     </LinearLayout>
 
 

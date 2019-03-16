@@ -184,4 +184,27 @@ public class Database {
         dr.child("CourseDetails").child("Lessons").child(standard).child(topic).setValue(topic);
 
     }
+
+    public static void getTopic(final String std, final Add_Standard as, final Context con)
+    {
+        dr.child("CourseDetails").child("Lessons").child(std).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                StringBuffer top = new StringBuffer();
+
+                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren())
+                {
+                    top.append(dataSnapshot1.getValue()+ " \n");
+                }
+
+                as.setTop(top,con);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
 }

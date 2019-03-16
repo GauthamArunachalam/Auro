@@ -77,9 +77,16 @@ public class Add_Standard extends AppCompatActivity implements AdapterView.OnIte
         //project.setVisibility(View.VISIBLE);
     }
 
+    public void setTop(StringBuffer tops, Context con){
+        topic.setText(tops);
+    }
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         stdSpinner = parent.getItemAtPosition(position).toString();
+
+        Database.getTopic(stdSpinner,this,getApplicationContext());
+
     }
 
     @Override
