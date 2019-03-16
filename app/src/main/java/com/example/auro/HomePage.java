@@ -36,7 +36,7 @@ public class HomePage extends AppCompatActivity {
             fragmentTransaction.add(R.id.fragment_container,director_home_page,null);
             fragmentTransaction.commit();
         }
-        else if(designation.equals("Center_Incharge"))
+        else if(designation.equals("Center Incharge"))
         {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -44,7 +44,7 @@ public class HomePage extends AppCompatActivity {
             fragmentTransaction.add(R.id.fragment_container,center_incharge_home_page,null);
             fragmentTransaction.commit();
         }
-        else if(designation.equals("Project_Manager"))
+        else if(designation.equals("Project Manager"))
         {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

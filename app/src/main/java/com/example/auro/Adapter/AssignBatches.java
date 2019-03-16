@@ -6,9 +6,15 @@ public class AssignBatches {
 
     }
 
-    public String noOfBatches, projectManager, std, batchesCreated;
+    public String noOfBatches, projectManager, std, batchesCreated, centerIncharge;
 
+    public String getCenterIncharge() {
+        return centerIncharge;
+    }
 
+    public void setCenterIncharge(String centerIncharge) {
+        this.centerIncharge = centerIncharge;
+    }
 
     public void setProjectManager(String projectManager) {
         this.projectManager = projectManager;

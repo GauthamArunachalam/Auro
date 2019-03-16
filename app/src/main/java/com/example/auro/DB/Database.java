@@ -14,8 +14,11 @@ import com.example.auro.Adapter.Standards;
 import com.example.auro.Adapter.UserDetails;
 import com.example.auro.Director.Add_Standard;
 import com.example.auro.Director.Assign_Batch;
+import com.example.auro.Director.Project_Manager_Details;
+import com.example.auro.Director.Project_Manager_List;
 import com.example.auro.Director.Registration;
 import com.example.auro.HomePage;
+import com.example.auro.Project_Manager.ProjectManager_AssignBatch;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -216,11 +219,10 @@ public class Database {
                 List<String> projectManager = new ArrayList<>();
                 for(DataSnapshot postSnap : dataSnapshot.getChildren()){
                     UserDetails u = postSnap.getValue(UserDetails.class);
-                    if(u.getReporting().equals(username)){
+                    if(u.getReporting().equals(username) && u.getDesignation().equals("Project Manager")){
                         projectManager.add(u.getName());
                     }
                 }
-
                 r.setProjectManagerSpinner(projectManager, c);
             }
 
@@ -259,7 +261,131 @@ public class Database {
         ab.setStd(std);
         ab.setBatchesCreated("0");
 
-        dr.child("Batches").child("Assignment").child(projectManager).child(std).setValue(ab);
+        dr.child("Batches").child("Assignment").child("Project Manager").child(projectManager).child(std).setValue(ab);
+
+        Toast.makeText(c,"Success",Toast.LENGTH_SHORT).show();
+
+        Intent i = new Intent(c, HomePage.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        c.startActivity(i);
+    }
+
+    public static void getProjectManagerList(final String username, final Project_Manager_List r, final Context c){
+        dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<UserDetails> projectManager = new ArrayList<>();
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    UserDetails u = postSnap.getValue(UserDetails.class);
+                    if(u.getReporting().equals(username) && u.getDesignation().equals("Project Manager")){
+
+                        projectManager.add(u);
+
+                    }
+                }
+                r.setProjectManagerList(projectManager, c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getCenterInchargeList(final String username, final Project_Manager_Details r, final Context c){
+        dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<UserDetails> centerincharge = new ArrayList<>();
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    UserDetails u = postSnap.getValue(UserDetails.class);
+                    if(u.getReporting().equals(username) && u.getDesignation().equals("Center Incharge")){
+
+                        centerincharge.add(u);
+
+                    }
+                }
+                r.setCenterInchargeList(centerincharge, c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getProjectManagerDetails(final String proman, final Project_Manager_Details r, final Context c){
+        dr.child("Batches").child("Assignment").child("Project Manager").child(proman).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<AssignBatches> managerdetails = new ArrayList<>();
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    AssignBatches u = postSnap.getValue(AssignBatches.class);
+                    managerdetails.add(u);
+                }
+                r.setProjectManagerDetails(managerdetails,c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getCenterInchargeList(final String username, final ProjectManager_AssignBatch r, final Context c){
+        dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> centerincharge = new ArrayList<>();
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    UserDetails u = postSnap.getValue(UserDetails.class);
+                    if(u.getReporting().equals(username) && u.getDesignation().equals("Center Incharge")){
+                        centerincharge.add(u.getName());
+                    }
+                }
+                r.setCenterInchargeList(centerincharge, c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getStandards(final ProjectManager_AssignBatch r, final Context c){
+        dr.child("CourseDetails").child("Standards").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> list = new ArrayList<String>();
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    Standards u = postSnap.getValue(Standards.class);
+
+                    list.add(u.getStd());
+
+                }
+                r.setStandardsSpinner(list, c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void addAssignBatchCenterIncharge(final String batch, final String centerIncharge, final String std, final Context c){
+
+        AssignBatches ab = new AssignBatches();
+        ab.setNoOfBatches(batch);
+        ab.setCenterIncharge(centerIncharge);
+        ab.setStd(std);
+        ab.setBatchesCreated("0");
+
+        dr.child("Batches").child("Assignment").child("Center Incharge").child(centerIncharge).child(std).setValue(ab);
 
         Toast.makeText(c,"Success",Toast.LENGTH_SHORT).show();
 
