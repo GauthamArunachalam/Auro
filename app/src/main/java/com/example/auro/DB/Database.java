@@ -10,8 +10,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.auro.Adapter.AssignBatches;
+import com.example.auro.Adapter.Batch;
 import com.example.auro.Adapter.Standards;
 import com.example.auro.Adapter.UserDetails;
+import com.example.auro.Center_Incharge.Create_Batch;
 import com.example.auro.Director.Add_Standard;
 import com.example.auro.Director.Assign_Batch;
 import com.example.auro.Director.Project_Manager_Details;
@@ -392,5 +394,44 @@ public class Database {
         Intent i = new Intent(c, HomePage.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(i);
+    }
+
+    public static void getStandards(final Create_Batch r, final Context c){
+        dr.child("CourseDetails").child("Standards").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> list = new ArrayList<String>();
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    Standards u = postSnap.getValue(Standards.class);
+
+                    list.add(u.getStd());
+
+                }
+                r.setStandardsSpinner(list, c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void createBatch(final String batch,final String sD,final String eD,final String sT,final String eT,final String limit,final String username,final String days,final String standard,final String reporting)
+    {
+
+        Batch bt = new Batch();
+        bt.setBatch_name(batch);
+        bt.setDays(days);
+        bt.setStart_date(sD);
+        bt.setEnd_date(eD);
+        bt.setStart_time(sT);
+        bt.setEnd_time(eT);
+        bt.setStandard(standard);
+        bt.setIncharge(username);
+        bt.setStatus(reporting);
+        bt.setStd_limit(limit);
+
+        dr.child("Batches").child("Batch Details").child(batch).setValue(bt);
     }
 }

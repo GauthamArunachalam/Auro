@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Center_Incharge.Create_Batch"></activity>
+        <activity android:name=".Project_Manager.Pending_Batch_Request"></activity>
+        <activity android:name=".Center_Incharge.Create_Batch" />
         <activity android:name=".Center_Incharge.Enroll_Student" />
         <activity android:name=".Project_Manager.ProjectManager_AssignBatch" />
         <activity android:name=".Director.Project_Manager_Details" />

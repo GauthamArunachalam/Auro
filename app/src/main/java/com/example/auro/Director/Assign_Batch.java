@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -20,7 +21,6 @@ public class Assign_Batch extends AppCompatActivity implements AdapterView.OnIte
     private Spinner selectProjectManager,selectStandard;
     private EditText  numberOfBatch;
     private Button submit;
-
     public static final String MY_PREFS_NAME = "MyPrefsFile";
     public String username, project_manager, standard;
 
