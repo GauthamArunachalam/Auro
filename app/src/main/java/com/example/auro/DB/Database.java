@@ -20,7 +20,9 @@ import com.example.auro.Director.Project_Manager_Details;
 import com.example.auro.Director.Project_Manager_List;
 import com.example.auro.Director.Registration;
 import com.example.auro.HomePage;
+import com.example.auro.Pending_Batch_Request;
 import com.example.auro.Project_Manager.ProjectManager_AssignBatch;
+import com.example.auro.Project_Manager.Request_Batch_Details;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -433,5 +435,57 @@ public class Database {
         bt.setStd_limit(limit);
 
         dr.child("Batches").child("Batch Details").child(batch).setValue(bt);
+    }
+
+    public static void getBatches(final String username, final Pending_Batch_Request r, final Context c){
+        dr.child("Batches").child("Batch Details").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Batch> batches = new ArrayList<>();
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    Batch u = postSnap.getValue(Batch.class);
+                    if(u.getStatus().equals(username))
+                    {
+                        batches.add(u);
+                    }
+                }
+                r.setBatch(batches, c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getBatchDetails(final String batch, final Request_Batch_Details r, final Context c){
+        dr.child("Batches").child("Batch Details").child(batch).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Batch bt = dataSnapshot.getValue(Batch.class);
+                r.setBatchDetails(bt,c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void approveBatch(final String batch, final Request_Batch_Details r, final Context c)
+    {
+        dr.child("Batches").child("Batch Details").child(batch).child("status").setValue("Approved");
+    }
+
+    public static void rejectBatch(final String batch, final Request_Batch_Details r, final Context c)
+    {
+        dr.child("Batches").child("Batch Details").child(batch).child("status").setValue("Rejected");
+    }
+
+    public static void escalateBatch(final String batch, final String reporting, final Request_Batch_Details r, final Context c)
+    {
+        dr.child("Batches").child("Batch Details").child(batch).child("status").setValue(reporting);
     }
 }
