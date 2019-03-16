@@ -9,9 +9,11 @@ import android.support.annotation.NonNull;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.auro.Adapter.AssignBatches;
 import com.example.auro.Adapter.Standards;
 import com.example.auro.Adapter.UserDetails;
 import com.example.auro.Director.Add_Standard;
+import com.example.auro.Director.Assign_Batch;
 import com.example.auro.Director.Registration;
 import com.example.auro.HomePage;
 import com.google.firebase.database.DataSnapshot;
@@ -205,6 +207,64 @@ public class Database {
 
             }
         });
+    }
 
+    public static void getProjectManagerList(final String username,final Assign_Batch r,final Context c){
+        dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> projectManager = new ArrayList<>();
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    UserDetails u = postSnap.getValue(UserDetails.class);
+                    if(u.getReporting().equals(username)){
+                        projectManager.add(u.getName());
+                    }
+                }
+
+                r.setProjectManagerSpinner(projectManager, c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getStandards(final Assign_Batch r,final Context c){
+        dr.child("CourseDetails").child("Standards").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> std = new ArrayList<>();
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    Standards s = postSnap.getValue(Standards.class);
+                    std.add(s.getStd());
+                }
+
+                r.setStandardsSpinner(std, c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void addAssignBatch(final String batch, final String projectManager, final String std, final Context c){
+
+        AssignBatches ab = new AssignBatches();
+        ab.setNoOfBatches(batch);
+        ab.setProjectManager(projectManager);
+        ab.setStd(std);
+        ab.setBatchesCreated("0");
+
+        dr.child("Batches").child("Assignment").child(projectManager).child(std).setValue(ab);
+
+        Toast.makeText(c,"Success",Toast.LENGTH_SHORT).show();
+
+        Intent i = new Intent(c, HomePage.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        c.startActivity(i);
     }
 }
