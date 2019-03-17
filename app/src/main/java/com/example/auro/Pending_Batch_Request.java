@@ -15,6 +15,7 @@ import java.util.*;
 import com.example.auro.Adapter.Batch;
 import com.example.auro.Adapter.UserDetails;
 import com.example.auro.DB.Database;
+import com.example.auro.Director.Director_Request_Details;
 import com.example.auro.Director.Project_Manager_Details;
 import com.example.auro.Project_Manager.Request_Batch_Details;
 import com.example.auro.RecyclerAdapter.PendingBatch_RecyclerAdapter;
@@ -25,7 +26,7 @@ public class Pending_Batch_Request extends AppCompatActivity {
     private Batch batch;
     private List<Batch>batchList;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
-    public String username;
+    public String username,designation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,7 @@ public class Pending_Batch_Request extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         username = prefs.getString("UserName",null);
+        designation = prefs.getString("Designation",null);
 
         recyclerView = findViewById(R.id.batchList);
         recyclerView.setHasFixedSize(true);
@@ -47,10 +49,19 @@ public class Pending_Batch_Request extends AppCompatActivity {
 
                 Batch batch = batchList.get(position);
                 String bt = batch.getBatch_name();
-                Intent i = new Intent(getApplicationContext(), Request_Batch_Details.class);
-                i.putExtra("name",bt);
-                startActivity(i);
 
+                if(designation.equals("Project Manager"))
+                {
+                    Intent i = new Intent(getApplicationContext(), Request_Batch_Details.class);
+                    i.putExtra("name",bt);
+                    startActivity(i);
+                }
+                else if(designation.equals("Director"))
+                {
+                    Intent i = new Intent(getApplicationContext(), Director_Request_Details.class);
+                    i.putExtra("name",bt);
+                    startActivity(i);
+                }
             }
         }));
     }

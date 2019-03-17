@@ -1,4 +1,4 @@
-package com.example.auro.Project_Manager;
+package com.example.auro.Director;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -11,23 +11,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.auro.Adapter.Batch;
 import com.example.auro.DB.Database;
-import com.example.auro.MainActivity;
+import com.example.auro.Project_Manager.Request_Batch_Details;
 import com.example.auro.R;
 
-public class Request_Batch_Details extends AppCompatActivity {
+public class Director_Request_Details extends AppCompatActivity {
     private TextView batchName,days,endDate,startDate,endTime,startTime,incharge,standard,stdLimit;
-    private Button approve,reject,escalate;
-    private String batch;
-    public static final String MY_PREFS_NAME = "MyPrefsFile";
-    public String reporting, remarks;
+    private Button approve,reject;
+    private String batch, remarks;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_request__batch__details);
+        setContentView(R.layout.activity_director__request__details);
 
         batchName = findViewById(R.id.batchName);
         days = findViewById(R.id.days);
@@ -40,12 +37,8 @@ public class Request_Batch_Details extends AppCompatActivity {
         stdLimit = findViewById(R.id.studentLimit);
         approve = findViewById(R.id.approve);
         reject = findViewById(R.id.reject);
-        escalate = findViewById(R.id.escalate);
 
         batch = getIntent().getStringExtra("name");
-
-        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        reporting = prefs.getString("Reporting",null);
 
         Database.getBatchDetails(batch,this,getApplicationContext());
 
@@ -62,17 +55,8 @@ public class Request_Batch_Details extends AppCompatActivity {
                 rejects(v);
             }
         });
-        escalate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                escalatebatch();
-            }
-        });
     }
 
-    public void escalatebatch(){
-        Database.escalateBatch(batch,reporting);
-    }
 
     public void approvebatch(){
         Database.approveBatch(batch);
@@ -97,7 +81,7 @@ public class Request_Batch_Details extends AppCompatActivity {
     public void rejects(View view){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Reason for rejecting");
-        final EditText remark = new EditText(Request_Batch_Details.this);
+        final EditText remark = new EditText(Director_Request_Details.this);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         remark.setLayoutParams(lp);
         builder.setView(remark);

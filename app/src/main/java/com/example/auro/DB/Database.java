@@ -12,10 +12,12 @@ import android.widget.Toast;
 import com.example.auro.Adapter.AssignBatches;
 import com.example.auro.Adapter.Batch;
 import com.example.auro.Adapter.Standards;
+import com.example.auro.Adapter.StudentDetails;
 import com.example.auro.Adapter.UserDetails;
 import com.example.auro.Center_Incharge.Create_Batch;
 import com.example.auro.Director.Add_Standard;
 import com.example.auro.Director.Assign_Batch;
+import com.example.auro.Director.Director_Request_Details;
 import com.example.auro.Director.Project_Manager_Details;
 import com.example.auro.Director.Project_Manager_List;
 import com.example.auro.Director.Registration;
@@ -437,6 +439,21 @@ public class Database {
         dr.child("Batches").child("Batch Details").child(batch).setValue(bt);
     }
 
+    public static void enrollStudent(final String stdID,final String stdName,final String fN,final String fS,final String mN,final String mS,final String stdgender,final String batch,final String DOB,final String stdaddress){
+        StudentDetails sd = new StudentDetails();
+        sd.setStudentID(stdID);
+        sd.setStudentName(stdName);
+        sd.setAddress(stdaddress);
+        sd.setGender(stdgender);
+        sd.setFatherName(fN);
+        sd.setFatherStatus(fS);
+        sd.setMotherName(mN);
+        sd.setMotherStatus(mS);
+        sd.setDob(DOB);
+        sd.setBatch(batch);
+        dr.child("Batches").child("Student Details").child(stdID).setValue(sd);
+    }
+
     public static void getBatches(final String username, final Pending_Batch_Request r, final Context c){
         dr.child("Batches").child("Batch Details").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -474,18 +491,34 @@ public class Database {
         });
     }
 
-    public static void approveBatch(final String batch, final Request_Batch_Details r, final Context c)
+    public static void approveBatch(final String batch)
     {
         dr.child("Batches").child("Batch Details").child(batch).child("status").setValue("Approved");
     }
 
-    public static void rejectBatch(final String batch, final Request_Batch_Details r, final Context c)
+    public static void rejectBatch(final String batch,final String remark)
     {
         dr.child("Batches").child("Batch Details").child(batch).child("status").setValue("Rejected");
+        dr.child("Batches").child("Batch Details").child(batch).child("Remark").setValue(remark);
     }
 
-    public static void escalateBatch(final String batch, final String reporting, final Request_Batch_Details r, final Context c)
+    public static void escalateBatch(final String batch, final String reporting)
     {
         dr.child("Batches").child("Batch Details").child(batch).child("status").setValue(reporting);
+    }
+
+    public static void getBatchDetails(final String batch, final Director_Request_Details r, final Context c){
+        dr.child("Batches").child("Batch Details").child(batch).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Batch bt = dataSnapshot.getValue(Batch.class);
+                r.setBatchDetails(bt,c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

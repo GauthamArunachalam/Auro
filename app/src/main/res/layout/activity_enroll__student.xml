@@ -19,6 +19,23 @@
             android:layout_height="wrap_content"
             android:id="@+id/stdname"
             android:hint="Enter student name"/>
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:id="@+id/gender">
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Male">
+            </RadioButton>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Female">
+            </RadioButton>
+        </RadioGroup>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,7 +45,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:id="@+id/fatherStatus">
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -49,7 +67,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:id="@+id/motherStatus">
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

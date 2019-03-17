@@ -2,7 +2,15 @@ package com.example.auro.Adapter;
 
 public class Batch {
 
-    public String batch_name, start_date, end_date, start_time, end_time, std_limit, incharge, days, standard, status;
+    public String batch_name, start_date, end_date, start_time, end_time, std_limit, incharge, days, standard, status, remark;
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 
     public String getBatch_name() {
         return batch_name;
