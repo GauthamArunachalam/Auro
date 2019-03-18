@@ -11,11 +11,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.auro.Pending_Batch_Request;
+import com.example.auro.Pending_Student_Batch_List;
 import com.example.auro.R;
 
 public class Project_Manager_Home_Page extends Fragment {
 
-    private Button assignBatch, batchRequest;
+    private Button assignBatch, batchRequest,studentRequest;
 
     @Nullable
     @Override
@@ -24,6 +25,7 @@ public class Project_Manager_Home_Page extends Fragment {
 
         assignBatch = view.findViewById(R.id.assignBatch);
         batchRequest = view.findViewById(R.id.batchrequest);
+        studentRequest = view.findViewById(R.id.studentRequest);
         assignBatch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -34,6 +36,12 @@ public class Project_Manager_Home_Page extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getContext(), Pending_Batch_Request.class));
+            }
+        });
+        studentRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    startActivity(new Intent(getContext(), Pending_Student_Batch_List.class));
             }
         });
         return  view;

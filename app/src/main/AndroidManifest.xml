@@ -3,6 +3,7 @@
     package="com.example.auro">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -11,7 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Director.Director_Request_Details"></activity>
+        <activity android:name=".Project_Manager.Request_Student_list"></activity>
+        <activity android:name=".Pending_Student_Batch_List" />
+        <activity android:name=".Director.Director_Request_Details" />
         <activity android:name=".Project_Manager.Request_Batch_Details" />
         <activity android:name=".Pending_Batch_Request" />
         <activity android:name=".Center_Incharge.Create_Batch" />

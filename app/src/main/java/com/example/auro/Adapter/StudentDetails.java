@@ -1,5 +1,7 @@
 package com.example.auro.Adapter;
 
+import android.net.Uri;
+
 public class StudentDetails {
     String studentID;
     String studentName;
@@ -11,6 +13,33 @@ public class StudentDetails {
     String motherStatus;
     String batch;
     String dob;
+    String url;
+    String standard;
+    String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getStandard() {
+        return standard;
+    }
+
+    public void setStandard(String standard) {
+        this.standard = standard;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     public String getStudentID() {
         return studentID;

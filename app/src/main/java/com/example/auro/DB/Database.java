@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -15,6 +16,7 @@ import com.example.auro.Adapter.Standards;
 import com.example.auro.Adapter.StudentDetails;
 import com.example.auro.Adapter.UserDetails;
 import com.example.auro.Center_Incharge.Create_Batch;
+import com.example.auro.Center_Incharge.Enroll_Student;
 import com.example.auro.Director.Add_Standard;
 import com.example.auro.Director.Assign_Batch;
 import com.example.auro.Director.Director_Request_Details;
@@ -23,13 +25,21 @@ import com.example.auro.Director.Project_Manager_List;
 import com.example.auro.Director.Registration;
 import com.example.auro.HomePage;
 import com.example.auro.Pending_Batch_Request;
+import com.example.auro.Pending_Student_Batch_List;
 import com.example.auro.Project_Manager.ProjectManager_AssignBatch;
 import com.example.auro.Project_Manager.Request_Batch_Details;
+import com.example.auro.Project_Manager.Request_Student_list;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +49,8 @@ import static android.content.Context.MODE_PRIVATE;
 public class Database {
 
     public static DatabaseReference dr = FirebaseDatabase.getInstance().getReference();
+    public static StorageReference sr = FirebaseStorage.getInstance().getReference();
+
     public static final String MY_PREFS_NAME = "MyPrefsFile";
 
 
@@ -439,7 +451,7 @@ public class Database {
         dr.child("Batches").child("Batch Details").child(batch).setValue(bt);
     }
 
-    public static void enrollStudent(final String stdID,final String stdName,final String fN,final String fS,final String mN,final String mS,final String stdgender,final String batch,final String DOB,final String stdaddress){
+    public static void enrollStudent(final String stdID, final String stdName, final String fN, final String fS, final String mN, final String mS, final String stdgender, final String batch,final String std,final String reporting, final String DOB, final String stdaddress,final String url,final Context c){
         StudentDetails sd = new StudentDetails();
         sd.setStudentID(stdID);
         sd.setStudentName(stdName);
@@ -449,9 +461,39 @@ public class Database {
         sd.setFatherStatus(fS);
         sd.setMotherName(mN);
         sd.setMotherStatus(mS);
+        sd.setStandard(std);
         sd.setDob(DOB);
+        sd.setStatus(reporting);
         sd.setBatch(batch);
+        sd.setUrl(url);
         dr.child("Batches").child("Student Details").child(stdID).setValue(sd);
+
+        Toast.makeText(c,"Student enrolled successfully",Toast.LENGTH_LONG).show();
+    }
+
+    public static void uploadDP(final Uri filepath, final String stdID, final Enroll_Student r, final Context con){
+        final StorageReference ref = sr.child(stdID);
+        ref.putFile(filepath)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        String downurl = taskSnapshot.getStorage().getDownloadUrl().toString();
+                        r.setUrl(downurl);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(con, "Upload Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                                .getTotalByteCount());
+                    }
+                });
     }
 
     public static void getBatches(final String username, final Pending_Batch_Request r, final Context c){
@@ -467,6 +509,45 @@ public class Database {
                     }
                 }
                 r.setBatch(batches, c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getBatches(final String username, final Enroll_Student r, final Context c){
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> batches = new ArrayList<>();
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    Batch u = postSnap.getValue(Batch.class);
+                    if(u.getIncharge().equals(username) && u.getStatus().equals("Approved"))
+                    {
+                        batches.add(u.getBatch_name());
+                    }
+                }
+                r.setBatch(batches, c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getStandard(final String batch, final Enroll_Student r){
+        dr.child("Batches").child("Batch Details").child(batch).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Batch u = dataSnapshot.getValue(Batch.class);
+
+                r.setStandard(u.getStandard());
             }
 
             @Override
@@ -513,6 +594,56 @@ public class Database {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Batch bt = dataSnapshot.getValue(Batch.class);
                 r.setBatchDetails(bt,c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getBatchList(final String status, final Pending_Student_Batch_List r, Context c){
+        dr.child("Batches").child("Student Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> batchlist = new ArrayList<>();
+
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    StudentDetails u = postSnap.getValue(StudentDetails.class);
+                    if(u.getStatus().equals(status))
+                    {
+                        if(!batchlist.contains(u.getBatch()))
+                        {
+                            batchlist.add(u.getBatch());
+                        }
+                    }
+                }
+
+                r.setBatch(batchlist);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getStudentDetails(final String batch, final Request_Student_list r, final Context c)
+    {
+        dr.child("Batches").child("Student Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<StudentDetails> list = new ArrayList<>();
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    StudentDetails u = postSnap.getValue(StudentDetails.class);
+                    if(u.getBatch().equals(batch))
+                    {
+                        list.add(u);
+                    }
+                }
+                r.setStudentDetails(list);
             }
 
             @Override

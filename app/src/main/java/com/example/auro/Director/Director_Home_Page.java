@@ -10,10 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.auro.Pending_Batch_Request;
 import com.example.auro.R;
 
 public class Director_Home_Page extends Fragment {
-    private Button registration,addStandard,assignBatch,viewProjectManager;
+    private Button registration,addStandard,assignBatch,viewProjectManager,requestBatch;
 
     @Nullable
     @Override
@@ -25,6 +26,7 @@ public class Director_Home_Page extends Fragment {
         addStandard = view.findViewById(R.id.addStandard);
         assignBatch = view.findViewById(R.id.assignBatch);
         viewProjectManager = view.findViewById(R.id.viewProjectManager);
+        requestBatch = view.findViewById(R.id.requestBatch);
 
         registration.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +52,13 @@ public class Director_Home_Page extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getContext(),Project_Manager_List.class));
+            }
+        });
+
+        requestBatch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), Pending_Batch_Request.class));
             }
         });
         

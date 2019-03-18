@@ -88,8 +88,13 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Photo"
-            android:id="@+id/photo"/>
+            android:text="Take Photo"
+            android:id="@+id/tphoto"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Photo"
+            android:id="@+id/sphoto"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -98,11 +103,11 @@
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/std"></Spinner>
-        <Spinner
+            android:id="@+id/batch"/>
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/batch"></Spinner>
+            android:id="@+id/std" />
 
         <Button
             android:layout_width="match_parent"
