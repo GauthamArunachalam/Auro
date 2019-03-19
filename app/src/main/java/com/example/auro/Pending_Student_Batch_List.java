@@ -47,18 +47,9 @@ public class Pending_Student_Batch_List extends AppCompatActivity {
             public void onClick(View view, int position) {
                 String batch = list.get(position);
 
-                if(designation.equals("Project Manager"))
-                {
-                    Intent intent = new Intent(getApplicationContext(), Request_Student_list.class);
-                    intent.putExtra("batch",batch);
-                    startActivity(intent);
-                }
-                else if(designation.equals("Director"))
-                {
-//                    Intent intent = new Intent(getApplicationContext(),);
-//                    intent.putExtra("batch",batch);
-//                    startActivity(intent);
-                }
+                Intent intent = new Intent(getApplicationContext(), Request_Student_list.class);
+                intent.putExtra("batch",batch);
+                startActivity(intent);
             }
         }));
 

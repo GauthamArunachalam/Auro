@@ -16,7 +16,7 @@ import com.example.auro.R;
 
 public class Project_Manager_Home_Page extends Fragment {
 
-    private Button assignBatch, batchRequest,studentRequest;
+    private Button assignBatch, batchRequest,studentRequest,report;
 
     @Nullable
     @Override
@@ -26,6 +26,7 @@ public class Project_Manager_Home_Page extends Fragment {
         assignBatch = view.findViewById(R.id.assignBatch);
         batchRequest = view.findViewById(R.id.batchrequest);
         studentRequest = view.findViewById(R.id.studentRequest);
+        report = view.findViewById(R.id.report);
         assignBatch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,6 +43,13 @@ public class Project_Manager_Home_Page extends Fragment {
             @Override
             public void onClick(View v) {
                     startActivity(new Intent(getContext(), Pending_Student_Batch_List.class));
+            }
+        });
+
+        report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(),Project_Manager_Batch_Report.class));
             }
         });
         return  view;

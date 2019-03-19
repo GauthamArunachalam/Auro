@@ -20,18 +20,23 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/select"
             android:text="Select All"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/escalate"
+            android:visibility="gone"
             android:text="Escalate"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/accept"
             android:text="Accept"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/reject"
             android:text="Reject"/>
     </LinearLayout>
 

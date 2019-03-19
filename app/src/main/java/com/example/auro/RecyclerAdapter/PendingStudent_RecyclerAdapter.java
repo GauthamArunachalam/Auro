@@ -1,6 +1,7 @@
 package com.example.auro.RecyclerAdapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,19 +10,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.auro.Adapter.Batch;
-import com.example.auro.Adapter.StudentDetails;
+import com.example.auro.Adapter.*;
 import com.example.auro.R;
 
 import java.util.List;
 
 public class PendingStudent_RecyclerAdapter extends RecyclerView.Adapter<PendingStudent_RecyclerAdapter.ViewHolder> {
     private List<StudentDetails> list;
+    private List<Status> list2;
     private Context context;
 
-    public PendingStudent_RecyclerAdapter(List<StudentDetails> list, Context context)
+    public PendingStudent_RecyclerAdapter(List<StudentDetails> list,List<Status> list2, Context context)
     {
         this.context = context;
         this.list = list;
+        this.list2 = list2;
     }
 
     @NonNull
@@ -40,6 +43,30 @@ public class PendingStudent_RecyclerAdapter extends RecyclerView.Adapter<Pending
         viewHolder.gender.setText(items.getGender());
         viewHolder.standard.setText(items.getStandard());
         viewHolder.dob.setText(items.getDob());
+
+        Status status = list2.get(i);
+        int s = status.getStatus();
+
+        if(s==0){
+            viewHolder.stdID.setTextColor(Color.parseColor("#D7001B"));
+            viewHolder.stdName.setTextColor(Color.parseColor("#D7001B"));
+            viewHolder.fatherName.setTextColor(Color.parseColor("#D7001B"));
+            viewHolder.motherName.setTextColor(Color.parseColor("#D7001B"));
+            viewHolder.gender.setTextColor(Color.parseColor("#D7001B"));
+            viewHolder.standard.setTextColor(Color.parseColor("#D7001B"));
+            viewHolder.dob.setTextColor(Color.parseColor("#D7001B"));
+
+        }
+        else
+        {
+            viewHolder.stdID.setTextColor(Color.parseColor("#4AA247"));
+            viewHolder.stdName.setTextColor(Color.parseColor("#4AA247"));
+            viewHolder.fatherName.setTextColor(Color.parseColor("#4AA247"));
+            viewHolder.motherName.setTextColor(Color.parseColor("#4AA247"));
+            viewHolder.gender.setTextColor(Color.parseColor("#4AA247"));
+            viewHolder.standard.setTextColor(Color.parseColor("#4AA247"));
+            viewHolder.dob.setTextColor(Color.parseColor("#4AA247"));
+        }
     }
 
     @Override

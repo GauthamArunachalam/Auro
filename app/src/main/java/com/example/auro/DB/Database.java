@@ -1,7 +1,5 @@
 package com.example.auro.DB;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,11 +8,8 @@ import android.support.annotation.NonNull;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.auro.Adapter.AssignBatches;
-import com.example.auro.Adapter.Batch;
-import com.example.auro.Adapter.Standards;
-import com.example.auro.Adapter.StudentDetails;
-import com.example.auro.Adapter.UserDetails;
+import com.example.auro.Adapter.*;
+import com.example.auro.Center_Incharge.Center_Incharge_Batch_Report;
 import com.example.auro.Center_Incharge.Create_Batch;
 import com.example.auro.Center_Incharge.Enroll_Student;
 import com.example.auro.Director.Add_Standard;
@@ -27,6 +22,7 @@ import com.example.auro.HomePage;
 import com.example.auro.Pending_Batch_Request;
 import com.example.auro.Pending_Student_Batch_List;
 import com.example.auro.Project_Manager.ProjectManager_AssignBatch;
+import com.example.auro.Project_Manager.Project_Manager_Batch_Report;
 import com.example.auro.Project_Manager.Request_Batch_Details;
 import com.example.auro.Project_Manager.Request_Student_list;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -43,8 +39,6 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class Database {
 
@@ -447,6 +441,7 @@ public class Database {
         bt.setIncharge(username);
         bt.setStatus(reporting);
         bt.setStd_limit(limit);
+        bt.setManager(reporting);
 
         dr.child("Batches").child("Batch Details").child(batch).setValue(bt);
     }
@@ -630,20 +625,175 @@ public class Database {
         });
     }
 
-    public static void getStudentDetails(final String batch, final Request_Student_list r, final Context c)
+    public static void getStudentDetails(final String batch,final String name, final Request_Student_list r, final Context c)
     {
         dr.child("Batches").child("Student Details").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<StudentDetails> list = new ArrayList<>();
+                List<Status> list2 = new ArrayList<>();
                 for(DataSnapshot postSnap : dataSnapshot.getChildren()){
                     StudentDetails u = postSnap.getValue(StudentDetails.class);
-                    if(u.getBatch().equals(batch))
+                    Status s = new Status();
+                    s.setStatus(0);
+                    if(u.getBatch().equals(batch) && u.getStatus().equals(name))
                     {
                         list.add(u);
+                        list2.add(s);
                     }
                 }
-                r.setStudentDetails(list);
+                r.setStudentDetails(list,list2);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void approveStudent(final String id)
+    {
+        dr.child("Batches").child("Student Details").child(id).child("status").setValue("Approved");
+    }
+
+    public static void rejectStudent(final String id, final String remark)
+    {
+        dr.child("Batches").child("Student Details").child(id).child("status").setValue("Rejected");
+        dr.child("Batches").child("Student Details").child(id).child("Remark").setValue(remark);
+    }
+
+    public static void escalateStudent(final String id, final String reporting)
+    {
+        dr.child("Batches").child("Student Details").child(id).child("status").setValue(reporting);
+    }
+
+    public static void getBatchList(final String incharge, final Center_Incharge_Batch_Report r, Context c){
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> batchlist = new ArrayList<>();
+                batchlist.add("All");
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    Batch u = postSnap.getValue(Batch.class);
+                    if(u.getIncharge().equals(incharge) && u.getStatus().equals("Approved"))
+                    {
+                        batchlist.add(u.getBatch_name());
+                    }
+                }
+
+                r.setBatch(batchlist);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getSelectedCenterBatch(final String batchs, final String username, final Center_Incharge_Batch_Report r, final Context c)
+    {
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Batch> batch = new ArrayList<>();
+
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    Batch b = postSnap.getValue(Batch.class);
+
+                    if(b.getStatus().equals("Approved") && b.getIncharge().equals(username))
+                    {
+                        if(batchs.equals("All"))
+                        {
+                            batch.add(b);
+                        }
+                        else if(b.getBatch_name().equals(batchs))
+                        {
+                            batch.add(b);
+                        }
+                    }
+                }
+
+                r.setBatchDetailList(batch);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getCenterInchargeList(final String username, final Project_Manager_Batch_Report r, final Context c){
+        dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> centerincharge = new ArrayList<>();
+                centerincharge.add("All");
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    UserDetails u = postSnap.getValue(UserDetails.class);
+                    if(u.getReporting().equals(username) && u.getDesignation().equals("Center Incharge")){
+
+                        centerincharge.add(u.getName());
+
+                    }
+                }
+                r.setCenterInchargeList(centerincharge, c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getBatchList(final String incharge, final Project_Manager_Batch_Report r, final Context c)
+    {
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> batch = new ArrayList<>();
+                batch.add("All");
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    Batch b = postSnap.getValue(Batch.class);
+
+                    if(b.getStatus().equals("Approved") && b.getIncharge().equals(incharge))
+                    {
+                        batch.add(b.getBatch_name());
+                    }
+                }
+
+                r.setBatchList(batch);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getBatchDetails(final String name, final Project_Manager_Batch_Report r, final Context c)
+    {
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Batch> bat = new ArrayList<>();
+
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    Batch b = postSnap.getValue(Batch.class);
+
+                    if(b.getManager().equals(name) && b.getStatus().equals("Approved"))
+                    {
+                        bat.add(b);
+                    }
+                }
+
+                r.setBatchDetailList(bat);
             }
 
             @Override

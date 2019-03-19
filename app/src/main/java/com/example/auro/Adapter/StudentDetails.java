@@ -16,6 +16,15 @@ public class StudentDetails {
     String url;
     String standard;
     String status;
+    String remark;
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 
     public String getStatus() {
         return status;

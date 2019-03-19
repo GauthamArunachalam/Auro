@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -12,7 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Project_Manager.Request_Student_list"></activity>
+        <activity android:name=".Project_Manager.Project_Manager_Batch_Report"></activity>
+        <activity android:name=".Center_Incharge.Center_Incharge_Batch_Report" />
+        <activity android:name=".Project_Manager.Request_Student_list" />
         <activity android:name=".Pending_Student_Batch_List" />
         <activity android:name=".Director.Director_Request_Details" />
         <activity android:name=".Project_Manager.Request_Batch_Details" />

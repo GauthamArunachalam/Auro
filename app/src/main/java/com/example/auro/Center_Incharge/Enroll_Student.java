@@ -4,9 +4,14 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,17 +21,23 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.auro.Adapter.Batch;
 import com.example.auro.DB.Database;
 import com.example.auro.R;
 import com.example.auro.RecyclerAdapter.PendingBatch_RecyclerAdapter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +49,8 @@ public class Enroll_Student extends AppCompatActivity implements DatePickerDialo
     TextView standard;
     String stdID,stdName,fN,mN,fS,mS,stdaddress,birthDate,stdgender,batch,std;
     Uri filePath;
+    ImageView imageView;
+    File f;
 
     public static final String MY_PREFS_NAME = "MyPrefsFile";
     public String username,reporting;
@@ -61,6 +74,7 @@ public class Enroll_Student extends AppCompatActivity implements DatePickerDialo
         tphoto = findViewById(R.id.tphoto);
         forward = findViewById(R.id.forward);
         standard = findViewById(R.id.std);
+        imageView = findViewById(R.id.imageView);
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         username = prefs.getString("UserName",null);
@@ -105,13 +119,8 @@ public class Enroll_Student extends AppCompatActivity implements DatePickerDialo
         tphoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-                String name = studentID.getText().toString();
-                File image = new File(dir,name);
-                Uri pic = Uri.fromFile(image);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT,pic);
-                startActivityForResult(intent,2);
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);;
+                startActivityForResult(intent,22);
             }
         });
 
@@ -140,6 +149,8 @@ public class Enroll_Student extends AppCompatActivity implements DatePickerDialo
 
     public void setUrl(String url)
     {
+        f.delete();
+
         stdID = studentID.getText().toString();
         stdName = studentName.getText().toString();
         stdaddress = addr.getText().toString();
@@ -158,14 +169,42 @@ public class Enroll_Student extends AppCompatActivity implements DatePickerDialo
         date.setText(dates);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         if (requestCode == 1 && data != null) {
             filePath = data.getData();
         }
-        else if (requestCode == 2 && data != null) {
-            filePath = data.getData();
+        else if (requestCode == 22 && data != null) {
+
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            Drawable d = new BitmapDrawable(getResources(),photo);
+            imageView.setImageDrawable(d);
+
+            File sd = Environment.getExternalStorageDirectory();
+
+            File directory = new File(sd.getAbsolutePath());
+
+            if (!directory.isDirectory()) {
+                directory.mkdirs();
+            }
+
+            f = new File(directory,"image.JPEG");
+
+            try
+            {
+                FileOutputStream out = new FileOutputStream(f);
+                photo.compress(Bitmap.CompressFormat.JPEG,100, out);
+                out.close();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Uri yourUri = Uri.fromFile(f);
+
+            filePath = yourUri;
         }
     }
 
@@ -173,7 +212,6 @@ public class Enroll_Student extends AppCompatActivity implements DatePickerDialo
         ArrayAdapter batchList = new ArrayAdapter(c,android.R.layout.simple_spinner_item,list);
         batchList.setDropDownViewResource(android.R.layout.simple_spinner_item);
         spinnerbatch.setAdapter(batchList);
-
     }
 
     public void setStandard(String std)
@@ -193,4 +231,5 @@ public class Enroll_Student extends AppCompatActivity implements DatePickerDialo
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
 }
