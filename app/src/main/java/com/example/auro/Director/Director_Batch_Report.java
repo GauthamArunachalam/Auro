@@ -1,5 +1,7 @@
-package com.example.auro.Project_Manager;
+package com.example.auro.Director;
 
+import java.io.File;
+import java.util.*;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
@@ -12,11 +14,9 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.io.File;
-import java.util.*;
-
 import com.example.auro.Adapter.Batch;
 import com.example.auro.DB.Database;
+import com.example.auro.Project_Manager.Project_Manager_Batch_Report;
 import com.example.auro.R;
 
 import jxl.Workbook;
@@ -25,48 +25,67 @@ import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
-public class Project_Manager_Batch_Report extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    Button report ;
-    Spinner centerIncharge,batches;
+public class Director_Batch_Report extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+
+    Button report;
+    Spinner CenterIncharge,ProjectManager,Batches;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
     String username,reporting,designation;
-    String incharge, batch;
+    String incharge, manager, batch;
     WritableWorkbook workbook;
     WritableSheet sheet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_project__manager__batch__report);
+        setContentView(R.layout.activity_director__batch__report);
 
+        CenterIncharge = findViewById(R.id.centerIncharge);
+        ProjectManager = findViewById(R.id.projectManager);
+        Batches = findViewById(R.id.batches);
         report = findViewById(R.id.report);
-        centerIncharge = findViewById(R.id.centerIncharge);
-        centerIncharge.setOnItemSelectedListener(this);
-        batches = findViewById(R.id.batch);
-        batches.setOnItemSelectedListener(this);
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         username = prefs.getString("UserName",null);
         reporting = prefs.getString("Reporting",null);
         designation = prefs.getString("Designation",null);
 
-        Database.getCenterInchargeList(username,this,getApplicationContext());
+        CenterIncharge.setOnItemSelectedListener(this);
+        ProjectManager.setOnItemSelectedListener(this);
+        Batches.setOnItemSelectedListener(this);
+
+        Database.getProjectManagerList(username,this,getApplicationContext());
 
         report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(incharge.equals("All"))
+                if(manager.equals("All"))
                 {
-                    Database.getBatchDetails(username,Project_Manager_Batch_Report.this,getApplicationContext());
+                    Database.getBatchDetails(Director_Batch_Report.this,getApplicationContext());
                 }
                 else
                 {
-                    Database.getBatchDetails(batch,incharge,Project_Manager_Batch_Report.this,getApplicationContext());
+                    if(incharge.equals("All"))
+                    {
+                        Database.getBatchDetails(manager,Director_Batch_Report.this,getApplicationContext());
+                    }
+                    else
+                    {
+                        if(batch.equals("All"))
+                        {
+                            Database.getBatchDetails(incharge,Director_Batch_Report.this);
+                        }
+                        else
+                        {
+                            Database.getBatchDetail(batch,Director_Batch_Report.this);
+                        }
+                    }
                 }
 
             }
         });
+
     }
 
     public void setBatchDetailList(List<Batch> list, int flag)
@@ -82,9 +101,13 @@ public class Project_Manager_Batch_Report extends AppCompatActivity implements A
             directory.mkdirs();
         }
 
-        if(flag==0)
+        if(flag==1)
         {
             name = incharge;
+        }
+        else if(flag==2)
+        {
+            name = manager;
         }
         else
         {
@@ -138,46 +161,72 @@ public class Project_Manager_Batch_Report extends AppCompatActivity implements A
         }
     }
 
-    public void setCenterInchargeList(List<String> list , Context c)
+    public void setProjectManagerList(List<String> list)
     {
-        ArrayAdapter centerincharge = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_spinner_item,list);
-        centerincharge.setDropDownViewResource(android.R.layout.simple_spinner_item);
-        centerIncharge.setAdapter(centerincharge);
+        ArrayAdapter centerInchargeList = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_spinner_item,list);
+        centerInchargeList.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        ProjectManager.setAdapter(centerInchargeList);
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         int ID = parent.getId();
 
-        if(ID == R.id.centerIncharge)
+        if(ID == R.id.projectManager)
+        {
+            manager = parent.getItemAtPosition(position).toString();
+
+            if(manager.equals("All"))
+            {
+                CenterIncharge.setVisibility(View.GONE);
+                Batches.setVisibility(View.GONE);
+            }
+            else
+            {
+                CenterIncharge.setVisibility(View.VISIBLE);
+                Batches.setVisibility(View.VISIBLE);
+
+                Database.getCenterInchargeList(manager,this,getApplicationContext());
+            }
+        }
+        else if(ID == R.id.centerIncharge)
         {
             incharge = parent.getItemAtPosition(position).toString();
 
             if(incharge.equals("All"))
             {
-                batches.setVisibility(View.GONE);
+                Batches.setVisibility(View.GONE);
             }
             else
             {
-                batches.setVisibility(View.VISIBLE);
-                Database.getBatchList(incharge,Project_Manager_Batch_Report.this,getApplicationContext());
+                Batches.setVisibility(View.VISIBLE);
+
+                Database.getBatchList(incharge,this,getApplicationContext());
             }
         }
-        if(ID == R.id.batch)
+        else if(ID == R.id.batches)
         {
             batch = parent.getItemAtPosition(position).toString();
         }
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    public void setCenterInchargeList(List<String> list)
+    {
+        ArrayAdapter centerInchargeList = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_spinner_item,list);
+        centerInchargeList.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        CenterIncharge.setAdapter(centerInchargeList);
     }
 
     public void setBatchList(List<String> list)
     {
         ArrayAdapter batchList = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_spinner_item,list);
         batchList.setDropDownViewResource(android.R.layout.simple_spinner_item);
-        batches.setAdapter(batchList);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
+        Batches.setAdapter(batchList);
     }
 }

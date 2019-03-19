@@ -41,6 +41,11 @@
             android:layout_height="wrap_content"
             android:text="Request Student"
             android:id="@+id/requestStudent"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Report"
+            android:id="@+id/report"/>
     </LinearLayout>
 
 
