@@ -94,29 +94,29 @@ public class Center_Incharge_Batch_Report extends AppCompatActivity implements A
 
             sheet = workbook.createSheet("Report", 0);
 
-            sheet.addCell(new Label(0, 1, "Batch Name"));
-            sheet.addCell(new Label(0, 2, "Start Date"));
-            sheet.addCell(new Label(0, 3, "End Date"));
-            sheet.addCell(new Label(0, 4, "Start Time"));
-            sheet.addCell(new Label(0, 5, "End Time"));
-            sheet.addCell(new Label(0, 6, "Days"));
-            sheet.addCell(new Label(0, 7, "Standard"));
-            sheet.addCell(new Label(0, 8, "Student Limit"));
-            sheet.addCell(new Label(0, 9, "Incharge"));
+            sheet.addCell(new Label(0, 0, "Batch Name"));
+            sheet.addCell(new Label(1, 0, "Start Date"));
+            sheet.addCell(new Label(2, 0, "End Date"));
+            sheet.addCell(new Label(3, 0, "Start Time"));
+            sheet.addCell(new Label(4, 0, "End Time"));
+            sheet.addCell(new Label(5, 0, "Days"));
+            sheet.addCell(new Label(6, 0, "Standard"));
+            sheet.addCell(new Label(7, 0, "Student Limit"));
+            sheet.addCell(new Label(8, 0, "Incharge"));
 
             for(int inc = 0; inc<listLength ; inc++)
             {
                 Batch b = list.get(inc);
 
-                sheet.addCell(new Label(inc+1, 1, b.getBatch_name()));
-                sheet.addCell(new Label(inc+1, 2, b.getStart_date()));
-                sheet.addCell(new Label(inc+1, 3, b.getEnd_date()));
-                sheet.addCell(new Label(inc+1, 4, b.getStart_time()));
-                sheet.addCell(new Label(inc+1, 5, b.getEnd_time()));
-                sheet.addCell(new Label(inc+1, 6, b.getDays()));
-                sheet.addCell(new Label(inc+1, 7, b.getStandard()));
-                sheet.addCell(new Label(inc+1, 8, b.getStd_limit()));
-                sheet.addCell(new Label(inc+1, 9, b.getIncharge()));
+                sheet.addCell(new Label(0, inc+1, b.getBatch_name()));
+                sheet.addCell(new Label(1, inc+1, b.getStart_date()));
+                sheet.addCell(new Label(2, inc+1, b.getEnd_date()));
+                sheet.addCell(new Label(3, inc+1, b.getStart_time()));
+                sheet.addCell(new Label(4, inc+1, b.getEnd_time()));
+                sheet.addCell(new Label(5, inc+1, b.getDays()));
+                sheet.addCell(new Label(6, inc+1, b.getStandard()));
+                sheet.addCell(new Label(7, inc+1, b.getStd_limit()));
+                sheet.addCell(new Label(8, inc+1, b.getIncharge()));
             }
 
             workbook.write();

@@ -4,6 +4,10 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.icu.util.Calendar;
+import android.icu.util.GregorianCalendar;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,10 +20,13 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.example.auro.DB.Database;
 import com.example.auro.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Create_Batch extends AppCompatActivity implements AdapterView.OnItemSelectedListener, TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
@@ -88,7 +95,7 @@ public class Create_Batch extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onClick(View v) {
                 flagD = 0;
-                DialogFragment datepicker = new com.example.auro.Pickers.DatePicker();
+                DialogFragment datepicker = new com.example.auro.Pickers.BatchDatePicker();
                 datepicker.show(getSupportFragmentManager(), "date picker");
             }
         });
@@ -96,7 +103,7 @@ public class Create_Batch extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onClick(View v) {
                 flagD = 1;
-                DialogFragment datepicker = new com.example.auro.Pickers.DatePicker();
+                DialogFragment datepicker = new com.example.auro.Pickers.BatchDatePicker();
                 datepicker.show(getSupportFragmentManager(), "date picker");
             }
         });
@@ -181,13 +188,47 @@ public class Create_Batch extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         month++;
         String date = dayOfMonth+"-"+month+"-"+year;
         if(flagD == 0)
         {
-            startDate.setText(date);
+            try {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+
+                Date dts = dateFormat.parse(date);
+
+                Calendar selectedDate = new GregorianCalendar();
+                selectedDate.setTime(dts);
+
+                int x = selectedDate.getTime().getDay();
+
+                if (x == 0) {
+                    Toast.makeText(getApplicationContext(), "Sunday", Toast.LENGTH_LONG).show();
+                } else if (x == 1) {
+                    Toast.makeText(getApplicationContext(), "Monday", Toast.LENGTH_LONG).show();
+                } else if (x == 2) {
+                    Toast.makeText(getApplicationContext(), "Tuesday", Toast.LENGTH_LONG).show();
+                } else if (x == 3) {
+                    Toast.makeText(getApplicationContext(), "Wednesday", Toast.LENGTH_LONG).show();
+                } else if (x == 4) {
+                    Toast.makeText(getApplicationContext(), "Thursday", Toast.LENGTH_LONG).show();
+                } else if (x == 5) {
+                    Toast.makeText(getApplicationContext(), "Friday", Toast.LENGTH_LONG).show();
+                } else if (x == 6) {
+                    Toast.makeText(getApplicationContext(), "Saturday", Toast.LENGTH_LONG).show();
+                }
+
+                startDate.setText(date);
+
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
         }
         else if(flagD == 1)
         {
