@@ -74,7 +74,7 @@ public class Director_Home_Page extends Fragment {
         report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(), Director_Batch_Report.class));
+                startActivity(new Intent(getContext(), Director_Report.class));
             }
         });
         

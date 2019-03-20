@@ -49,7 +49,7 @@ public class Project_Manager_Home_Page extends Fragment {
         report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(),Project_Manager_Batch_Report.class));
+                startActivity(new Intent(getContext(),Project_Manager_Report.class));
             }
         });
         return  view;

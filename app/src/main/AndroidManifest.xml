@@ -14,7 +14,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Director.Director_Batch_Report"></activity>
+        <activity android:name=".Project_Manager.Project_Manager_Report"></activity>
+        <activity android:name=".Director.Director_Report" />
+        <activity android:name=".Center_Incharge.Center_Incharge_Report" />
+        <activity android:name=".Director.Director_Batch_Report" />
         <activity android:name=".Project_Manager.Project_Manager_Batch_Report" />
         <activity android:name=".Center_Incharge.Center_Incharge_Batch_Report" />
         <activity android:name=".Project_Manager.Request_Student_list" />

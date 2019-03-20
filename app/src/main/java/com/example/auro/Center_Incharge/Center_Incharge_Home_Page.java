@@ -42,7 +42,7 @@ public class Center_Incharge_Home_Page extends Fragment {
         Report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(), Center_Incharge_Batch_Report.class));
+                startActivity(new Intent(getContext(), Center_Incharge_Report.class));
             }
         });
 
