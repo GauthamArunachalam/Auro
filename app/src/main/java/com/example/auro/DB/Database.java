@@ -3,12 +3,18 @@ package com.example.auro.DB;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.icu.util.Calendar;
+import android.icu.util.GregorianCalendar;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.auro.Adapter.*;
+import com.example.auro.Center_Incharge.Attendance;
+import com.example.auro.Center_Incharge.Attendance_Student_List;
 import com.example.auro.Center_Incharge.Center_Incharge_Batch_Report;
 import com.example.auro.Center_Incharge.Create_Batch;
 import com.example.auro.Center_Incharge.Enroll_Student;
@@ -38,6 +44,9 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -445,6 +454,21 @@ public class Database {
         bt.setManager(reporting);
 
         dr.child("Batches").child("Batch Details").child(batch).setValue(bt);
+
+        dr.child("CourseDetails").child("Lessons").child(standard).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    String data = postSnap.getValue().toString();
+                    dr.child("Batches").child("Batch Progress").child(batch).child("Topics").child(data).setValue("Incomplete");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public static void enrollStudent(final String stdID, final String stdName, final String fN, final String fS, final String mN, final String mS, final String stdgender, final String batch,final String std,final String reporting, final String DOB, final String stdaddress,final String url,final Context c){
@@ -1011,6 +1035,129 @@ public class Database {
                 }
 
                 r.setBatchDetailList(bat,0);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getBatchList(final String incharge, final String day, final Calendar dateCalendar, final Attendance a, final Context c)
+    {
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> list = new ArrayList<>();
+
+                for(DataSnapshot postSnap : dataSnapshot.getChildren())
+                {
+                    try
+                    {
+                        Batch b = postSnap.getValue(Batch.class);
+
+                        String start = b.getStart_date();
+                        String end = b.getEnd_date();
+
+                        java.util.Date startDate, endDate;
+                        DateFormat dt = new SimpleDateFormat("dd-MM-yyyy");
+
+                        startDate = dt.parse(start);
+                        endDate = dt.parse(end);
+
+                        Calendar calendar = new GregorianCalendar();
+                        calendar.setTime(startDate);
+
+                        Calendar endCalendar = new GregorianCalendar();
+                        endCalendar.setTime(endDate);
+
+                        if(((calendar.before(dateCalendar) || calendar.equals(dateCalendar)) && (dateCalendar.equals(endCalendar) || dateCalendar.before(endCalendar))) && b.getDays().contains(day) && b.getIncharge().equals(incharge) && b.getStatus().equals("Approved") )
+                        {
+                            list.add(b.getBatch_name());
+                        }
+
+                    }
+                    catch (Exception e){}
+                }
+
+                a.setBatchList(list,c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getStudentID(final String batch_name, final Attendance_Student_List a, final Context c)
+    {
+        dr.child("Batches").child("Student Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> list = new ArrayList<>();
+                List<Status> list2 = new ArrayList<>();
+                for(DataSnapshot postSnap : dataSnapshot.getChildren())
+                {
+                    StudentDetails s = postSnap.getValue(StudentDetails.class);
+                    Status st = new Status();
+                    st.setStatus(1);
+
+                    if(s.getBatch().equals(batch_name) && s.getStatus().equals("Approved"))
+                    {
+                        list.add(s.getStudentID() + " : " + s.getStudentName());
+                        list2.add(st);
+                    }
+                }
+
+                a.setStudentList(list,list2,c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void putAttendance(final String batch, final String date, final List<String> list, final List<Status> list2,final String stat, final String topics_covered,final String incharge, final Context c)
+    {
+        int size = list.size();
+        for(int inc=0; inc<size ; inc++)
+        {
+            String id = list.get(inc);
+            id = id.substring(0,id.indexOf(" : "));
+
+            Status st = list2.get(inc);
+            int status = st.getStatus();
+
+            dr.child("Batches").child("Attendance").child(batch).child(date).child(id).setValue(status);
+        }
+
+        dr.child("Batches").child("Batch Progress").child(batch).child(topics_covered).setValue(date);
+        dr.child("Centers").child(incharge).child(date).setValue(stat);
+
+    }
+
+    public static void getTopics(final String batch, final Attendance_Student_List a, final Context c)
+    {
+        dr.child("Batches").child("Batch Progress").child(batch).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                List<String> list = new ArrayList<>();
+                for(DataSnapshot postSnap : dataSnapshot.getChildren())
+                {
+                    String data = postSnap.getValue().toString();
+
+                    if(! data.equals("Incomplete"))
+                    {
+                        list.add(postSnap.getKey());
+                    }
+                }
+                a.setTopics(list);
             }
 
             @Override

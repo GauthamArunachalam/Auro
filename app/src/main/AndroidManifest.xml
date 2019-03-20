@@ -14,7 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Project_Manager.Project_Manager_Report"></activity>
+        <activity android:name=".Center_Incharge.Attendance_Student_List"></activity>
+        <activity android:name=".Center_Incharge.Attendance" />
+        <activity android:name=".Project_Manager.Project_Manager_Report" />
         <activity android:name=".Director.Director_Report" />
         <activity android:name=".Center_Incharge.Center_Incharge_Report" />
         <activity android:name=".Director.Director_Batch_Report" />
