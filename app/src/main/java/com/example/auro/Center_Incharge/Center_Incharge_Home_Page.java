@@ -15,10 +15,11 @@ import android.widget.Spinner;
 
 import java.util.*;
 
+import com.example.auro.Chat;
 import com.example.auro.R;
 
 public class Center_Incharge_Home_Page extends Fragment implements AdapterView.OnItemSelectedListener {
-    private Button EnrollStudent,CreateBatch,Report,attendance;
+    private Button EnrollStudent,CreateBatch,Report,attendance,chat;
     private String problemList[] = {"Select","Electricity Shutdown","Local Function","System Crash","Network Issue","Others"};
 
     @Nullable
@@ -30,6 +31,7 @@ public class Center_Incharge_Home_Page extends Fragment implements AdapterView.O
         CreateBatch = view.findViewById(R.id.cb);
         Report = view.findViewById(R.id.report);
         attendance = view.findViewById(R.id.attendance);
+        chat = view.findViewById(R.id.chat);
 
 
 
@@ -62,10 +64,12 @@ public class Center_Incharge_Home_Page extends Fragment implements AdapterView.O
                 startActivity(new Intent(getContext(), Attendance.class));
             }
         });
-
-
-
-
+        chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), Chat.class));
+            }
+        });
         return  view;
     }
 

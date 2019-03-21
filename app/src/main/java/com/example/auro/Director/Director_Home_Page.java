@@ -10,13 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.auro.Chat;
 import com.example.auro.Pending_Batch_Request;
 import com.example.auro.Pending_Student_Batch_List;
 import com.example.auro.Project_Manager.Request_Student_list;
 import com.example.auro.R;
 
 public class Director_Home_Page extends Fragment {
-    private Button registration,addStandard,assignBatch,viewProjectManager,requestBatch,requestStudent,report;
+    private Button registration,addStandard,assignBatch,viewProjectManager,requestBatch,requestStudent,report,chat;
 
     @Nullable
     @Override
@@ -31,6 +32,7 @@ public class Director_Home_Page extends Fragment {
         requestBatch = view.findViewById(R.id.requestBatch);
         requestStudent = view.findViewById(R.id.requestStudent);
         report = view.findViewById(R.id.report);
+        chat = view.findViewById(R.id.chat);
 
         registration.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +77,12 @@ public class Director_Home_Page extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getContext(), Director_Report.class));
+            }
+        });
+        chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), Chat.class));
             }
         });
         

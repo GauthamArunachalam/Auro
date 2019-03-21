@@ -31,6 +31,16 @@
             android:layout_height="wrap_content"
             android:text="Report"
             android:id="@+id/report"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Center Incharge"
+            android:id="@+id/incharge"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chat"
+            android:id="@+id/chat"/>
     </LinearLayout>
 
 

@@ -18,6 +18,7 @@ import com.example.auro.Center_Incharge.Attendance_Student_List;
 import com.example.auro.Center_Incharge.Center_Incharge_Batch_Report;
 import com.example.auro.Center_Incharge.Create_Batch;
 import com.example.auro.Center_Incharge.Enroll_Student;
+import com.example.auro.Chat;
 import com.example.auro.Director.Add_Standard;
 import com.example.auro.Director.Assign_Batch;
 import com.example.auro.Director.Director_Batch_Report;
@@ -26,8 +27,11 @@ import com.example.auro.Director.Project_Manager_Details;
 import com.example.auro.Director.Project_Manager_List;
 import com.example.auro.Director.Registration;
 import com.example.auro.HomePage;
+import com.example.auro.MainActivity;
 import com.example.auro.Pending_Batch_Request;
 import com.example.auro.Pending_Student_Batch_List;
+import com.example.auro.Private_message;
+import com.example.auro.Project_Manager.Center_Incharge_List;
 import com.example.auro.Project_Manager.ProjectManager_AssignBatch;
 import com.example.auro.Project_Manager.Project_Manager_Batch_Report;
 import com.example.auro.Project_Manager.Request_Batch_Details;
@@ -1124,26 +1128,32 @@ public class Database {
 
     public static void putAttendance(final String batch, final String date, final List<String> list, final List<Status> list2,final String stat, final String topics_covered,final String incharge, final Context c)
     {
-        int size = list.size();
-        for(int inc=0; inc<size ; inc++)
+        if(stat.equals("Open"))
         {
-            String id = list.get(inc);
-            id = id.substring(0,id.indexOf(" : "));
+            int size = list.size();
+            for(int inc=0; inc<size ; inc++)
+            {
+                String id = list.get(inc);
+                id = id.substring(0,id.indexOf(" : "));
 
-            Status st = list2.get(inc);
-            int status = st.getStatus();
+                Status st = list2.get(inc);
+                int status = st.getStatus();
 
-            dr.child("Batches").child("Attendance").child(batch).child(date).child(id).setValue(status);
+                dr.child("Batches").child("Attendance").child(batch).child(date).child(id).setValue(status);
+            }
+
+            dr.child("Batches").child("Batch Progress").child(batch).child("Topics").child(topics_covered).setValue(date);
+            dr.child("Batches").child("Batch Progress").child(batch).child("Status").child(date).setValue(stat);
         }
-
-        dr.child("Batches").child("Batch Progress").child(batch).child(topics_covered).setValue(date);
-        dr.child("Centers").child(incharge).child(date).setValue(stat);
-
+        else
+        {
+            dr.child("Batches").child("Batch Progress").child(batch).child("Status").child(date).setValue(stat);
+        }
     }
 
     public static void getTopics(final String batch, final Attendance_Student_List a, final Context c)
     {
-        dr.child("Batches").child("Batch Progress").child(batch).addValueEventListener(new ValueEventListener() {
+        dr.child("Batches").child("Batch Progress").child(batch).child("Topics").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -1152,12 +1162,104 @@ public class Database {
                 {
                     String data = postSnap.getValue().toString();
 
-                    if(! data.equals("Incomplete"))
+                    if(data.equals("Incomplete"))
                     {
                         list.add(postSnap.getKey());
                     }
                 }
+
+
                 a.setTopics(list);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getUserList(final String username, final String designation, final Chat chat, final Context c)
+    {
+        dr.child("Users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<UserDetails> list = new ArrayList<>();
+
+                UserDetails ud = new UserDetails();
+                ud.setName("BroadCast");
+                ud.setDesignation("Group Chat");
+                list.add(ud);
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    UserDetails u = snapshot.getValue(UserDetails.class);
+                    if(!(u.getName().equals(username) && u.getDesignation().equals(designation)))
+                    {
+                        list.add(u);
+                    }
+                }
+
+                chat.setUserList(list);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void chat(final String msg, final String from, final String to)
+    {
+        Message m = new Message();
+
+        m.setMessage(msg);
+        m.setFrom(from);
+        m.setTo(to);
+
+        dr.child("Chat").push().setValue(m);
+    }
+
+    public static void getChat(final String from, final String to, final Private_message p, final Context c)
+    {
+        dr.child("Chat").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                List<Message> list = new ArrayList<>();
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    Message m = snapshot.getValue(Message.class);
+
+                    if(m.getFrom().equals(from) && m.getTo().equals(to) || m.getFrom().equals(to) && m.getTo().equals(from) || to.equals("BroadCast") && m.getTo().equals(to))
+                    {
+                        list.add(m);
+                    }
+                }
+                p.setChat(list);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+        public static void getCenterInchargeList(final String username, final Center_Incharge_List r, final Context c){
+        dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> centerincharge = new ArrayList<>();
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    UserDetails u = postSnap.getValue(UserDetails.class);
+                    if(u.getReporting().equals(username) && u.getDesignation().equals("Center Incharge")){
+                        centerincharge.add(u.getName());
+                    }
+                }
+                r.setCenterInchargeList(centerincharge, c);
             }
 
             @Override

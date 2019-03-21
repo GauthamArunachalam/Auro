@@ -14,7 +14,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Center_Incharge.Attendance_Student_List"></activity>
+        <activity android:name=".Project_Manager.Center_Incharge_List"></activity>
+        <activity android:name=".Private_message" />
+        <activity android:name=".Chat" />
+        <activity android:name=".Project_Manager.ProjectManager_Chat_Home_Page" />
+        <activity android:name=".GroupChat" />
+        <activity android:name=".Center_Incharge.Center_Incharge_Chat_Home_Page" />
+        <activity android:name=".Center_Incharge.Attendance_Student_List" />
         <activity android:name=".Center_Incharge.Attendance" />
         <activity android:name=".Project_Manager.Project_Manager_Report" />
         <activity android:name=".Director.Director_Report" />
