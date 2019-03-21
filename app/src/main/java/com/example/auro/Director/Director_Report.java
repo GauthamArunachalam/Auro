@@ -10,7 +10,7 @@ import com.example.auro.R;
 
 public class Director_Report extends AppCompatActivity {
 
-    private Button batchReport;
+    private Button batchReport,studentReport;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,10 +18,18 @@ public class Director_Report extends AppCompatActivity {
         setContentView(R.layout.activity_director__report);
 
         batchReport = findViewById(R.id.batchReport);
+        studentReport = findViewById(R.id.studentReport);
+
         batchReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(),Director_Batch_Report.class));
+            }
+        });
+        studentReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(),Director_Student_Report.class));
             }
         });
     }

@@ -10,12 +10,14 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.auro.Adapter.*;
 import com.example.auro.Center_Incharge.Attendance;
 import com.example.auro.Center_Incharge.Attendance_Student_List;
 import com.example.auro.Center_Incharge.Center_Incharge_Batch_Report;
+import com.example.auro.Center_Incharge.Center_Incharge_Student_Report;
 import com.example.auro.Center_Incharge.Create_Batch;
 import com.example.auro.Center_Incharge.Enroll_Student;
 import com.example.auro.Chat;
@@ -23,6 +25,7 @@ import com.example.auro.Director.Add_Standard;
 import com.example.auro.Director.Assign_Batch;
 import com.example.auro.Director.Director_Batch_Report;
 import com.example.auro.Director.Director_Request_Details;
+import com.example.auro.Director.Director_Student_Report;
 import com.example.auro.Director.Project_Manager_Details;
 import com.example.auro.Director.Project_Manager_List;
 import com.example.auro.Director.Registration;
@@ -34,6 +37,7 @@ import com.example.auro.Private_message;
 import com.example.auro.Project_Manager.Center_Incharge_List;
 import com.example.auro.Project_Manager.ProjectManager_AssignBatch;
 import com.example.auro.Project_Manager.Project_Manager_Batch_Report;
+import com.example.auro.Project_Manager.Project_Manager_Student_Report;
 import com.example.auro.Project_Manager.Request_Batch_Details;
 import com.example.auro.Project_Manager.Request_Student_list;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -475,7 +479,7 @@ public class Database {
         });
     }
 
-    public static void enrollStudent(final String stdID, final String stdName, final String fN, final String fS, final String mN, final String mS, final String stdgender, final String batch,final String std,final String reporting, final String DOB, final String stdaddress,final String url,final Context c){
+    public static void enrollStudent(final String stdID, final String stdName, final String fN, final String fS, final String mN, final String mS, final String stdgender, final String batch, final String std, final String incharge, final String reporting, final String DOB, final String stdaddress, final String url, final Context c){
         StudentDetails sd = new StudentDetails();
         sd.setStudentID(stdID);
         sd.setStudentName(stdName);
@@ -490,6 +494,8 @@ public class Database {
         sd.setStatus(reporting);
         sd.setBatch(batch);
         sd.setUrl(url);
+        sd.setIncharge(incharge);
+        sd.setManager(reporting);
         dr.child("Batches").child("Student Details").child(stdID).setValue(sd);
 
         Toast.makeText(c,"Student enrolled successfully",Toast.LENGTH_LONG).show();
@@ -779,7 +785,58 @@ public class Database {
         });
     }
 
+    public static void getCenterInchargeList(final String username, final Project_Manager_Student_Report r, final Context c){
+        dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> centerincharge = new ArrayList<>();
+                centerincharge.add("All");
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    UserDetails u = postSnap.getValue(UserDetails.class);
+                    if(u.getReporting().equals(username) && u.getDesignation().equals("Center Incharge")){
+
+                        centerincharge.add(u.getName());
+
+                    }
+                }
+                r.setCenterInchargeList(centerincharge, c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public static void getBatchList(final String incharge, final Project_Manager_Batch_Report r, final Context c)
+    {
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> batch = new ArrayList<>();
+                batch.add("All");
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    Batch b = postSnap.getValue(Batch.class);
+
+                    if(b.getStatus().equals("Approved") && b.getIncharge().equals(incharge))
+                    {
+                        batch.add(b.getBatch_name());
+                    }
+                }
+
+                r.setBatchList(batch);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getBatchList(final String incharge, final Project_Manager_Student_Report r, final Context c)
     {
         dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
             @Override
@@ -891,6 +948,30 @@ public class Database {
         });
     }
 
+    public static void getProjectManagerList(final String username, final Director_Student_Report r, final Context c){
+        dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> projectManager = new ArrayList<>();
+                projectManager.add("All");
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    UserDetails u = postSnap.getValue(UserDetails.class);
+                    if(u.getReporting().equals(username) && u.getDesignation().equals("Project Manager")){
+
+                        projectManager.add(u.getName());
+
+                    }
+                }
+                r.setProjectManagerList(projectManager);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public static void getBatchDetails(final Director_Batch_Report r, final Context c)
     {
         dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
@@ -917,6 +998,30 @@ public class Database {
     }
 
     public static void getCenterInchargeList(final String username, final Director_Batch_Report r, final Context c){
+        dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> centerincharge = new ArrayList<>();
+                centerincharge.add("All");
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    UserDetails u = postSnap.getValue(UserDetails.class);
+                    if(u.getReporting().equals(username) && u.getDesignation().equals("Center Incharge")){
+
+                        centerincharge.add(u.getName());
+
+                    }
+                }
+                r.setCenterInchargeList(centerincharge);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getCenterInchargeList(final String username, final Director_Student_Report r, final Context c){
         dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -995,6 +1100,33 @@ public class Database {
     }
 
     public static void getBatchList(final String incharge, final Director_Batch_Report r, final Context c)
+    {
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> batch = new ArrayList<>();
+                batch.add("All");
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    Batch b = postSnap.getValue(Batch.class);
+
+                    if(b.getStatus().equals("Approved") && b.getIncharge().equals(incharge))
+                    {
+                        batch.add(b.getBatch_name());
+                    }
+                }
+
+                r.setBatchList(batch);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getBatchList(final String incharge, final Director_Student_Report r, final Context c)
     {
         dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
             @Override
@@ -1260,6 +1392,312 @@ public class Database {
                     }
                 }
                 r.setCenterInchargeList(centerincharge, c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getBatchList(final String incharge, final Center_Incharge_Student_Report r, Context c){
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> batchlist = new ArrayList<>();
+                batchlist.add("All");
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    Batch u = postSnap.getValue(Batch.class);
+                    if(u.getIncharge().equals(incharge) && u.getStatus().equals("Approved"))
+                    {
+                        batchlist.add(u.getBatch_name());
+                    }
+                }
+
+                r.setBatch(batchlist);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getStudentDetails(final String batch, final String incharge, final String gender, final Center_Incharge_Student_Report r, final Context c)
+    {
+        dr.child("Batches").child("Student Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<StudentDetails> student = new ArrayList<>();
+
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    StudentDetails b = postSnap.getValue(StudentDetails.class);
+
+                    if(b.getStatus().equals("Approved") && b.getIncharge().equals(incharge))
+                    {
+                        if(batch.equals("All"))
+                        {
+                            if(gender.equals("Both"))
+                            {
+                                student.add(b);
+                            }
+                            else if(gender.equals("Male") && b.getGender().equals("Male"))
+                            {
+                                student.add(b);
+                            }
+                            else if(gender.equals("Female") && b.getGender().equals("Female"))
+                            {
+                                student.add(b);
+                            }
+                        }
+                        else if(b.getBatch().equals(batch))
+                        {
+                            if(gender.equals("Both"))
+                            {
+                                student.add(b);
+                            }
+                            else if(gender.equals("Male") && b.getGender().equals("Male"))
+                            {
+                                student.add(b);
+                            }
+                            else if(gender.equals("Female") && b.getGender().equals("Female"))
+                            {
+                                student.add(b);
+                            }
+                        }
+                    }
+                }
+
+                r.setStudentDetails(student);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getStudentDetails(final String manager, final String gender, final Project_Manager_Student_Report r, final Context c)
+    {
+        dr.child("Batches").child("Student Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<StudentDetails> student = new ArrayList<>();
+
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    StudentDetails b = postSnap.getValue(StudentDetails.class);
+
+                    if(b.getStatus().equals("Approved") && b.getManager().equals(manager))
+                    {
+                        if(gender.equals("Both"))
+                        {
+                            student.add(b);
+                        }
+                        else if(gender.equals("Male") && b.getGender().equals("Male"))
+                        {
+                            student.add(b);
+                        }
+                        else if(gender.equals("Female") && b.getGender().equals("Female"))
+                        {
+                            student.add(b);
+                        }
+                    }
+                }
+
+                r.setStudentDetails(student);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getStudentDetails(final String incharge, final String batch, final String gender, final Project_Manager_Student_Report r, final Context c)
+    {
+        dr.child("Batches").child("Student Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<StudentDetails> student = new ArrayList<>();
+
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    StudentDetails b = postSnap.getValue(StudentDetails.class);
+
+                    if(b.getStatus().equals("Approved") && b.getIncharge().equals(incharge))
+                    {
+                        if(batch.equals("All"))
+                        {
+                            if(gender.equals("Both"))
+                            {
+                                student.add(b);
+                            }
+                            else if(gender.equals("Male") && b.getGender().equals("Male"))
+                            {
+                                student.add(b);
+                            }
+                            else if(gender.equals("Female") && b.getGender().equals("Female"))
+                            {
+                                student.add(b);
+                            }
+                        }
+                        else if(b.getBatch().equals(batch))
+                        {
+                            if(gender.equals("Both"))
+                            {
+                                student.add(b);
+                            }
+                            else if(gender.equals("Male") && b.getGender().equals("Male"))
+                            {
+                                student.add(b);
+                            }
+                            else if(gender.equals("Female") && b.getGender().equals("Female"))
+                            {
+                                student.add(b);
+                            }
+                        }
+                    }
+                }
+
+                r.setStudentDetails(student);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getStudentDetails(final String gender, final Director_Student_Report r, final Context c)
+    {
+        dr.child("Batches").child("Student Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<StudentDetails> student = new ArrayList<>();
+
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    StudentDetails b = postSnap.getValue(StudentDetails.class);
+
+                    if(b.getStatus().equals("Approved"))
+                    {
+                        if(gender.equals("Both"))
+                        {
+                            student.add(b);
+                        }
+                        else if(gender.equals("Male") && b.getGender().equals("Male"))
+                        {
+                            student.add(b);
+                        }
+                        else if(gender.equals("Female") && b.getGender().equals("Female"))
+                        {
+                            student.add(b);
+                        }
+                    }
+                }
+
+                r.setStudentDetails(student);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getStudentDetails(final String manager, final String gender, final Director_Student_Report r, final Context c)
+    {
+        dr.child("Batches").child("Student Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<StudentDetails> student = new ArrayList<>();
+
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    StudentDetails b = postSnap.getValue(StudentDetails.class);
+
+                    if(b.getStatus().equals("Approved") && b.getManager().equals(manager))
+                    {
+                        if(gender.equals("Both"))
+                        {
+                            student.add(b);
+                        }
+                        else if(gender.equals("Male") && b.getGender().equals("Male"))
+                        {
+                            student.add(b);
+                        }
+                        else if(gender.equals("Female") && b.getGender().equals("Female"))
+                        {
+                            student.add(b);
+                        }
+                    }
+                }
+
+                r.setStudentDetails(student);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getStudentDetail(final String batch, final String incharge, final String gender, final Director_Student_Report r, final Context c)
+    {
+        dr.child("Batches").child("Student Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<StudentDetails> student = new ArrayList<>();
+
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    StudentDetails b = postSnap.getValue(StudentDetails.class);
+
+                    if(b.getStatus().equals("Approved") && b.getIncharge().equals(incharge))
+                    {
+                        if(batch.equals("All"))
+                        {
+                            if(gender.equals("Both"))
+                            {
+                                student.add(b);
+                            }
+                            else if(gender.equals("Male") && b.getGender().equals("Male"))
+                            {
+                                student.add(b);
+                            }
+                            else if(gender.equals("Female") && b.getGender().equals("Female"))
+                            {
+                                student.add(b);
+                            }
+                        }
+                        else if(b.getBatch().equals(batch))
+                        {
+                            if(gender.equals("Both"))
+                            {
+                                student.add(b);
+                            }
+                            else if(gender.equals("Male") && b.getGender().equals("Male"))
+                            {
+                                student.add(b);
+                            }
+                            else if(gender.equals("Female") && b.getGender().equals("Female"))
+                            {
+                                student.add(b);
+                            }
+                        }
+                    }
+                }
+
+                r.setStudentDetails(student);
+
             }
 
             @Override

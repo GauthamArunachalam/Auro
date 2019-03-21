@@ -14,7 +14,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Project_Manager.Center_Incharge_List"></activity>
+        <activity android:name=".Director.Director_Student_Report"></activity>
+        <activity android:name=".Project_Manager.Project_Manager_Student_Report" />
+        <activity android:name=".Center_Incharge.Center_Incharge_Student_Report" />
+        <activity android:name=".Project_Manager.Center_Incharge_List" />
         <activity android:name=".Private_message" />
         <activity android:name=".Chat" />
         <activity android:name=".Project_Manager.ProjectManager_Chat_Home_Page" />

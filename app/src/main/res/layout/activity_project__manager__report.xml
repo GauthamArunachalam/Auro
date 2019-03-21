@@ -5,10 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Project_Manager.Project_Manager_Report">
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Batch Report"
-        android:id="@+id/batchReport"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Batch Report"
+            android:id="@+id/batchReport"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Student Report"
+            android:id="@+id/studentReport"
+            android:layout_alignBottom="@id/studentReport" />
+    </LinearLayout>
+
 
 </RelativeLayout>

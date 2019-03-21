@@ -17,6 +17,24 @@ public class StudentDetails {
     String standard;
     String status;
     String remark;
+    String incharge;
+    String manager;
+
+    public String getIncharge() {
+        return incharge;
+    }
+
+    public void setIncharge(String incharge) {
+        this.incharge = incharge;
+    }
+
+    public String getManager() {
+        return manager;
+    }
+
+    public void setManager(String manager) {
+        this.manager = manager;
+    }
 
     public String getRemark() {
         return remark;
