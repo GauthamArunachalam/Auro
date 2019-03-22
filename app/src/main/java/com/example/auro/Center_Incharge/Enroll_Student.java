@@ -47,10 +47,11 @@ public class Enroll_Student extends AppCompatActivity implements DatePickerDialo
     RadioGroup gender,fatherStatus,motherStatus;
     Spinner spinnerbatch;
     TextView standard;
-    String stdID,stdName,fN,mN,fS,mS,stdaddress,birthDate,stdgender,batch,std;
+    String stdID,stdName,fN,mN,fS="",mS="",stdaddress,birthDate,stdgender="",batch,std;
     Uri filePath;
     ImageView imageView;
     File f;
+    int flag=0;
 
     public static final String MY_PREFS_NAME = "MyPrefsFile";
     public String username,reporting;
@@ -137,6 +138,41 @@ public class Enroll_Student extends AppCompatActivity implements DatePickerDialo
         forward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(studentID.getText().toString().isEmpty()){
+                    studentID.setError("Enter student ID ");
+                    studentID.requestFocus();
+                    return;
+                }else if(studentName.getText().toString().isEmpty()) {
+                    studentName.setError("Enter student Name ");
+                    studentName.requestFocus();
+                    return;
+                }else if(fatherName.getText().toString().isEmpty()){
+                    fatherName.setError("Enter father name ");
+                    fatherName.requestFocus();
+                    return;
+                }else if(motherName.getText().toString().isEmpty()){
+                    motherName.setError("Enter mother name ");
+                    motherName.requestFocus();
+                    return;
+                } else if(addr.getText().toString().isEmpty()){
+                    addr.setError("Enter student address ");
+                    addr.requestFocus();
+                    return;
+                }else if(fS.isEmpty()){
+                    Toast.makeText(getApplicationContext(),"Select father status",Toast.LENGTH_LONG).show();
+                    return;
+                }else if(mS.isEmpty()){
+                    Toast.makeText(getApplicationContext(),"Select mother status",Toast.LENGTH_LONG).show();
+                    return;
+                }else if(stdgender.isEmpty()){
+                    Toast.makeText(getApplicationContext(),"Select student gender",Toast.LENGTH_LONG).show();
+                    return;
+                }else if(flag==0){
+                    Toast.makeText(getApplicationContext(),"Select or take student photo",Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 upload();
             }
         });
@@ -174,6 +210,7 @@ public class Enroll_Student extends AppCompatActivity implements DatePickerDialo
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         if (requestCode == 1 && data != null) {
+            flag=1;
             filePath = data.getData();
         }
         else if (requestCode == 22 && data != null) {
@@ -204,6 +241,7 @@ public class Enroll_Student extends AppCompatActivity implements DatePickerDialo
 
             Uri yourUri = Uri.fromFile(f);
 
+            flag=1;
             filePath = yourUri;
         }
     }

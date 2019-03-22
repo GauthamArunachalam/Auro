@@ -134,7 +134,34 @@ public class Create_Batch extends AppCompatActivity implements AdapterView.OnIte
                     day.append("Sunday, ");
                 }
 
+                if(batch.isEmpty()){
+                    batchName.setError("Enter proper batch name");
+                    batchName.requestFocus();
+                    return;
+                }else if(sD.equals("Start date")){
+                    Toast.makeText(getApplicationContext(),"Select Start date",Toast.LENGTH_SHORT).show();
+                    return;
+                }else if(eD.equals("End date")){
+                    Toast.makeText(getApplicationContext(),"Select End date",Toast.LENGTH_SHORT).show();
+                    return;
+                }else if(sT.equals("Start time")){
+                    Toast.makeText(getApplicationContext(),"Select Start Time",Toast.LENGTH_SHORT).show();
+                    return;
+                }else if(eT.equals("End time")){
+                    Toast.makeText(getApplicationContext(),"Select End date",Toast.LENGTH_SHORT).show();
+                    return;
+                }else if(limit.isEmpty()){
+                    stdLimit.setError("Enter student limit");
+                    stdLimit.requestFocus();
+                    return;
+                }else if(day.toString().isEmpty()){
+                    Toast.makeText(getApplicationContext(),"Select days",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 days = day.substring(0,(day.length()-2));
+
+
 
                 Database.createBatch(batch,sD,eD,sT,eT,limit,username,days,standard,reporting);
 

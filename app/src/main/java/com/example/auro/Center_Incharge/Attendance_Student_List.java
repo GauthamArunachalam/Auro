@@ -1,7 +1,9 @@
 package com.example.auro.Center_Incharge;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,7 +42,7 @@ public class Attendance_Student_List extends AppCompatActivity implements Adapte
     private String batch_name,date,topic_covered,status;
     private String problemList[] = {"Select","Electricity Shutdown","Local Function","System Crash","Network Issue","Others"};
     public static final String MY_PREFS_NAME = "MyPrefsFile";
-    public String username;
+    public String username,reporting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,7 @@ public class Attendance_Student_List extends AppCompatActivity implements Adapte
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         username = prefs.getString("UserName",null);
+        reporting = prefs.getString("Reporting",null);
 
         Database.getTopics(batch_name,this,getApplicationContext());
 
@@ -80,13 +83,7 @@ public class Attendance_Student_List extends AppCompatActivity implements Adapte
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if(status.equals("Others"))
-                {
-                    status = others.getText().toString();
-                }
-
-                Database.putAttendance(batch_name,date,list,list2,status,topic_covered,username,getApplicationContext());
+                        check(v);
             }
         });
 
@@ -162,5 +159,32 @@ public class Attendance_Student_List extends AppCompatActivity implements Adapte
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    public void check(View view){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Are you sure do you want to submit");
+        builder.setMessage("Attendance can not be modified once submitted!!!");
+        builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(status.equals("Others"))
+                {
+                    status = others.getText().toString();
+                }
+
+                Database.putAttendance(batch_name,date,list,list2,status,topic_covered,username,reporting,getApplicationContext());
+
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.show();
     }
 }

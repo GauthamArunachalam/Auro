@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.auro.Adapter.*;
 import com.example.auro.Center_Incharge.Attendance;
 import com.example.auro.Center_Incharge.Attendance_Student_List;
+import com.example.auro.Center_Incharge.Center_Incharge_Attendance_Report;
 import com.example.auro.Center_Incharge.Center_Incharge_Batch_Report;
 import com.example.auro.Center_Incharge.Center_Incharge_Student_Report;
 import com.example.auro.Center_Incharge.Create_Batch;
@@ -23,6 +24,7 @@ import com.example.auro.Center_Incharge.Enroll_Student;
 import com.example.auro.Chat;
 import com.example.auro.Director.Add_Standard;
 import com.example.auro.Director.Assign_Batch;
+import com.example.auro.Director.Director_Attendance_Report;
 import com.example.auro.Director.Director_Batch_Report;
 import com.example.auro.Director.Director_Request_Details;
 import com.example.auro.Director.Director_Student_Report;
@@ -36,6 +38,7 @@ import com.example.auro.Pending_Student_Batch_List;
 import com.example.auro.Private_message;
 import com.example.auro.Project_Manager.Center_Incharge_List;
 import com.example.auro.Project_Manager.ProjectManager_AssignBatch;
+import com.example.auro.Project_Manager.Project_Manager_Attendance_Report;
 import com.example.auro.Project_Manager.Project_Manager_Batch_Report;
 import com.example.auro.Project_Manager.Project_Manager_Student_Report;
 import com.example.auro.Project_Manager.Request_Batch_Details;
@@ -727,6 +730,30 @@ public class Database {
         });
     }
 
+    public static void getBatchList(final String incharge, final Center_Incharge_Attendance_Report r, Context c){
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> batchlist = new ArrayList<>();
+                batchlist.add("All");
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    Batch u = postSnap.getValue(Batch.class);
+                    if(u.getIncharge().equals(incharge) && u.getStatus().equals("Approved"))
+                    {
+                        batchlist.add(u.getBatch_name());
+                    }
+                }
+
+                r.setBatch(batchlist);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public static void getSelectedCenterBatch(final String batchs, final String username, final Center_Incharge_Batch_Report r, final Context c)
     {
         dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
@@ -809,6 +836,30 @@ public class Database {
         });
     }
 
+    public static void getCenterInchargeList(final String username, final Project_Manager_Attendance_Report r, final Context c){
+        dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> centerincharge = new ArrayList<>();
+                centerincharge.add("All");
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    UserDetails u = postSnap.getValue(UserDetails.class);
+                    if(u.getReporting().equals(username) && u.getDesignation().equals("Center Incharge")){
+
+                        centerincharge.add(u.getName());
+
+                    }
+                }
+                r.setCenterInchargeList(centerincharge, c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public static void getBatchList(final String incharge, final Project_Manager_Batch_Report r, final Context c)
     {
         dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
@@ -862,6 +913,34 @@ public class Database {
             }
         });
     }
+
+    public static void getBatchList(final String incharge, final Project_Manager_Attendance_Report r, final Context c)
+    {
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> batch = new ArrayList<>();
+                batch.add("All");
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    Batch b = postSnap.getValue(Batch.class);
+
+                    if(b.getStatus().equals("Approved") && b.getIncharge().equals(incharge))
+                    {
+                        batch.add(b.getBatch_name());
+                    }
+                }
+
+                r.setBatchList(batch);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
     public static void getBatchDetails(final String name, final Project_Manager_Batch_Report r, final Context c)
     {
@@ -972,6 +1051,30 @@ public class Database {
         });
     }
 
+    public static void getProjectManagerList(final String username, final Director_Attendance_Report r, final Context c){
+        dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> projectManager = new ArrayList<>();
+                projectManager.add("All");
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    UserDetails u = postSnap.getValue(UserDetails.class);
+                    if(u.getReporting().equals(username) && u.getDesignation().equals("Project Manager")){
+
+                        projectManager.add(u.getName());
+
+                    }
+                }
+                r.setProjectManagerList(projectManager);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public static void getBatchDetails(final Director_Batch_Report r, final Context c)
     {
         dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
@@ -1022,6 +1125,30 @@ public class Database {
     }
 
     public static void getCenterInchargeList(final String username, final Director_Student_Report r, final Context c){
+        dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> centerincharge = new ArrayList<>();
+                centerincharge.add("All");
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    UserDetails u = postSnap.getValue(UserDetails.class);
+                    if(u.getReporting().equals(username) && u.getDesignation().equals("Center Incharge")){
+
+                        centerincharge.add(u.getName());
+
+                    }
+                }
+                r.setCenterInchargeList(centerincharge);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getCenterInchargeList(final String username, final Director_Attendance_Report r, final Context c){
         dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -1153,6 +1280,33 @@ public class Database {
         });
     }
 
+    public static void getBatchList(final String incharge, final Director_Attendance_Report r, final Context c)
+    {
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> batch = new ArrayList<>();
+                batch.add("All");
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    Batch b = postSnap.getValue(Batch.class);
+
+                    if(b.getStatus().equals("Approved") && b.getIncharge().equals(incharge))
+                    {
+                        batch.add(b.getBatch_name());
+                    }
+                }
+
+                r.setBatchList(batch);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public static void getBatchDetail(final String batch_name, final Director_Batch_Report r)
     {
         dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
@@ -1258,21 +1412,27 @@ public class Database {
         });
     }
 
-    public static void putAttendance(final String batch, final String date, final List<String> list, final List<Status> list2,final String stat, final String topics_covered,final String incharge, final Context c)
+    public static void putAttendance(final String batch, final String date, final List<String> list, final List<Status> list2,final String stat, final String topics_covered,final String incharge, final String manager, final Context c)
     {
         if(stat.equals("Open"))
         {
+            Attendanve_Details ad = new Attendanve_Details();
+            ad.setIncharge(incharge);
+            ad.setManager(manager);
+
             int size = list.size();
             for(int inc=0; inc<size ; inc++)
             {
                 String id = list.get(inc);
-                id = id.substring(0,id.indexOf(" : "));
+//                id = id.substring(0,id.indexOf(" : "));
 
                 Status st = list2.get(inc);
                 int status = st.getStatus();
 
-                dr.child("Batches").child("Attendance").child(batch).child(date).child(id).setValue(status);
+                dr.child("Batches").child("Attendance").child(batch).child("Dates").child(date).child(id).setValue(status);
             }
+
+            dr.child("Batches").child("Attendance").child(batch).child("Details").setValue(ad);
 
             dr.child("Batches").child("Batch Progress").child(batch).child("Topics").child(topics_covered).setValue(date);
             dr.child("Batches").child("Batch Progress").child(batch).child("Status").child(date).setValue(stat);
@@ -1697,6 +1857,702 @@ public class Database {
                 }
 
                 r.setStudentDetails(student);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getDateList(final String batch, final Center_Incharge_Attendance_Report r, final Context c)
+    {
+        dr.child("Batches").child("Attendance").child(batch).child("Dates").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> list = new ArrayList<>();
+                list.add("All");
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    list.add(snapshot.getKey());
+                }
+
+                r.setDateList(list);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getDateList(final String batch, final Project_Manager_Attendance_Report r, final Context c)
+    {
+        dr.child("Batches").child("Attendance").child(batch).child("Dates").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> list = new ArrayList<>();
+                list.add("All");
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    list.add(snapshot.getKey());
+                }
+
+                r.setDateList(list);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getDateList(final String batch, final Director_Attendance_Report r, final Context c)
+    {
+        dr.child("Batches").child("Attendance").child(batch).child("Dates").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> list = new ArrayList<>();
+                list.add("All");
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    list.add(snapshot.getKey());
+                }
+
+                r.setDateList(list);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getAttendance(final String incharge, final String batch, final String date, final Center_Incharge_Attendance_Report r, final Context c)
+    {
+        if(batch.equals("All"))
+        {
+            dr.child("Batches").child("Attendance").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    String d_incharge;
+                    String batchs,id,dat,stat;
+
+                    List<Attendance_Report> list = new ArrayList<>();
+
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                    {
+                        batchs = snapshot.getKey();
+
+                        for(DataSnapshot snap : snapshot.getChildren())
+                        {
+                            String data = snap.getKey();
+
+                            if(data.equals("Details"))
+                            {
+                                Attendanve_Details ad = snap.getValue(Attendanve_Details.class);
+                                d_incharge = ad.getIncharge();
+
+                                if(d_incharge.equals(incharge))
+                                {
+                                    for(DataSnapshot shot : snapshot.getChildren())
+                                    {
+                                        String dt = shot.getKey();
+
+                                        if(dt.equals("Dates"))
+                                        {
+                                            for(DataSnapshot shot2 : shot.getChildren())
+                                            {
+                                                dat = shot2.getKey();
+
+                                                for(DataSnapshot shot3 : shot2.getChildren())
+                                                {
+                                                    id = shot3.getKey();
+                                                    stat = shot3.getValue().toString();
+
+                                                    Attendance_Report ar = new Attendance_Report();
+
+                                                    ar.setBatch(batchs);
+                                                    ar.setDate(dat);
+                                                    ar.setId(id);
+                                                    ar.setStat(stat);
+
+                                                    list.add(ar);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    r.setAttendance(list);
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        else
+        {
+            if(date.equals("All"))
+            {
+                dr.child("Batches").child("Attendance").child(batch).child("Dates").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        String dat, id, stat;
+                        List<Attendance_Report> list = new ArrayList<>();
+
+                        for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                        {
+                            dat = snapshot.getKey();
+
+                            for(DataSnapshot snap : snapshot.getChildren())
+                            {
+                                id = snap.getKey();
+                                stat = snap.getValue().toString();
+
+                                Attendance_Report ar = new Attendance_Report();
+
+                                ar.setBatch(batch);
+                                ar.setDate(dat);
+                                ar.setId(id);
+                                ar.setStat(stat);
+
+                                list.add(ar);
+                            }
+                        }
+                        r.setAttendance(list);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+            else
+            {
+                dr.child("Batches").child("Attendance").child(batch).child("Dates").child(date).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String id, stat;
+                        List<Attendance_Report> list = new ArrayList<>();
+
+                        for(DataSnapshot snap : dataSnapshot.getChildren())
+                        {
+                            id = snap.getKey();
+                            stat = snap.getValue().toString();
+
+                            Attendance_Report ar = new Attendance_Report();
+
+                            ar.setBatch(batch);
+                            ar.setDate(date);
+                            ar.setId(id);
+                            ar.setStat(stat);
+
+                            list.add(ar);
+                        }
+                        r.setAttendance(list);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        }
+    }
+
+    public static void getAttendance(final String incharge, final String batch, final String date, final Project_Manager_Attendance_Report r, final Context c)
+    {
+        if(batch.equals("All"))
+        {
+            dr.child("Batches").child("Attendance").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    String d_incharge;
+                    String batchs,id,dat,stat;
+
+                    List<Attendance_Report> list = new ArrayList<>();
+
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                    {
+                        batchs = snapshot.getKey();
+
+                        for(DataSnapshot snap : snapshot.getChildren())
+                        {
+                            String data = snap.getKey();
+
+                            if(data.equals("Details"))
+                            {
+                                Attendanve_Details ad = snap.getValue(Attendanve_Details.class);
+                                d_incharge = ad.getIncharge();
+
+                                if(d_incharge.equals(incharge))
+                                {
+                                    for(DataSnapshot shot : snapshot.getChildren())
+                                    {
+                                        String dt = shot.getKey();
+
+                                        if(dt.equals("Dates"))
+                                        {
+                                            for(DataSnapshot shot2 : shot.getChildren())
+                                            {
+                                                dat = shot2.getKey();
+
+                                                for(DataSnapshot shot3 : shot2.getChildren())
+                                                {
+                                                    id = shot3.getKey();
+                                                    stat = shot3.getValue().toString();
+
+                                                    Attendance_Report ar = new Attendance_Report();
+
+                                                    ar.setBatch(batchs);
+                                                    ar.setDate(dat);
+                                                    ar.setId(id);
+                                                    ar.setStat(stat);
+
+                                                    list.add(ar);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    r.setAttendance(list);
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        else
+        {
+            if(date.equals("All"))
+            {
+                dr.child("Batches").child("Attendance").child(batch).child("Dates").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        String dat, id, stat;
+                        List<Attendance_Report> list = new ArrayList<>();
+
+                        for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                        {
+                            dat = snapshot.getKey();
+
+                            for(DataSnapshot snap : snapshot.getChildren())
+                            {
+                                id = snap.getKey();
+                                stat = snap.getValue().toString();
+
+                                Attendance_Report ar = new Attendance_Report();
+
+                                ar.setBatch(batch);
+                                ar.setDate(dat);
+                                ar.setId(id);
+                                ar.setStat(stat);
+
+                                list.add(ar);
+                            }
+                        }
+                        r.setAttendance(list);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+            else
+            {
+                dr.child("Batches").child("Attendance").child(batch).child("Dates").child(date).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String id, stat;
+                        List<Attendance_Report> list = new ArrayList<>();
+
+                        for(DataSnapshot snap : dataSnapshot.getChildren())
+                        {
+                            id = snap.getKey();
+                            stat = snap.getValue().toString();
+
+                            Attendance_Report ar = new Attendance_Report();
+
+                            ar.setBatch(batch);
+                            ar.setDate(date);
+                            ar.setId(id);
+                            ar.setStat(stat);
+
+                            list.add(ar);
+                        }
+                        r.setAttendance(list);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        }
+    }
+
+    public static void getAttendance(final String manager, final Director_Attendance_Report r, final Context c)
+    {
+        dr.child("Batches").child("Attendance").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                String d_incharge;
+                String batchs,id,dat,stat;
+
+                List<Attendance_Report> list = new ArrayList<>();
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    batchs = snapshot.getKey();
+
+                    for(DataSnapshot snap : snapshot.getChildren())
+                    {
+                        String data = snap.getKey();
+
+                        if(data.equals("Details"))
+                        {
+                            Attendanve_Details ad = snap.getValue(Attendanve_Details.class);
+                            d_incharge = ad.getManager();
+
+                            if(d_incharge.equals(manager))
+                            {
+                                for(DataSnapshot shot : snapshot.getChildren())
+                                {
+                                    String dt = shot.getKey();
+
+                                    if(dt.equals("Dates"))
+                                    {
+                                        for(DataSnapshot shot2 : shot.getChildren())
+                                        {
+                                            dat = shot2.getKey();
+
+                                            for(DataSnapshot shot3 : shot2.getChildren())
+                                            {
+                                                id = shot3.getKey();
+                                                stat = shot3.getValue().toString();
+
+                                                Attendance_Report ar = new Attendance_Report();
+
+                                                ar.setBatch(batchs);
+                                                ar.setDate(dat);
+                                                ar.setId(id);
+                                                ar.setStat(stat);
+
+                                                list.add(ar);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                r.setAttendance(list);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getAttendance(final String incharge, final String batch, final String date, final Director_Attendance_Report r, final Context c)
+    {
+        if(batch.equals("All"))
+        {
+            dr.child("Batches").child("Attendance").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    String d_incharge;
+                    String batchs,id,dat,stat;
+
+                    List<Attendance_Report> list = new ArrayList<>();
+
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                    {
+                        batchs = snapshot.getKey();
+
+                        for(DataSnapshot snap : snapshot.getChildren())
+                        {
+                            String data = snap.getKey();
+
+                            if(data.equals("Details"))
+                            {
+                                Attendanve_Details ad = snap.getValue(Attendanve_Details.class);
+                                d_incharge = ad.getIncharge();
+
+                                if(d_incharge.equals(incharge))
+                                {
+                                    for(DataSnapshot shot : snapshot.getChildren())
+                                    {
+                                        String dt = shot.getKey();
+
+                                        if(dt.equals("Dates"))
+                                        {
+                                            for(DataSnapshot shot2 : shot.getChildren())
+                                            {
+                                                dat = shot2.getKey();
+
+                                                for(DataSnapshot shot3 : shot2.getChildren())
+                                                {
+                                                    id = shot3.getKey();
+                                                    stat = shot3.getValue().toString();
+
+                                                    Attendance_Report ar = new Attendance_Report();
+
+                                                    ar.setBatch(batchs);
+                                                    ar.setDate(dat);
+                                                    ar.setId(id);
+                                                    ar.setStat(stat);
+
+                                                    list.add(ar);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    r.setAttendance(list);
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        else
+        {
+            if(date.equals("All"))
+            {
+                dr.child("Batches").child("Attendance").child(batch).child("Dates").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        String dat, id, stat;
+                        List<Attendance_Report> list = new ArrayList<>();
+
+                        for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                        {
+                            dat = snapshot.getKey();
+
+                            for(DataSnapshot snap : snapshot.getChildren())
+                            {
+                                id = snap.getKey();
+                                stat = snap.getValue().toString();
+
+                                Attendance_Report ar = new Attendance_Report();
+
+                                ar.setBatch(batch);
+                                ar.setDate(dat);
+                                ar.setId(id);
+                                ar.setStat(stat);
+
+                                list.add(ar);
+                            }
+                        }
+                        r.setAttendance(list);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+            else
+            {
+                dr.child("Batches").child("Attendance").child(batch).child("Dates").child(date).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String id, stat;
+                        List<Attendance_Report> list = new ArrayList<>();
+
+                        for(DataSnapshot snap : dataSnapshot.getChildren())
+                        {
+                            id = snap.getKey();
+                            stat = snap.getValue().toString();
+
+                            Attendance_Report ar = new Attendance_Report();
+
+                            ar.setBatch(batch);
+                            ar.setDate(date);
+                            ar.setId(id);
+                            ar.setStat(stat);
+
+                            list.add(ar);
+                        }
+                        r.setAttendance(list);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        }
+    }
+
+    public static void getAttendance(final String manager, final Project_Manager_Attendance_Report r, final Context c)
+    {
+        dr.child("Batches").child("Attendance").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                String d_incharge;
+                String batchs,id,dat,stat;
+
+                List<Attendance_Report> list = new ArrayList<>();
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    batchs = snapshot.getKey();
+
+                    for(DataSnapshot snap : snapshot.getChildren())
+                    {
+                        String data = snap.getKey();
+
+                        if(data.equals("Details"))
+                        {
+                            Attendanve_Details ad = snap.getValue(Attendanve_Details.class);
+                            d_incharge = ad.getManager();
+
+                            if(d_incharge.equals(manager))
+                            {
+                                for(DataSnapshot shot : snapshot.getChildren())
+                                {
+                                    String dt = shot.getKey();
+
+                                    if(dt.equals("Dates"))
+                                    {
+                                        for(DataSnapshot shot2 : shot.getChildren())
+                                        {
+                                            dat = shot2.getKey();
+
+                                            for(DataSnapshot shot3 : shot2.getChildren())
+                                            {
+                                                id = shot3.getKey();
+                                                stat = shot3.getValue().toString();
+
+                                                Attendance_Report ar = new Attendance_Report();
+
+                                                ar.setBatch(batchs);
+                                                ar.setDate(dat);
+                                                ar.setId(id);
+                                                ar.setStat(stat);
+
+                                                list.add(ar);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                r.setAttendance(list);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getAttendance(final Director_Attendance_Report r, final Context c)
+    {
+        dr.child("Batches").child("Attendance").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                String batch,id,dat,stat;
+
+                List<Attendance_Report> list = new ArrayList<>();
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    batch = snapshot.getKey();
+
+                    for(DataSnapshot snap : snapshot.getChildren())
+                    {
+                        String data = snap.getKey();
+
+                        if(data.equals("Dates"))
+                        {
+                            for(DataSnapshot shot2 : snap.getChildren())
+                            {
+                                dat = shot2.getKey();
+
+                                for(DataSnapshot shot3 : shot2.getChildren())
+                                {
+                                    id = shot3.getKey();
+                                    stat = shot3.getValue().toString();
+
+                                    Attendance_Report ar = new Attendance_Report();
+
+                                    ar.setBatch(batch);
+                                    ar.setDate(dat);
+                                    ar.setId(id);
+                                    ar.setStat(stat);
+
+                                    list.add(ar);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                r.setAttendance(list);
 
             }
 

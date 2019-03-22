@@ -20,7 +20,12 @@
             android:text="Student Report"
             android:id="@+id/studentReport"
             android:layout_alignBottom="@id/studentReport" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Attendance Report"
+            android:id="@+id/attendanceReport"
+            android:layout_alignBottom="@id/studentReport" />
     </LinearLayout>
-
 
 </RelativeLayout>

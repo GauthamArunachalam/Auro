@@ -9,7 +9,7 @@ import android.widget.Button;
 import com.example.auro.R;
 
 public class Project_Manager_Report extends AppCompatActivity {
-    private Button batchReport,studentReport;
+    private Button batchReport,studentReport,attendanceReport;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,6 +17,7 @@ public class Project_Manager_Report extends AppCompatActivity {
 
         batchReport = findViewById(R.id.batchReport);
         studentReport = findViewById(R.id.studentReport);
+        attendanceReport = findViewById(R.id.attendanceReport);
         batchReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -27,6 +28,12 @@ public class Project_Manager_Report extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(),Project_Manager_Student_Report.class));
+            }
+        });
+        attendanceReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(),Project_Manager_Attendance_Report.class));
             }
         });
     }
