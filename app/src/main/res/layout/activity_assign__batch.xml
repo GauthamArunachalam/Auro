@@ -4,29 +4,64 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Director.Assign_Batch">
-    <LinearLayout
+    tools:context=".Director.Assign_Batch"
+    android:background="#cfcfcf">
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <Spinner
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        app:cardCornerRadius="20dp"
+        android:layout_margin="10dp">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/projectManager"></Spinner>
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/standard"></Spinner>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:hint="Number of batches"
-            android:id="@+id/nosBatch"/>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="Submit"
-            android:id="@+id/submit"/>
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Assign Batch"
+                android:layout_gravity="center"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:textColor="#022747"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/projectManager"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                ></Spinner>
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/standard"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"></Spinner>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Number of batches"
+                android:id="@+id/nosBatch"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:inputType="number"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Submit"
+                android:id="@+id/submit"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/button_login"
+                android:textColor="#FFFFFF"/>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
 
 </RelativeLayout>

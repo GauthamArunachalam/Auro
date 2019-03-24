@@ -1,9 +1,14 @@
 package com.example.auro.Center_Incharge;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.icu.util.Calendar;
+import android.icu.util.GregorianCalendar;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,17 +16,29 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.example.auro.Chat;
+import com.example.auro.DB.Database;
 import com.example.auro.R;
 
-public class Center_Incharge_Home_Page extends Fragment implements AdapterView.OnItemSelectedListener {
-    private Button EnrollStudent,CreateBatch,Report,attendance,chat;
-    private String problemList[] = {"Select","Electricity Shutdown","Local Function","System Crash","Network Issue","Others"};
+import static android.content.Context.MODE_PRIVATE;
 
+public class Center_Incharge_Home_Page extends Fragment implements AdapterView.OnItemSelectedListener {
+    private ImageView EnrollStudent,CreateBatch,Report,attendance,chat;
+    private String problemList[] = {"Select","Electricity Shutdown","Local Function","System Crash","Network Issue","Others"};
+    private String today,todaysDay;
+    private Calendar currentDate;
+    private TextView day,tDate,name,manager,batchcount,todaybatch,stdcount;
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
+    public String username,reporting;
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -30,10 +47,65 @@ public class Center_Incharge_Home_Page extends Fragment implements AdapterView.O
         EnrollStudent = view.findViewById(R.id.es);
         CreateBatch = view.findViewById(R.id.cb);
         Report = view.findViewById(R.id.report);
+        tDate = view.findViewById(R.id.date);
+        stdcount = view.findViewById(R.id.stud);
+        batchcount = view.findViewById(R.id.batchcount);
+        name = view.findViewById(R.id.userName);
+        todaybatch = view.findViewById(R.id.todaybatch);
+        manager = view.findViewById(R.id.reporting);
+        day = view.findViewById(R.id.day);
         attendance = view.findViewById(R.id.attendance);
         chat = view.findViewById(R.id.chat);
 
+        SharedPreferences prefs = getContext().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        username = prefs.getString("UserName",null);
+        reporting = prefs.getString("Reporting",null);
 
+        name.setText(username);
+        manager.setText(reporting);
+
+        try{
+            Date td = android.icu.util.Calendar.getInstance().getTime();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+
+            today = dateFormat.format(td);
+            tDate.setText(today);
+            Date dts = dateFormat.parse(today);
+
+            currentDate = new GregorianCalendar();
+            currentDate.setTime(dts);
+
+            int x = currentDate.getTime().getDay();
+
+            if (x == 0) {
+                day.setText("Sunday");
+                todaysDay = "Sunday";
+            } else if (x == 1) {
+                day.setText("Monday");
+                todaysDay = "Monday";
+            } else if (x == 2) {
+                day.setText("Tuesday");
+                todaysDay = "Tuesday";
+            } else if (x == 3) {
+                day.setText("Wednesday");
+                todaysDay = "Wednesday";
+            } else if (x == 4) {
+                day.setText("Thursday");
+                todaysDay = "Thursday";
+            } else if (x == 5) {
+                day.setText("Friday");
+                todaysDay = "Friday";
+            } else if (x == 6) {
+                day.setText("Saturday");
+                todaysDay = "Saturday";
+            }
+        }catch (Exception e){
+            System.out.println(e);
+        }
+
+        Database.getNoOfBatches(username,currentDate,this,getContext());
+        Database.getNoOfBatchesToday(username,todaysDay,currentDate,this,getContext());
+        Database.getNoOfStudents(username,this,getContext());
 
         EnrollStudent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +143,21 @@ public class Center_Incharge_Home_Page extends Fragment implements AdapterView.O
             }
         });
         return  view;
+    }
+
+    public void setNoOfBatches(int count)
+    {
+        batchcount.setText(""+count);
+    }
+
+    public void setNoOfBatchesToday(int count)
+    {
+        todaybatch.setText(""+count);
+    }
+
+    public void setNoOfStudents(int count)
+    {
+        stdcount.setText(""+count);
     }
 
     @Override

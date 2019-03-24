@@ -18,7 +18,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -31,7 +33,9 @@ import java.util.*;
 
 public class Create_Batch extends AppCompatActivity implements AdapterView.OnItemSelectedListener, TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
 
-    private Button startDate,endDate,startTime,endTime,submit;
+    private ImageView startDate,endDate,startTime,endTime;
+    private Button submit;
+    private TextView sD,eD,sT,eT;
     private EditText batchName,stdLimit;
     private CheckBox mon,tue,wed,thu,fri,sat,sun;
     private Spinner std;
@@ -53,6 +57,10 @@ public class Create_Batch extends AppCompatActivity implements AdapterView.OnIte
         std = findViewById(R.id.stds);
         batchName = findViewById(R.id.batchNumber);
         stdLimit = findViewById(R.id.studentLimit);
+        sD = findViewById(R.id.startD);
+        eD = findViewById(R.id.endD);
+        sT = findViewById(R.id.startT);
+        eT = findViewById(R.id.endT);
 
         mon = findViewById(R.id.mon);
         tue = findViewById(R.id.tue);
@@ -112,10 +120,10 @@ public class Create_Batch extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onClick(View v) {
                 String batch = batchName.getText().toString();
-                String sD = startDate.getText().toString();
-                String eD = endDate.getText().toString();
-                String sT = startTime.getText().toString();
-                String eT = endTime.getText().toString();
+                String sDD = sD.getText().toString();
+                String eDD = eD.getText().toString();
+                String sTT = sT.getText().toString();
+                String eTT = eT.getText().toString();
                 String limit = stdLimit.getText().toString();
 
                 if(mon.isChecked()){
@@ -163,7 +171,7 @@ public class Create_Batch extends AppCompatActivity implements AdapterView.OnIte
 
 
 
-                Database.createBatch(batch,sD,eD,sT,eT,limit,username,days,standard,reporting);
+                Database.createBatch(batch,sDD,eDD,sTT,eTT,limit,username,days,standard,reporting);
 
             }
         });
@@ -207,11 +215,11 @@ public class Create_Batch extends AppCompatActivity implements AdapterView.OnIte
         }
         if(flagT == 0)
         {
-            startTime.setText(time);
+            sT.setText(time);
         }
         else if(flagT == 1)
         {
-            endTime.setText(time);
+            eT.setText(time);
         }
     }
 
@@ -222,44 +230,11 @@ public class Create_Batch extends AppCompatActivity implements AdapterView.OnIte
         String date = dayOfMonth+"-"+month+"-"+year;
         if(flagD == 0)
         {
-            try {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-
-                Date dts = dateFormat.parse(date);
-
-                Calendar selectedDate = new GregorianCalendar();
-                selectedDate.setTime(dts);
-
-                int x = selectedDate.getTime().getDay();
-
-                if (x == 0) {
-                    Toast.makeText(getApplicationContext(), "Sunday", Toast.LENGTH_LONG).show();
-                } else if (x == 1) {
-                    Toast.makeText(getApplicationContext(), "Monday", Toast.LENGTH_LONG).show();
-                } else if (x == 2) {
-                    Toast.makeText(getApplicationContext(), "Tuesday", Toast.LENGTH_LONG).show();
-                } else if (x == 3) {
-                    Toast.makeText(getApplicationContext(), "Wednesday", Toast.LENGTH_LONG).show();
-                } else if (x == 4) {
-                    Toast.makeText(getApplicationContext(), "Thursday", Toast.LENGTH_LONG).show();
-                } else if (x == 5) {
-                    Toast.makeText(getApplicationContext(), "Friday", Toast.LENGTH_LONG).show();
-                } else if (x == 6) {
-                    Toast.makeText(getApplicationContext(), "Saturday", Toast.LENGTH_LONG).show();
-                }
-
-                startDate.setText(date);
-
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-
+            sD.setText(date);
         }
         else if(flagD == 1)
         {
-            endDate.setText(date);
+            eD.setText(date);
         }
     }
 

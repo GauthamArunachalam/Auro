@@ -4,11 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Project_Manager.Center_Incharge_List">
-    <android.support.v7.widget.RecyclerView
+    tools:context=".Project_Manager.Center_Incharge_List"
+    android:background="#CFCFCF">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recyclerView">
-    </android.support.v7.widget.RecyclerView>
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="#022747"
+            android:textSize="25dp"
+            android:text="Center Incharge's"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"/>
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recyclerView">
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
 
 </RelativeLayout>

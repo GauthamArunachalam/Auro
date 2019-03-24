@@ -14,7 +14,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Director.Director_Attendance_Report"></activity>
+        <activity android:name=".Splash_Screen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Director.Director_Attendance_Report" />
         <activity android:name=".Project_Manager.Project_Manager_Attendance_Report" />
         <activity android:name=".Center_Incharge.Center_Incharge_Attendance_Report" />
         <activity android:name=".Director.Director_Student_Report" />
@@ -23,9 +29,6 @@
         <activity android:name=".Project_Manager.Center_Incharge_List" />
         <activity android:name=".Private_message" />
         <activity android:name=".Chat" />
-        <activity android:name=".Project_Manager.ProjectManager_Chat_Home_Page" />
-        <activity android:name=".GroupChat" />
-        <activity android:name=".Center_Incharge.Center_Incharge_Chat_Home_Page" />
         <activity android:name=".Center_Incharge.Attendance_Student_List" />
         <activity android:name=".Center_Incharge.Attendance" />
         <activity android:name=".Project_Manager.Project_Manager_Report" />
@@ -52,8 +55,6 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>

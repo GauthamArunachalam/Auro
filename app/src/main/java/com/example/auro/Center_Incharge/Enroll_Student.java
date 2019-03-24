@@ -43,13 +43,16 @@ import java.util.List;
 
 public class Enroll_Student extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener {
     EditText studentID,studentName,fatherName,motherName,addr;
-    Button date,forward,sphoto,tphoto;
+    Button forward;
+    TextView sphoto,tphoto;
+    ImageView date;
     RadioGroup gender,fatherStatus,motherStatus;
     Spinner spinnerbatch;
     TextView standard;
     String stdID,stdName,fN,mN,fS="",mS="",stdaddress,birthDate,stdgender="",batch,std;
     Uri filePath;
     ImageView imageView;
+    TextView birthD;
     File f;
     int flag=0;
 
@@ -76,6 +79,7 @@ public class Enroll_Student extends AppCompatActivity implements DatePickerDialo
         forward = findViewById(R.id.forward);
         standard = findViewById(R.id.std);
         imageView = findViewById(R.id.imageView);
+        birthD = findViewById(R.id.birth);
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         username = prefs.getString("UserName",null);
@@ -190,7 +194,7 @@ public class Enroll_Student extends AppCompatActivity implements DatePickerDialo
         stdID = studentID.getText().toString();
         stdName = studentName.getText().toString();
         stdaddress = addr.getText().toString();
-        birthDate = date.getText().toString();
+        birthDate = birthD.getText().toString();
         fN = fatherName.getText().toString();
         mN = motherName.getText().toString();
 
@@ -202,7 +206,7 @@ public class Enroll_Student extends AppCompatActivity implements DatePickerDialo
         month++;
         String dates = dayOfMonth+"-"+month+"-"+year;
 
-        date.setText(dates);
+        birthD.setText(dates);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)

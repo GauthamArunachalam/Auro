@@ -51,7 +51,7 @@ public class Chat_RecyclerAdapter extends RecyclerView.Adapter<Chat_RecyclerAdap
                 params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 viewHolder.msg.setLayoutParams(params);
                 viewHolder.msg.setMaxWidth(750);
-                viewHolder.msg.setPadding(20,10,20,10);
+                viewHolder.msg.setPadding(50,30,50,30);
                 viewHolder.msg.setText(items.getMessage());
             }
             else
@@ -60,7 +60,7 @@ public class Chat_RecyclerAdapter extends RecyclerView.Adapter<Chat_RecyclerAdap
                 params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 viewHolder.msg.setLayoutParams(params);
                 viewHolder.msg.setMaxWidth(750);
-                viewHolder.msg.setPadding(20,10,20,10);
+                viewHolder.msg.setPadding(50,30,50,30);
                 viewHolder.msg.setText(items.getMessage());
             }
         }

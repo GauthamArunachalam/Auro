@@ -4,40 +4,72 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Project_Manager.Request_Student_list">
-    <android.support.v7.widget.RecyclerView
+    tools:context=".Project_Manager.Request_Student_list"
+    android:background="#CFCFCF">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/stdList">
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Student Details"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="25dp"
+            android:textColor="#022747"
+            android:textStyle="bold"/>
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/stdList">
 
-    </android.support.v7.widget.RecyclerView>
+        </android.support.v7.widget.RecyclerView>
 
+
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center">
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/select"
-            android:text="Select All"/>
+            android:text="Select All"
+            android:background="@drawable/button_login"
+            android:textColor="#FFFFFF"
+            android:layout_marginRight="10dp"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/escalate"
             android:visibility="gone"
-            android:text="Escalate"/>
+            android:text="Escalate"
+            android:background="@drawable/button_login"
+            android:textColor="#FFFFFF"
+            android:layout_marginRight="10dp"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/accept"
-            android:text="Accept"/>
+            android:text="Accept"
+            android:background="@drawable/button_login"
+            android:textColor="#FFFFFF"
+            android:layout_marginRight="10dp"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/reject"
-            android:text="Reject"/>
+            android:text="Reject"
+            android:background="@drawable/button_login"
+            android:textColor="#FFFFFF"
+            android:layout_marginRight="10dp"/>
     </LinearLayout>
+
+
 
 </RelativeLayout>

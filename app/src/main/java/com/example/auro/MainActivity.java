@@ -41,10 +41,6 @@ public class MainActivity extends AppCompatActivity {
         username = prefs.getString("UserName",null);
         designation = prefs.getString("Designation",null);
 
-        if(username != null){
-            startActivity(new Intent(getApplicationContext(),HomePage.class));
-        }
-        
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

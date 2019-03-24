@@ -4,65 +4,219 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Director.Director_Request_Details">
+    tools:context=".Director.Director_Request_Details"
+    android:background="#CFCFCF">
 
+ <android.support.v7.widget.CardView
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:layout_centerInParent="true"
+     android:layout_marginStart="10dp"
+     android:layout_marginEnd="10dp"
+     app:cardCornerRadius="20dp">
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:orientation="vertical"
+         android:layout_marginLeft="10dp"
+         android:layout_marginTop="10dp">
+         <LinearLayout
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:orientation="horizontal"
+             android:layout_marginBottom="10dp">
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="Batch name: "
+                 android:textColor="#022747"
+                 android:textSize="17dp"
+                 android:textStyle="bold"/>
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/batchName"
+                 android:textColor="#022747"
+                 android:textSize="17dp"/>
+         </LinearLayout>
+         <LinearLayout
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:orientation="horizontal"
+             android:layout_marginBottom="10dp">
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="Standard: "
+                 android:textColor="#022747"
+                 android:textSize="17dp"
+                 android:textStyle="bold"/>
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/std"
+                 android:textColor="#022747"
+                 android:textSize="17dp"/>
+         </LinearLayout>
+         <LinearLayout
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:orientation="horizontal"
+             android:layout_marginBottom="10dp">
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="Days: "
+                 android:textColor="#022747"
+                 android:textSize="17dp"
+                 android:textStyle="bold"/>
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/days"
+                 android:textColor="#022747"
+                 android:textSize="17dp"/>
+         </LinearLayout>
+         <LinearLayout
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:orientation="horizontal"
+             android:layout_marginBottom="10dp">
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="Start Date: "
+                 android:textColor="#022747"
+                 android:textSize="17dp"
+                 android:textStyle="bold"/>
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/startDay"
+                 android:textColor="#022747"
+                 android:textSize="17dp"/>
+         </LinearLayout>
+         <LinearLayout
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:orientation="horizontal"
+             android:layout_marginBottom="10dp">
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="End Date: "
+                 android:textColor="#022747"
+                 android:textSize="17dp"
+                 android:textStyle="bold"/>
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/endDay"
+                 android:textColor="#022747"
+                 android:textSize="17dp"/>
+         </LinearLayout>
+
+         <LinearLayout
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:orientation="horizontal"
+             android:layout_marginBottom="10dp">
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="Start Time: "
+                 android:textColor="#022747"
+                 android:textSize="17dp"
+                 android:textStyle="bold"/>
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/startTime"
+                 android:textColor="#022747"
+                 android:textSize="17dp"/>
+         </LinearLayout>
+         <LinearLayout
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:orientation="horizontal"
+             android:layout_marginBottom="10dp">
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="End Time: "
+                 android:textColor="#022747"
+                 android:textSize="17dp"
+                 android:textStyle="bold"/>
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/endTime"
+                 android:textColor="#022747"
+                 android:textSize="17dp"/>
+         </LinearLayout>
+         <LinearLayout
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:orientation="horizontal"
+             android:layout_marginBottom="10dp">
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="Center Incharge: "
+                 android:textColor="#022747"
+                 android:textSize="17dp"
+                 android:textStyle="bold"/>
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/incharge"
+                 android:textColor="#022747"
+                 android:textSize="17dp"/>
+         </LinearLayout>
+         <LinearLayout
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:orientation="horizontal"
+             android:layout_marginBottom="10dp">
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="Student Limit: "
+                 android:textColor="#022747"
+                 android:textSize="17dp"
+                 android:textStyle="bold"/>
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/studentLimit"
+                 android:textColor="#022747"
+                 android:textSize="17dp"/>
+         </LinearLayout>
+
+     </LinearLayout>
+ </android.support.v7.widget.CardView>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/batchName"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/std"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/days"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/startDay"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/endDay"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/startTime"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/endTime"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/incharge"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/studentLimit"/>
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:layout_marginBottom="5dp">
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="APPROVE"
-            android:id="@+id/approve"/>
+            android:id="@+id/approve"
+            android:layout_marginRight="50dp"
+            android:background="@drawable/button_login"
+            android:textColor="#FFFFFF"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="REJECT"
-            android:id="@+id/reject"/>
+            android:id="@+id/reject"
+            android:background="@drawable/button_login"
+            android:textColor="#FFFFFF"/>
     </LinearLayout>
 
 </RelativeLayout>

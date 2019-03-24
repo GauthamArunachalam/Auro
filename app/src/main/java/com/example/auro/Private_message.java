@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.example.auro.Adapter.Message;
 import com.example.auro.DB.Database;
@@ -21,7 +22,7 @@ public class Private_message extends AppCompatActivity {
     private RecyclerView.Adapter adapter;
     private List<Message>list = new ArrayList<>();
     private EditText message ;
-    private Button send;
+    private ImageView send;
     private String msg,from,to;
 
     @Override
@@ -44,8 +45,8 @@ public class Private_message extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 msg = message.getText().toString();
-
                 Database.chat(msg,from,to);
+                message.setText("");
             }
         });
 

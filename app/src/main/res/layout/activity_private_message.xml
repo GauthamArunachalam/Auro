@@ -4,22 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Private_message">
+    tools:context=".Private_message"
+    android:background="#CFCFCF">
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/recyclerView">
     </android.support.v7.widget.RecyclerView>
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    android:layout_width="325dp"
+    android:id="@+id/chat"
+    android:layout_height="50dp"
+    android:layout_alignParentBottom="true"
+    android:background="@drawable/edit_text_chat"
+    android:layout_marginLeft="15dp"
+    android:layout_marginBottom="10dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:hint="Enter message"
+    android:textColor="#022747"/>
+    <ImageView
+        android:layout_width="50dp"
+        android:id="@+id/send"
+        android:layout_height="50dp"
+        android:layout_toRightOf="@+id/chat"
+        android:src="@drawable/send"
         android:layout_alignParentBottom="true"
-        android:id="@+id/chat"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@id/chat"
-        android:text="send"
-        android:id="@+id/send"/>
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"/>
 </RelativeLayout>

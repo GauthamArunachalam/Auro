@@ -4,11 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Pending_Batch_Request">
+    tools:context=".Pending_Batch_Request"
+    android:background="#CFCFCF">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Batches"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:textColor="#022747"
+            android:textSize="25dp"
+            android:textStyle="bold"/>
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

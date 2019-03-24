@@ -49,7 +49,7 @@ public class Registration extends AppCompatActivity implements AdapterView.OnIte
         designation.setOnItemSelectedListener(this);
 
         List<String> spinnerList = new ArrayList<String>();
-        //spinnerList.add("Choose");
+        spinnerList.add("Select Designation");
         spinnerList.add("Project Manager");
         spinnerList.add("Center Incharge");
 

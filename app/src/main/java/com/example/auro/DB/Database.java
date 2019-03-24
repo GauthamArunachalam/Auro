@@ -18,6 +18,7 @@ import com.example.auro.Center_Incharge.Attendance;
 import com.example.auro.Center_Incharge.Attendance_Student_List;
 import com.example.auro.Center_Incharge.Center_Incharge_Attendance_Report;
 import com.example.auro.Center_Incharge.Center_Incharge_Batch_Report;
+import com.example.auro.Center_Incharge.Center_Incharge_Home_Page;
 import com.example.auro.Center_Incharge.Center_Incharge_Student_Report;
 import com.example.auro.Center_Incharge.Create_Batch;
 import com.example.auro.Center_Incharge.Enroll_Student;
@@ -26,6 +27,7 @@ import com.example.auro.Director.Add_Standard;
 import com.example.auro.Director.Assign_Batch;
 import com.example.auro.Director.Director_Attendance_Report;
 import com.example.auro.Director.Director_Batch_Report;
+import com.example.auro.Director.Director_Home_Page;
 import com.example.auro.Director.Director_Request_Details;
 import com.example.auro.Director.Director_Student_Report;
 import com.example.auro.Director.Project_Manager_Details;
@@ -40,6 +42,7 @@ import com.example.auro.Project_Manager.Center_Incharge_List;
 import com.example.auro.Project_Manager.ProjectManager_AssignBatch;
 import com.example.auro.Project_Manager.Project_Manager_Attendance_Report;
 import com.example.auro.Project_Manager.Project_Manager_Batch_Report;
+import com.example.auro.Project_Manager.Project_Manager_Home_Page;
 import com.example.auro.Project_Manager.Project_Manager_Student_Report;
 import com.example.auro.Project_Manager.Request_Batch_Details;
 import com.example.auro.Project_Manager.Request_Student_list;
@@ -170,6 +173,7 @@ public class Database {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<String> list = new ArrayList<String>();
+                list.add("Select project manager");
                 for(DataSnapshot postSnap : dataSnapshot.getChildren()){
                     UserDetails u = postSnap.getValue(UserDetails.class);
                     if(u.getDesignation().equals("Project Manager")){
@@ -191,6 +195,7 @@ public class Database {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<String> list = new ArrayList<String>();
+                list.add("Select Standard");
                 for(DataSnapshot postSnap : dataSnapshot.getChildren()){
                     Standards u = postSnap.getValue(Standards.class);
 
@@ -250,6 +255,7 @@ public class Database {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<String> projectManager = new ArrayList<>();
+                projectManager.add("Select Project Manager");
                 for(DataSnapshot postSnap : dataSnapshot.getChildren()){
                     UserDetails u = postSnap.getValue(UserDetails.class);
                     if(u.getReporting().equals(username) && u.getDesignation().equals("Project Manager")){
@@ -271,6 +277,7 @@ public class Database {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<String> std = new ArrayList<>();
+                std.add("Select Standard");
                 for(DataSnapshot postSnap : dataSnapshot.getChildren()){
                     Standards s = postSnap.getValue(Standards.class);
                     std.add(s.getStd());
@@ -1382,6 +1389,198 @@ public class Database {
         });
     }
 
+    public static void getNoOfBatchesToday(final String incharge, final String day, final Calendar dateCalendar, final Center_Incharge_Home_Page a, final Context c)
+    {
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int count = 0;
+
+                for(DataSnapshot postSnap : dataSnapshot.getChildren())
+                {
+                    try
+                    {
+                        Batch b = postSnap.getValue(Batch.class);
+
+                        String start = b.getStart_date();
+                        String end = b.getEnd_date();
+
+                        java.util.Date startDate, endDate;
+                        DateFormat dt = new SimpleDateFormat("dd-MM-yyyy");
+
+                        startDate = dt.parse(start);
+                        endDate = dt.parse(end);
+
+                        Calendar calendar = new GregorianCalendar();
+                        calendar.setTime(startDate);
+
+                        Calendar endCalendar = new GregorianCalendar();
+                        endCalendar.setTime(endDate);
+
+                        if(((calendar.before(dateCalendar) || calendar.equals(dateCalendar)) && (dateCalendar.equals(endCalendar) || dateCalendar.before(endCalendar))) && b.getDays().contains(day) && b.getIncharge().equals(incharge) && b.getStatus().equals("Approved") )
+                        {
+                            count++;
+                        }
+
+                    }
+                    catch (Exception e){}
+                }
+
+                a.setNoOfBatchesToday(count);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getNoOfBatches(final String incharge, final Calendar dateCalendar, final Center_Incharge_Home_Page a, final Context c)
+    {
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int count = 0;
+
+                for(DataSnapshot postSnap : dataSnapshot.getChildren())
+                {
+                    try
+                    {
+                        Batch b = postSnap.getValue(Batch.class);
+
+                        String start = b.getStart_date();
+                        String end = b.getEnd_date();
+
+                        java.util.Date startDate, endDate;
+                        DateFormat dt = new SimpleDateFormat("dd-MM-yyyy");
+
+                        startDate = dt.parse(start);
+                        endDate = dt.parse(end);
+
+                        Calendar calendar = new GregorianCalendar();
+                        calendar.setTime(startDate);
+
+                        Calendar endCalendar = new GregorianCalendar();
+                        endCalendar.setTime(endDate);
+
+                        if(((calendar.before(dateCalendar) || calendar.equals(dateCalendar)) && (dateCalendar.equals(endCalendar) || dateCalendar.before(endCalendar))) && b.getIncharge().equals(incharge) && b.getStatus().equals("Approved") )
+                        {
+                            count++;
+                        }
+
+                    }
+                    catch (Exception e){}
+                }
+
+                a.setNoOfBatches(count);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getNoOfBatches(final String manager, final Calendar dateCalendar, final Project_Manager_Home_Page a, final Context c)
+    {
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int count = 0;
+
+                for(DataSnapshot postSnap : dataSnapshot.getChildren())
+                {
+                    try
+                    {
+                        Batch b = postSnap.getValue(Batch.class);
+
+                        String start = b.getStart_date();
+                        String end = b.getEnd_date();
+
+                        java.util.Date startDate, endDate;
+                        DateFormat dt = new SimpleDateFormat("dd-MM-yyyy");
+
+                        startDate = dt.parse(start);
+                        endDate = dt.parse(end);
+
+                        Calendar calendar = new GregorianCalendar();
+                        calendar.setTime(startDate);
+
+                        Calendar endCalendar = new GregorianCalendar();
+                        endCalendar.setTime(endDate);
+
+                        if(((calendar.before(dateCalendar) || calendar.equals(dateCalendar)) && (dateCalendar.equals(endCalendar) || dateCalendar.before(endCalendar))) && b.getManager().equals(manager) && b.getStatus().equals("Approved") )
+                        {
+                            count++;
+                        }
+
+                    }
+                    catch (Exception e){}
+                }
+
+                a.setNoOfBatches(count);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getNoOfBatches(final Calendar dateCalendar, final Director_Home_Page a, final Context c)
+    {
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int count = 0;
+
+                for(DataSnapshot postSnap : dataSnapshot.getChildren())
+                {
+                    try
+                    {
+                        Batch b = postSnap.getValue(Batch.class);
+
+                        String start = b.getStart_date();
+                        String end = b.getEnd_date();
+
+                        java.util.Date startDate, endDate;
+                        DateFormat dt = new SimpleDateFormat("dd-MM-yyyy");
+
+                        startDate = dt.parse(start);
+                        endDate = dt.parse(end);
+
+                        Calendar calendar = new GregorianCalendar();
+                        calendar.setTime(startDate);
+
+                        Calendar endCalendar = new GregorianCalendar();
+                        endCalendar.setTime(endDate);
+
+                        if(((calendar.before(dateCalendar) || calendar.equals(dateCalendar)) && (dateCalendar.equals(endCalendar) || dateCalendar.before(endCalendar))) && b.getStatus().equals("Approved") )
+                        {
+                            count++;
+                        }
+
+                    }
+                    catch (Exception e){}
+                }
+
+                a.setNoOfBatches(count);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public static void getStudentID(final String batch_name, final Attendance_Student_List a, final Context c)
     {
         dr.child("Batches").child("Student Details").addValueEventListener(new ValueEventListener() {
@@ -1403,6 +1602,84 @@ public class Database {
                 }
 
                 a.setStudentList(list,list2,c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getNoOfStudents(final String name, final Center_Incharge_Home_Page a, final Context c)
+    {
+        dr.child("Batches").child("Student Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int count = 0;
+                for(DataSnapshot postSnap : dataSnapshot.getChildren())
+                {
+                    StudentDetails s = postSnap.getValue(StudentDetails.class);
+
+                    if(s.getIncharge().equals(name) && s.getStatus().equals("Approved"))
+                    {
+                        count++;
+                    }
+                }
+
+                a.setNoOfStudents(count);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getNoOfStudents(final String name, final Project_Manager_Home_Page a, final Context c)
+    {
+        dr.child("Batches").child("Student Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int count = 0;
+                for(DataSnapshot postSnap : dataSnapshot.getChildren())
+                {
+                    StudentDetails s = postSnap.getValue(StudentDetails.class);
+
+                    if(s.getManager().equals(name) && s.getStatus().equals("Approved"))
+                    {
+                        count++;
+                    }
+                }
+
+                a.setNoOfStudents(count);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getNoOfStudents(final Director_Home_Page a, final Context c)
+    {
+        dr.child("Batches").child("Student Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int count = 0;
+                for(DataSnapshot postSnap : dataSnapshot.getChildren())
+                {
+                    StudentDetails s = postSnap.getValue(StudentDetails.class);
+
+                    if(s.getStatus().equals("Approved"))
+                    {
+                        count++;
+                    }
+                }
+
+                a.setNoOfStudents(count);
             }
 
             @Override
@@ -1540,7 +1817,7 @@ public class Database {
         });
     }
 
-        public static void getCenterInchargeList(final String username, final Center_Incharge_List r, final Context c){
+    public static void getCenterInchargeList(final String username, final Center_Incharge_List r, final Context c){
         dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -1552,6 +1829,69 @@ public class Database {
                     }
                 }
                 r.setCenterInchargeList(centerincharge, c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getCenterInchargeCount(final String username, final Project_Manager_Home_Page r, final Context c){
+        dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int count = 0;
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    UserDetails u = postSnap.getValue(UserDetails.class);
+                    if(u.getReporting().equals(username) && u.getDesignation().equals("Center Incharge")){
+                        count++;
+                    }
+                }
+                r.setCenterInchargeCount(count);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getCenterInchargeCount(final Director_Home_Page r, final Context c){
+        dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int count = 0;
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    UserDetails u = postSnap.getValue(UserDetails.class);
+                    if(u.getDesignation().equals("Center Incharge")){
+                        count++;
+                    }
+                }
+                r.setCenterInchargeCount(count);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getProjectManagerCount(final Director_Home_Page r, final Context c){
+        dr.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int count = 0;
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    UserDetails u = postSnap.getValue(UserDetails.class);
+                    if(u.getDesignation().equals("Project Manager")){
+                        count++;
+                    }
+                }
+                r.setProjectManagerCount(count);
             }
 
             @Override

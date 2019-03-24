@@ -5,11 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.example.auro.R;
 
 public class Center_Incharge_Report extends AppCompatActivity {
-    private Button batchReport,studentReport,attendanceReport;
+    private ImageView batchReport,studentReport,attendanceReport;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

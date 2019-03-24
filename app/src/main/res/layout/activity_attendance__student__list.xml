@@ -5,47 +5,131 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Center_Incharge.Attendance_Student_List"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#CFCFCF">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <RadioGroup
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/group"
-            android:orientation="vertical">
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/open"
-                android:text="Open"/>
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/close"
-                android:text="Close"/>
-        </RadioGroup>
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/problem">
+            android:text="Progress and Attendance"
+            android:layout_gravity="center"
+            android:textSize="25dp"
+            android:textColor="#022747"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"/>
 
-        </Spinner>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Center Status"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:textColor="#022747"
+                android:textStyle="bold"
+                android:layout_marginLeft="17dp"
+                android:layout_marginRight="15dp"/>
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/group"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/open"
+                    android:text="Open"
+                    android:layout_marginLeft="10dp"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/close"
+                    android:text="Close"
+                    android:layout_marginLeft="10dp"/>
+            </RadioGroup>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select problem: "
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:textColor="#022747"
+                android:textStyle="bold"
+                android:layout_marginLeft="17dp"
+                android:layout_marginRight="15dp" />
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/problem"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_gravity="center" />
+        </LinearLayout>
+
         <EditText
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:id="@+id/others"/>
-        <Spinner
+            android:id="@+id/others"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:hint="Other problem"
+            android:inputType="textPersonName"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Topics: "
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:textColor="#022747"
+                android:textStyle="bold"
+                android:layout_marginLeft="17dp"
+                android:layout_marginRight="15dp" />
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/topics"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_gravity="center">
+            </Spinner>
+        </LinearLayout>
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/topics">
-        </Spinner>
+            android:layout_height="wrap_content"
+            android:text="Students"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:textColor="#022747"
+            android:textStyle="bold"/>
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/attendanceStudentList"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="50dp">
         </android.support.v7.widget.RecyclerView>
     </LinearLayout>
@@ -55,6 +139,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:text="Submit"
-        android:id="@+id/submit"/>
+        android:id="@+id/submit"
+        android:background="@drawable/button_login"
+        android:textColor="#FFFFFF"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
 
 </RelativeLayout>

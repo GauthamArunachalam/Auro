@@ -4,129 +4,348 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Center_Incharge.Enroll_Student">
-    <LinearLayout
+    tools:context=".Center_Incharge.Enroll_Student"
+    android:background="#CFCFCF">
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <EditText
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/studentID"
-            android:hint="Enter student ID"/>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/stdname"
-            android:hint="Enter student name"/>
-        <RadioGroup
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Student Details"
+                android:textSize="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:textColor="#022747"
+                android:textStyle="bold"/>
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:cardCornerRadius="250dp"
+                android:background="#CFCFCF"
+                android:layout_marginTop="10dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView"
+                    android:background="#CFCFCF" />
+            </android.support.v7.widget.CardView>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/studentID"
+                android:hint="Enter student ID"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:inputType="textPersonName"
+                android:layout_marginTop="10dp"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/stdname"
+                android:hint="Enter student name"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:inputType="textPersonName"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gender:"
+                    android:layout_gravity="center"
+                    android:textSize="20dp"
+                    android:textColor="#022747"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="15dp"/>
+                <RadioGroup
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:id="@+id/gender">
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Male "
+                        android:layout_marginRight="10dp">
+                    </RadioButton>
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Female ">
+                    </RadioButton>
+                </RadioGroup>
+            </LinearLayout>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/fathername"
+                android:hint="Enter father name"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:inputType="textPersonName"/>
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:orientation="horizontal"
-            android:id="@+id/gender">
-            <RadioButton
+            android:layout_marginBottom="10dp">
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Male">
-            </RadioButton>
-            <RadioButton
+                android:text="Father's Status:"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:textColor="#022747"
+                android:textStyle="bold"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="15dp"/>
+            <RadioGroup
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Female">
-            </RadioButton>
-        </RadioGroup>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/fathername"
-            android:hint="Enter father name"/>
-        <RadioGroup
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:id="@+id/fatherStatus">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Alive "
+                    android:layout_marginRight="10dp">
+                </RadioButton>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No more ">
+                </RadioButton>
+            </RadioGroup>
+        </LinearLayout>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/mothername"
+                android:hint="Enter mother name"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:inputType="textPersonName"/>
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:orientation="horizontal"
-            android:id="@+id/fatherStatus">
-            <RadioButton
+            android:layout_marginBottom="10dp">
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Alive">
-            </RadioButton>
-            <RadioButton
+                android:text="Mother's Status:"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:textColor="#022747"
+                android:textStyle="bold"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="15dp"/>
+            <RadioGroup
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No more">
-            </RadioButton>
-        </RadioGroup>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/mothername"
-            android:hint="Enter mother name"/>
-        <RadioGroup
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:id="@+id/motherStatus">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Alive "
+                    android:layout_marginRight="10dp">
+                </RadioButton>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No more ">
+                </RadioButton>
+            </RadioGroup>
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:orientation="horizontal"
-            android:id="@+id/motherStatus">
-            <RadioButton
+            android:layout_marginBottom="10dp">
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Alive">
-            </RadioButton>
-            <RadioButton
+                android:text="Date of Birth:"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:textColor="#022747"
+                android:textStyle="bold"
+                android:layout_marginLeft="17dp"
+                android:layout_marginRight="15dp"/>
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No more">
-            </RadioButton>
-        </RadioGroup>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="DOB"
-            android:id="@+id/dob"/>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Take Photo"
-            android:id="@+id/tphoto"/>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Select Photo"
-            android:id="@+id/sphoto"/>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/address"
-            android:hint="Enter address"/>
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/batch"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/std" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/forward"
-            android:text="Forward"/>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/discard"
-            android:text="discard"/>
-
-        <ImageView
+                android:textSize="20dp"
+                android:textColor="#022747"
+                android:text=""
+                android:id="@+id/birth"
+                android:layout_marginRight="15dp"/>
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:id="@+id/dob"
+                android:src="@drawable/planner"/>
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView"/>
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Photograph: "
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:textColor="#022747"
+                android:textStyle="bold"
+                android:layout_marginLeft="17dp"
+                android:layout_marginRight="15dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Take Photo"
+                android:id="@+id/tphoto"
+                android:background="#CFCFCF"
+                android:textColor="#022747"
+                android:layout_gravity="center"
+                android:textSize="17dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  or  "
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:textColor="#022747"
+                android:textStyle="bold"
+                android:gravity=""/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Photo"
+                android:id="@+id/sphoto"
+                android:background="#CFCFCF"
+                android:textColor="#022747"
+                android:layout_gravity="center"
+                android:textSize="17dp"/>
 
+        </LinearLayout>
 
-    </LinearLayout>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/address"
+                android:hint="Enter address"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:inputType="textPostalAddress"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Batch: "
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:textColor="#022747"
+                android:textStyle="bold"
+                android:layout_marginLeft="17dp"
+                android:layout_marginRight="15dp" />
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/batch"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Standard: "
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:textColor="#022747"
+                android:textStyle="bold"
+                android:layout_marginLeft="17dp"
+                android:layout_marginRight="15dp" />
+
+            <TextView
+                android:id="@+id/std"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="#022747"
+                android:textSize="17dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/forward"
+                android:text="Forward"
+                android:layout_marginRight="50dp"
+                android:background="@drawable/button_login"
+                android:textColor="#FFFFFF"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/discard"
+                android:text="discard"
+                android:background="@drawable/button_login"
+                android:textColor="#FFFFFF"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"/>
+
+        </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </RelativeLayout>
