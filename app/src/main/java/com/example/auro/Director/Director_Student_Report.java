@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ public class Director_Student_Report extends AppCompatActivity implements Adapte
     String username,manager,incharge,batches,gende;
     WritableWorkbook workbook;
     WritableSheet sheet;
+    EditText filename;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class Director_Student_Report extends AppCompatActivity implements Adapte
         gender.setOnItemSelectedListener(this);
         center.setOnItemSelectedListener(this);
         project.setOnItemSelectedListener(this);
+        filename = findViewById(R.id.file);
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         username = prefs.getString("UserName",null);
@@ -62,7 +65,11 @@ public class Director_Student_Report extends AppCompatActivity implements Adapte
         report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(filename.getText().toString().isEmpty()){
+                    filename.setError("Enter File name");
+                    filename.requestFocus();
+                    return;
+                }
                 if(manager.equals("All"))
                 {
                     Database.getStudentDetails(gende,Director_Student_Report.this,getApplicationContext());

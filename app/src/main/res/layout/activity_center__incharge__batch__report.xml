@@ -40,6 +40,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Enter File name"
                 android:inputType="textPersonName"
+                android:id="@+id/file"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"/>
             <Button

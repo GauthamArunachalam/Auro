@@ -40,16 +40,19 @@
                 android:layout_height="50dp"
                 android:id="@+id/centerIncharge"
                 android:layout_marginBottom="10dp"
+                android:visibility="gone"
                 android:layout_marginTop="10dp"></Spinner>
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:id="@+id/batches"
+                android:visibility="gone"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"></Spinner>
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/file"
                 android:hint="Enter File name"
                 android:inputType="textPersonName"
                 android:layout_marginBottom="10dp"

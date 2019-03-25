@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.auro.Adapter.UserDetails;
 import com.example.auro.DB.Database;
@@ -53,8 +54,8 @@ public class Registration extends AppCompatActivity implements AdapterView.OnIte
         spinnerList.add("Project Manager");
         spinnerList.add("Center Incharge");
 
-        ArrayAdapter desi = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, spinnerList);
-        desi.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        final ArrayAdapter desi = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, spinnerList);
+    desi.setDropDownViewResource(android.R.layout.simple_spinner_item);
         designation.setAdapter(desi);
 
         register.setOnClickListener(new View.OnClickListener() {
@@ -64,10 +65,27 @@ public class Registration extends AppCompatActivity implements AdapterView.OnIte
                 String pass = password.getText().toString();
                 String reporting = "";
 
+                if(userName.isEmpty()){
+                    userID.setError("Enter user ID");
+                    userID.requestFocus();
+                    return;
+                }else if(pass.isEmpty()){
+                    password.setError("Enter password");
+                    password.requestFocus();
+                    return;
+                }else if(desig == null){
+                    Toast.makeText(getApplicationContext(),"Select desigination",Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 if(desig.equals("Project Manager")){
                     reporting = "director";
                 }else{
                     reporting = repor;
+                }
+                if(desig.equals("Center Incharge") && reporting.equals("Select project manager")){
+                    Toast.makeText(getApplicationContext(),"Select project manager of the center incharge",Toast.LENGTH_LONG).show();
+                    return;
                 }
 
                 Database.register(userName, pass, desig, reporting, getApplicationContext());
@@ -95,6 +113,10 @@ public class Registration extends AppCompatActivity implements AdapterView.OnIte
                 desig = (String) parent.getItemAtPosition(position);
                 if(desig.equals("Center Incharge")){
                     Database.getProjectManagerList(this, getApplicationContext());
+                }
+                else
+                {
+                    project.setVisibility(View.GONE);
                 }
             }else{
                 repor = data;

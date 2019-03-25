@@ -146,16 +146,16 @@ public class Create_Batch extends AppCompatActivity implements AdapterView.OnIte
                     batchName.setError("Enter proper batch name");
                     batchName.requestFocus();
                     return;
-                }else if(sD.equals("Start date")){
+                }else if(sDD.equals("")){
                     Toast.makeText(getApplicationContext(),"Select Start date",Toast.LENGTH_SHORT).show();
                     return;
-                }else if(eD.equals("End date")){
+                }else if(eDD.equals("")){
                     Toast.makeText(getApplicationContext(),"Select End date",Toast.LENGTH_SHORT).show();
                     return;
-                }else if(sT.equals("Start time")){
+                }else if(sTT.equals("")){
                     Toast.makeText(getApplicationContext(),"Select Start Time",Toast.LENGTH_SHORT).show();
                     return;
-                }else if(eT.equals("End time")){
+                }else if(eTT.equals("")){
                     Toast.makeText(getApplicationContext(),"Select End date",Toast.LENGTH_SHORT).show();
                     return;
                 }else if(limit.isEmpty()){
@@ -163,7 +163,7 @@ public class Create_Batch extends AppCompatActivity implements AdapterView.OnIte
                     stdLimit.requestFocus();
                     return;
                 }else if(day.toString().isEmpty()){
-                    Toast.makeText(getApplicationContext(),"Select days",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Select working days",Toast.LENGTH_SHORT).show();
                     return;
                 }
 

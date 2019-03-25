@@ -45,6 +45,10 @@ public class Private_message extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 msg = message.getText().toString();
+                if(msg.isEmpty())
+                {
+                    return;
+                }
                 Database.chat(msg,from,to);
                 message.setText("");
             }

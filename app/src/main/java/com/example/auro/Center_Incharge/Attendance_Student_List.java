@@ -13,9 +13,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.*;
 
@@ -43,6 +45,8 @@ public class Attendance_Student_List extends AppCompatActivity implements Adapte
     private String problemList[] = {"Select","Electricity Shutdown","Local Function","System Crash","Network Issue","Others"};
     public static final String MY_PREFS_NAME = "MyPrefsFile";
     public String username,reporting;
+    private LinearLayout prob, open;
+    boolean state = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,8 @@ public class Attendance_Student_List extends AppCompatActivity implements Adapte
         topics = findViewById(R.id.topics);
         problem.setOnItemSelectedListener(this);
         topics.setOnItemSelectedListener(this);
+        prob = findViewById(R.id.prob);
+        open = findViewById(R.id.op);
 
 
         batch_name = getIntent().getStringExtra("name");
@@ -75,15 +81,40 @@ public class Attendance_Student_List extends AppCompatActivity implements Adapte
         group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                state = true;
                 button = group.findViewById(checkedId);
                 status = button.getText().toString();
+                if(status.equals("Open")){
+                    open.setVisibility(View.VISIBLE);
+                    prob.setVisibility(View.GONE);
+                    others.setVisibility(View.GONE);
+                }
+                else
+                {
+                    open.setVisibility(View.GONE);
+                    prob.setVisibility(View.VISIBLE);
+                }
             }
         });
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                        check(v);
+
+                if(!state){
+                    Toast.makeText(getApplicationContext(),"Select Center Status",Toast.LENGTH_LONG).show();
+                    return;
+                }else if(status.equals("Close")){
+                    Toast.makeText(getApplicationContext(),"Select a valid problem",Toast.LENGTH_LONG).show();
+                    return;
+                }else if(status.equals("Others") && others.getText().toString().isEmpty() ){
+                    Toast.makeText(getApplicationContext(),"Enter a valid problem",Toast.LENGTH_LONG).show();
+                    return;
+                }else if(status.equals("Open") && topic_covered == null){
+                    Toast.makeText(getApplicationContext(),"Select a topic",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                check(v);
             }
         });
 
@@ -151,6 +182,10 @@ public class Attendance_Student_List extends AppCompatActivity implements Adapte
                if(data.equals("Others"))
                {
                    others.setVisibility(View.VISIBLE);
+               }
+               else
+               {
+                   others.setVisibility(View.GONE);
                }
             }
         }

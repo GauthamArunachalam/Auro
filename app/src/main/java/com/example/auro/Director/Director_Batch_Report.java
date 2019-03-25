@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ public class Director_Batch_Report extends AppCompatActivity implements AdapterV
     String username,reporting,designation;
     String incharge, manager, batch;
     WritableWorkbook workbook;
+    EditText filename;
     WritableSheet sheet;
 
     @Override
@@ -43,6 +45,7 @@ public class Director_Batch_Report extends AppCompatActivity implements AdapterV
         CenterIncharge = findViewById(R.id.centerIncharge);
         ProjectManager = findViewById(R.id.projectManager);
         Batches = findViewById(R.id.batches);
+        filename = findViewById(R.id.file);
         report = findViewById(R.id.report);
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
@@ -59,7 +62,11 @@ public class Director_Batch_Report extends AppCompatActivity implements AdapterV
         report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(filename.getText().toString().isEmpty()){
+                    filename.setError("Enter File name");
+                    filename.requestFocus();
+                    return;
+                }
                 if(manager.equals("All"))
                 {
                     Database.getBatchDetails(Director_Batch_Report.this,getApplicationContext());

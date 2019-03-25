@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ public class Project_Manager_Batch_Report extends AppCompatActivity implements A
     String incharge, batch;
     WritableWorkbook workbook;
     WritableSheet sheet;
+    EditText filename;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class Project_Manager_Batch_Report extends AppCompatActivity implements A
         centerIncharge.setOnItemSelectedListener(this);
         batches = findViewById(R.id.batch);
         batches.setOnItemSelectedListener(this);
+        filename = findViewById(R.id.file);
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         username = prefs.getString("UserName",null);
@@ -55,7 +58,11 @@ public class Project_Manager_Batch_Report extends AppCompatActivity implements A
         report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(filename.getText().toString().isEmpty()){
+                    filename.setError("Enter File name");
+                    filename.requestFocus();
+                    return;
+                }
                 if(incharge.equals("All"))
                 {
                     Database.getBatchDetails(username,Project_Manager_Batch_Report.this,getApplicationContext());
@@ -69,10 +76,9 @@ public class Project_Manager_Batch_Report extends AppCompatActivity implements A
         });
     }
 
-    public void setBatchDetailList(List<Batch> list, int flag)
+    public void setBatchDetailList(List<Batch> list)
     {
         int listLength = list.size();
-        String name;
 
         File sd = Environment.getExternalStorageDirectory();
 
@@ -82,17 +88,8 @@ public class Project_Manager_Batch_Report extends AppCompatActivity implements A
             directory.mkdirs();
         }
 
-        if(flag==0)
-        {
-            name = incharge;
-        }
-        else
-        {
-            name = batch;
-        }
-
         try {
-            File file = new File(directory, name + ".xls");
+            File file = new File(directory, filename.getText().toString() + ".xls");
             WorkbookSettings wbSettings = new WorkbookSettings();
             wbSettings.setLocale(new Locale("en", "EN"));
 

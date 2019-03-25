@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ public class Center_Incharge_Attendance_Report extends AppCompatActivity impleme
     String username,batchs,date;
     WritableWorkbook workbook;
     WritableSheet sheet;
+    EditText filename;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,7 @@ public class Center_Incharge_Attendance_Report extends AppCompatActivity impleme
         batch = findViewById(R.id.batch);
         dates = findViewById(R.id.date);
         report = findViewById(R.id.report);
+        filename = findViewById(R.id.file);
         batch.setOnItemSelectedListener(this);
         dates.setOnItemSelectedListener(this);
 
@@ -53,6 +56,11 @@ public class Center_Incharge_Attendance_Report extends AppCompatActivity impleme
         report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(filename.getText().toString().isEmpty()){
+                    filename.setError("Enter File name");
+                    filename.requestFocus();
+                    return;
+                }
                 Database.getAttendance(username,batchs,date,Center_Incharge_Attendance_Report.this,getApplicationContext());
             }
         });

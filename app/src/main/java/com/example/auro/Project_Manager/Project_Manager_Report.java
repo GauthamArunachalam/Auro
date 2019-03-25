@@ -3,6 +3,7 @@ package com.example.auro.Project_Manager;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -10,7 +11,7 @@ import android.widget.ImageView;
 import com.example.auro.R;
 
 public class Project_Manager_Report extends AppCompatActivity {
-    private ImageView batchReport,studentReport,attendanceReport;
+    private CardView batchReport,studentReport,attendanceReport;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

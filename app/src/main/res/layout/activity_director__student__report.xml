@@ -37,22 +37,25 @@
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:id="@+id/center">
+                android:id="@+id/center"
+                android:visibility="gone">
             </Spinner>
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:id="@+id/batch"></Spinner>
+                android:id="@+id/batch"
+                android:visibility="gone"/>
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:id="@+id/gender"></Spinner>
+                android:id="@+id/gender"/>
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter File name"
                 android:inputType="textPersonName"
                 android:layout_marginBottom="10dp"
+                android:id="@+id/file"
                 android:layout_marginTop="10dp"/>
             <Button
                 android:layout_width="match_parent"

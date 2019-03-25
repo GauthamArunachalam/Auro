@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ public class Project_Manager_Attendance_Report extends AppCompatActivity impleme
     String username, incharge, batches, dates;
     WritableWorkbook workbook;
     WritableSheet sheet;
+    EditText filename;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class Project_Manager_Attendance_Report extends AppCompatActivity impleme
         centerIncharge.setOnItemSelectedListener(this);
         batch.setOnItemSelectedListener(this);
         date.setOnItemSelectedListener(this);
+        filename = findViewById(R.id.file);
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         username = prefs.getString("UserName",null);
@@ -55,6 +58,11 @@ public class Project_Manager_Attendance_Report extends AppCompatActivity impleme
         report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(filename.getText().toString().isEmpty()){
+                    filename.setError("Enter File name");
+                    filename.requestFocus();
+                    return;
+                }
                 if(incharge.equals("All"))
                 {
                     Database.getAttendance(username,Project_Manager_Attendance_Report.this, getApplicationContext());
@@ -80,7 +88,7 @@ public class Project_Manager_Attendance_Report extends AppCompatActivity impleme
         }
 
         try {
-            File file = new File(directory, incharge + ".xls");
+            File file = new File(directory, filename.getText().toString() + ".xls");
             WorkbookSettings wbSettings = new WorkbookSettings();
             wbSettings.setLocale(new Locale("en", "EN"));
 

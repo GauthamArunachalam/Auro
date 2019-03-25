@@ -46,6 +46,12 @@ public class Add_Standard extends AppCompatActivity implements AdapterView.OnIte
             public void onClick(View v) {
                 standards = AddStandard.getText().toString();
 
+                if(standards.isEmpty()){
+                    AddStandard.setError("Enter standard");
+                    AddStandard.requestFocus();
+                    return;
+                }
+
                 createStandard(standards,getApplicationContext());
 
                 getStd();
@@ -56,7 +62,14 @@ public class Add_Standard extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onClick(View v) {
                 topics = AddTopics.getText().toString();
-
+                if(stdSpinner.equals("Select Standard")){
+                    Toast.makeText(getApplicationContext(),"Select Standard",Toast.LENGTH_LONG).show();
+                    return;
+                }else if(topics.isEmpty()){
+                    AddTopics.setError("Enter topics add");
+                    AddTopics.requestFocus();
+                    return;
+                }
                 createTopic(stdSpinner,topics,getApplicationContext());
 
             }
@@ -84,7 +97,6 @@ public class Add_Standard extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         stdSpinner = parent.getItemAtPosition(position).toString();
-
         Database.getTopic(stdSpinner,this,getApplicationContext());
 
     }

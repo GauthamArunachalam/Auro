@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.auro.DB.Database;
 import com.example.auro.R;
@@ -48,7 +49,20 @@ public class Assign_Batch extends AppCompatActivity implements AdapterView.OnIte
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String batch = numberOfBatch.getText().toString();
+
+                if(project_manager.equals("Select Project Manager")){
+                    Toast.makeText(getApplicationContext(),"Select Project Manager",Toast.LENGTH_SHORT).show();
+                    return;
+                }else if(standard.equals("Select Standard")){
+                    Toast.makeText(getApplicationContext(),"Select Standard",Toast.LENGTH_SHORT).show();
+                    return;
+                }else if(batch.isEmpty()){
+                    numberOfBatch.setError("Enter number of batch to assign");
+                    numberOfBatch.requestFocus();
+                    return;
+                }
                 Database.addAssignBatch(batch, project_manager, standard, getApplicationContext());
 
             }

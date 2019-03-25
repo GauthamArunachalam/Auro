@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ public class Center_Incharge_Batch_Report extends AppCompatActivity implements A
     String username,reporting,designation,batch;
     WritableWorkbook workbook;
     WritableSheet sheet;
+    EditText filename;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,7 @@ public class Center_Incharge_Batch_Report extends AppCompatActivity implements A
         batchList = findViewById(R.id.batchlist);
         batchList.setOnItemSelectedListener(this);
         report = findViewById(R.id.report);
+        filename = findViewById(R.id.file);
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         username = prefs.getString("UserName",null);
@@ -51,6 +54,11 @@ public class Center_Incharge_Batch_Report extends AppCompatActivity implements A
         report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(filename.getText().toString().isEmpty()){
+                    filename.setError("Enter File name");
+                    filename.requestFocus();
+                    return;
+                }
                 Database.getSelectedCenterBatch(batch,username, Center_Incharge_Batch_Report.this,getApplicationContext());
             }
         });

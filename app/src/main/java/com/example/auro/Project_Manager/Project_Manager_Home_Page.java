@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.auro.Approved_Batch;
+import com.example.auro.Approved_Students;
 import com.example.auro.Chat;
 import com.example.auro.DB.Database;
 import com.example.auro.Pending_Batch_Request;
@@ -30,11 +33,12 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class Project_Manager_Home_Page extends Fragment {
 
-    private ImageView assignBatch, batchRequest,studentRequest,report,chat,centerIncharge;
+    private CardView assignBatch, batchRequest,studentRequest,report,chat,centerIncharge;
     private TextView day,date,name,batchcount,inchargecount,stdcount;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
     public String username, today;
     private Calendar currentDate;
+    private Button approvedStudents,approvedBatches;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
@@ -54,6 +58,8 @@ public class Project_Manager_Home_Page extends Fragment {
         batchcount = view.findViewById(R.id.bat);
         inchargecount = view.findViewById(R.id.charge);
         stdcount = view.findViewById(R.id.stud);
+        approvedStudents = view.findViewById(R.id.approvedStudent);
+        approvedBatches = view.findViewById(R.id.approvedBatches);
 
         SharedPreferences prefs = getContext().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         username = prefs.getString("UserName",null);
@@ -130,6 +136,19 @@ public class Project_Manager_Home_Page extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getContext(),Center_Incharge_List.class));
+            }
+        });
+        approvedStudents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), Approved_Students.class));
+            }
+        });
+        approvedBatches.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), Approved_Batch.class));
+
             }
         });
 

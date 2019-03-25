@@ -16,7 +16,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="125dp"
                 app:cardBackgroundColor="#022747"
-                android:layout_margin="3dp">
+                android:layout_margin="3dp"
+                android:id="@+id/batchReport">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -33,7 +34,7 @@
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="10dp"
                             android:src="@drawable/batchrequest"
-                            android:id="@+id/batchReport"/>
+                            />
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -61,7 +62,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="125dp"
                 app:cardBackgroundColor="#022747"
-                android:layout_margin="3dp">
+                android:layout_margin="3dp"
+                android:id="@+id/studentReport">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -78,7 +80,7 @@
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="10dp"
                             android:src="@drawable/requeststudent"
-                            android:id="@+id/studentReport"/>
+                            />
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -106,7 +108,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="125dp"
                 app:cardBackgroundColor="#022747"
-                android:layout_margin="3dp">
+                android:layout_margin="3dp"
+                android:id="@+id/attendanceReport">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -123,7 +126,7 @@
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="10dp"
                             android:src="@drawable/attendence"
-                            android:id="@+id/attendanceReport"/>
+                            />
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

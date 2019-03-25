@@ -14,6 +14,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.auro.Adapter.*;
+import com.example.auro.Approved_Batch;
+import com.example.auro.Approved_Students;
 import com.example.auro.Center_Incharge.Attendance;
 import com.example.auro.Center_Incharge.Attendance_Student_List;
 import com.example.auro.Center_Incharge.Center_Incharge_Attendance_Report;
@@ -198,7 +200,6 @@ public class Database {
                 list.add("Select Standard");
                 for(DataSnapshot postSnap : dataSnapshot.getChildren()){
                     Standards u = postSnap.getValue(Standards.class);
-
                     list.add(u.getStd());
 
                 }
@@ -396,18 +397,25 @@ public class Database {
         });
     }
 
-    public static void getStandards(final ProjectManager_AssignBatch r, final Context c){
-        dr.child("CourseDetails").child("Standards").addListenerForSingleValueEvent(new ValueEventListener() {
+    public static void getStandards(final String name, final ProjectManager_AssignBatch r, final Context c){
+        dr.child("Batches").child("Assignment").child("Project Manager").child(name).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<String> list = new ArrayList<String>();
+                List<String> list = new ArrayList<>();
+                List<Integer> list2 = new ArrayList<>();
                 for(DataSnapshot postSnap : dataSnapshot.getChildren()){
-                    Standards u = postSnap.getValue(Standards.class);
+                    AssignBatches u = postSnap.getValue(AssignBatches.class);
+                    int x = Integer.parseInt(u.getNoOfBatches());
+                    int y = Integer.parseInt(u.getBatchesCreated());
+                    int z = x-y;
 
-                    list.add(u.getStd());
-
+                    if(z>0)
+                    {
+                        list.add(u.getStd());
+                        list2.add(z);
+                    }
                 }
-                r.setStandardsSpinner(list, c);
+                r.setStandardsSpinner(list,list2, c);
             }
 
             @Override
@@ -417,21 +425,39 @@ public class Database {
         });
     }
 
-    public static void addAssignBatchCenterIncharge(final String batch, final String centerIncharge, final String std, final Context c){
+    public static void addAssignBatchCenterIncharge(final String batch, final String centerIncharge, final String std, final String name, final Context c){
 
-        AssignBatches ab = new AssignBatches();
-        ab.setNoOfBatches(batch);
-        ab.setCenterIncharge(centerIncharge);
-        ab.setStd(std);
-        ab.setBatchesCreated("0");
+        dr.child("Batches").child("Assignment").child("Project Manager").child(name).child(std).child("batchesCreated").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String data = dataSnapshot.getValue().toString();
+                int created = Integer.parseInt(data);
 
-        dr.child("Batches").child("Assignment").child("Center Incharge").child(centerIncharge).child(std).setValue(ab);
+                AssignBatches ab = new AssignBatches();
+                ab.setNoOfBatches(batch);
+                ab.setCenterIncharge(centerIncharge);
+                ab.setStd(std);
+                ab.setBatchesCreated("0");
 
-        Toast.makeText(c,"Success",Toast.LENGTH_SHORT).show();
+                int creating = Integer.parseInt(batch);
 
-        Intent i = new Intent(c, HomePage.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        c.startActivity(i);
+                int noOfBatches = created+creating;
+
+                dr.child("Batches").child("Assignment").child("Center Incharge").child(centerIncharge).child(std).setValue(ab);
+                dr.child("Batches").child("Assignment").child("Project Manager").child(name).child(std).child("batchesCreated").setValue(""+noOfBatches);
+
+                Toast.makeText(c,"Success",Toast.LENGTH_SHORT).show();
+
+                Intent i = new Intent(c, HomePage.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                c.startActivity(i);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public static void getStandards(final Create_Batch r, final Context c){
@@ -966,7 +992,7 @@ public class Database {
                     }
                 }
 
-                r.setBatchDetailList(bat,0);
+                r.setBatchDetailList(bat);
             }
 
             @Override
@@ -999,7 +1025,7 @@ public class Database {
                     }
                 }
 
-                r.setBatchDetailList(batch,1);
+                r.setBatchDetailList(batch);
 
             }
 
@@ -2894,6 +2920,248 @@ public class Database {
 
                 r.setAttendance(list);
 
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getStudentDetails(final String name, final String desig, final Approved_Students r, final Context c)
+    {
+        dr.child("Batches").child("Student Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<StudentDetails> list = new ArrayList<>();
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    StudentDetails s = snapshot.getValue(StudentDetails.class);
+
+                    if(desig.equals("Center Incharge"))
+                    {
+                        if(name.equals(s.getIncharge()) && s.getStatus().equals("Approved"))
+                        {
+                            list.add(s);
+                        }
+                    }
+                    else if(desig.equals("Project Manager"))
+                    {
+                        if(name.equals(s.getManager()) && s.getStatus().equals("Approved"))
+                        {
+                            list.add(s);
+                        }
+                    }
+                    else if(desig.equals("Director"))
+                    {
+                        if(s.getStatus().equals("Approved"))
+                        {
+                            list.add(s);
+                        }
+                    }
+                }
+
+                r.setStudentDetails(list);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getStudentSearch(final String key, final String data, final String name, final String desig, final Approved_Students r, final Context c)
+    {
+        dr.child("Batches").child("Student Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<StudentDetails> list = new ArrayList<>();
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    StudentDetails s = snapshot.getValue(StudentDetails.class);
+
+                    if(desig.equals("Center Incharge"))
+                    {
+                        if(name.equals(s.getIncharge()) && s.getStatus().equals("Approved"))
+                        {
+                            if(key.equals("ID") && data.equals(s.getStudentID())){
+                                list.add(s);
+                            }else if(key.equals("Student Name") && data.equals(s.getStudentName())){
+                                list.add(s);
+                            }else if(key.equals("DOB") && data.equals(s.getDob())){
+                                list.add(s);
+                            }else if(key.equals("Gender") && data.equals(s.getGender())){
+                                list.add(s);
+                            }else if(key.equals("Father Name") && data.equals(s.getFatherName())){
+                                list.add(s);
+                            }else if(key.equals("Mother Name") && data.equals(s.getMotherName())){
+                                list.add(s);
+                            }else if(key.equals("Standard") && data.equals(s.getStandard())){
+                                list.add(s);
+                            }else if(key.equals("Batch") && data.equals(s.getBatch())){
+                                list.add(s);
+                            }
+                        }
+                    }
+                    else if(desig.equals("Project Manager"))
+                    {
+                        if(name.equals(s.getManager()) && s.getStatus().equals("Approved"))
+                        {
+                            if(key.equals("ID") && data.equals(s.getStudentID())){
+                                list.add(s);
+                            }else if(key.equals("Student Name") && data.equals(s.getStudentName())){
+                                list.add(s);
+                            }else if(key.equals("DOB") && data.equals(s.getDob())){
+                                list.add(s);
+                            }else if(key.equals("Gender") && data.equals(s.getGender())){
+                                list.add(s);
+                            }else if(key.equals("Father Name") && data.equals(s.getFatherName())){
+                                list.add(s);
+                            }else if(key.equals("Mother Name") && data.equals(s.getMotherName())){
+                                list.add(s);
+                            }else if(key.equals("Standard") && data.equals(s.getStandard())){
+                                list.add(s);
+                            }else if(key.equals("Batch") && data.equals(s.getBatch())){
+                                list.add(s);
+                            }
+                        }
+                    }
+                    else if(desig.equals("Director"))
+                    {
+                        if(s.getStatus().equals("Approved"))
+                        {
+                            if(key.equals("ID") && data.equals(s.getStudentID())){
+                                list.add(s);
+                            }else if(key.equals("Student Name") && data.equals(s.getStudentName())){
+                                list.add(s);
+                            }else if(key.equals("DOB") && data.equals(s.getDob())){
+                                list.add(s);
+                            }else if(key.equals("Gender") && data.equals(s.getGender())){
+                                list.add(s);
+                            }else if(key.equals("Father Name") && data.equals(s.getFatherName())){
+                                list.add(s);
+                            }else if(key.equals("Mother Name") && data.equals(s.getMotherName())){
+                                list.add(s);
+                            }else if(key.equals("Standard") && data.equals(s.getStandard())){
+                                list.add(s);
+                            }else if(key.equals("Batch") && data.equals(s.getBatch())){
+                                list.add(s);
+                            }
+                        }
+                    }
+                }
+
+                r.setStudentDetails(list);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getBatchDetails(final String name, final String desig, final Approved_Batch r, final Context c)
+    {
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Batch> list = new ArrayList<>();
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    Batch s = snapshot.getValue(Batch.class);
+
+                    if(desig.equals("Center Incharge"))
+                    {
+                        if(name.equals(s.getIncharge()) && s.getStatus().equals("Approved"))
+                        {
+                            list.add(s);
+                        }
+                    }
+                    else if(desig.equals("Project Manager"))
+                    {
+                        if(name.equals(s.getManager()) && s.getStatus().equals("Approved"))
+                        {
+                            list.add(s);
+                        }
+                    }
+                    else if(desig.equals("Director"))
+                    {
+                        if(s.getStatus().equals("Approved"))
+                        {
+                            list.add(s);
+                        }
+                    }
+                }
+
+                r.setBatchDetails(list);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getBatchSearch(final String key, final String data, final String name, final String desig, final Approved_Batch r, final Context c)
+    {
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Batch> list = new ArrayList<>();
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    Batch s = snapshot.getValue(Batch.class);
+
+                    if(desig.equals("Center Incharge"))
+                    {
+                        if(name.equals(s.getIncharge()) && s.getStatus().equals("Approved"))
+                        {
+                            if(key.equals("Batch Name") && data.equals(s.getBatch_name())){
+                                list.add(s);
+                            }else if(key.equals("Standard") && data.equals(s.getStandard())){
+                                list.add(s);
+                            }else if(key.equals("Working Day") && s.getDays().contains(data)){
+                                list.add(s);
+                            }
+                        }
+                    }
+                    else if(desig.equals("Project Manager"))
+                    {
+                        if(name.equals(s.getManager()) && s.getStatus().equals("Approved"))
+                        {
+                            if(key.equals("Batch Name") && data.equals(s.getBatch_name())){
+                                list.add(s);
+                            }else if(key.equals("Standard") && data.equals(s.getStandard())){
+                                list.add(s);
+                            }else if(key.equals("Working Day") && s.getDays().contains(data)){
+                                list.add(s);
+                            }
+                        }
+                    }
+                    else if(desig.equals("Director"))
+                    {
+                        if(s.getStatus().equals("Approved"))
+                        {
+                            if(key.equals("Batch Name") && data.equals(s.getBatch_name())){
+                                list.add(s);
+                            }else if(key.equals("Standard") && data.equals(s.getStandard())){
+                                list.add(s);
+                            }else if(key.equals("Working Day") && s.getDays().contains(data)){
+                                list.add(s);
+                            }
+                        }
+                    }
+                }
+
+                r.setBatchDetails(list);
             }
 
             @Override

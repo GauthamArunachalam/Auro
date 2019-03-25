@@ -43,6 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter File name"
+                android:id="@+id/file"
                 android:inputType="textPersonName"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"/>

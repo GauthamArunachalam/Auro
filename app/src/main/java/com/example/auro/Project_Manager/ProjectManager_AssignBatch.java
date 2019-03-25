@@ -10,12 +10,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.auro.Adapter.UserDetails;
 import com.example.auro.DB.Database;
 import com.example.auro.R;
 
-import java.util.List;
+import java.util.*;
 
 public class ProjectManager_AssignBatch extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -23,6 +25,9 @@ public class ProjectManager_AssignBatch extends AppCompatActivity implements Ada
     private Spinner centerIncharge,standard;
     private Button submit;
     private String noOfBatch,username, center, std;
+    private TextView num;
+    private int number;
+    private List<Integer> list = new ArrayList<>();
 
     public static final String MY_PREFS_NAME = "MyPrefsFile";
 
@@ -37,6 +42,7 @@ public class ProjectManager_AssignBatch extends AppCompatActivity implements Ada
         centerIncharge = findViewById(R.id.centerIncharge);
         standard = findViewById(R.id.standard);
         submit = findViewById(R.id.submit);
+        num = findViewById(R.id.num);
 
         centerIncharge.setOnItemSelectedListener(this);
         standard.setOnItemSelectedListener(this);
@@ -45,7 +51,7 @@ public class ProjectManager_AssignBatch extends AppCompatActivity implements Ada
         username = prefs.getString("UserName",null);
 
         Database.getCenterInchargeList(username, this, getApplicationContext());
-        Database.getStandards(this, getApplicationContext());
+        Database.getStandards(username,this, getApplicationContext());
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,8 +59,22 @@ public class ProjectManager_AssignBatch extends AppCompatActivity implements Ada
 
                 noOfBatch = noOfBatches.getText().toString();
 
-                Database.addAssignBatchCenterIncharge(noOfBatch, center, std, getApplicationContext());
+                if(noOfBatch.isEmpty())
+                {
+                    noOfBatches.setError("Enter no. of Batch");
+                    noOfBatches.requestFocus();
+                    return;
+                }
+                int x = Integer.parseInt(noOfBatch);
 
+                if(x<=number)
+                {
+                    Database.addAssignBatchCenterIncharge(""+x, center, std,username, getApplicationContext());
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(),"Limit Exceeded",Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
@@ -66,7 +86,8 @@ public class ProjectManager_AssignBatch extends AppCompatActivity implements Ada
         centerIncharge.setAdapter(center);
     }
 
-    public void setStandardsSpinner(List<String> std, Context c){
+    public void setStandardsSpinner(List<String> std, List<Integer> list, Context c){
+        this.list = list;
         ArrayAdapter standards = new ArrayAdapter(c, android.R.layout.simple_spinner_item, std);
         standards.setDropDownViewResource(android.R.layout.simple_spinner_item);
         standard.setAdapter(standards);
@@ -84,6 +105,8 @@ public class ProjectManager_AssignBatch extends AppCompatActivity implements Ada
         }
         else if(spinID == R.id.standard)
         {
+            number = list.get(position);
+            num.setText(""+number);
             std = parent.getItemAtPosition(position).toString();
         }
 
