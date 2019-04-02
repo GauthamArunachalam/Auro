@@ -1,15 +1,22 @@
 package com.example.auro.Center_Incharge;
 
+import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
+import android.icu.util.Calendar;
+import android.icu.util.GregorianCalendar;
 import android.os.Environment;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.auro.Adapter.Attendance_Report;
@@ -18,6 +25,9 @@ import com.example.auro.DB.Database;
 import com.example.auro.R;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,14 +37,17 @@ import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
-public class Center_Incharge_Attendance_Report extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class Center_Incharge_Attendance_Report extends AppCompatActivity implements AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener{
     private Spinner batch,dates;
     private Button report;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
-    String username,batchs,date;
+    String username,batchs,date,startdate="start",enddate="end";
     WritableWorkbook workbook;
     WritableSheet sheet;
     EditText filename;
+    TextView start,end;
+    ImageView sdate,edate;
+    int flagD = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +58,32 @@ public class Center_Incharge_Attendance_Report extends AppCompatActivity impleme
         dates = findViewById(R.id.date);
         report = findViewById(R.id.report);
         filename = findViewById(R.id.file);
+        start = findViewById(R.id.Start_Date);
+        end = findViewById(R.id.end_Date);
+        sdate = findViewById(R.id.start_date);
+        edate = findViewById(R.id.end_date);
         batch.setOnItemSelectedListener(this);
         dates.setOnItemSelectedListener(this);
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         username = prefs.getString("UserName",null);
+
+        sdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flagD = 0;
+                DialogFragment datepicker = new com.example.auro.Pickers.DatePicker();
+                datepicker.show(getSupportFragmentManager(), "date picker");
+            }
+        });
+        edate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flagD = 1;
+                DialogFragment datepicker = new com.example.auro.Pickers.DatePicker();
+                datepicker.show(getSupportFragmentManager(), "date picker");
+            }
+        });
 
         Database.getBatchList(username,this,getApplicationContext());
 
@@ -61,7 +95,8 @@ public class Center_Incharge_Attendance_Report extends AppCompatActivity impleme
                     filename.requestFocus();
                     return;
                 }
-                Database.getAttendance(username,batchs,date,Center_Incharge_Attendance_Report.this,getApplicationContext());
+
+                Database.getAttendance(username,batchs,date,startdate,enddate,Center_Incharge_Attendance_Report.this,getApplicationContext());
             }
         });
     }
@@ -93,7 +128,7 @@ public class Center_Incharge_Attendance_Report extends AppCompatActivity impleme
         }
 
         try {
-            File file = new File(directory, batchs + ".xls");
+            File file = new File(directory, filename.getText().toString() + ".xls");
             WorkbookSettings wbSettings = new WorkbookSettings();
             wbSettings.setLocale(new Locale("en", "EN"));
 
@@ -163,5 +198,22 @@ public class Center_Incharge_Attendance_Report extends AppCompatActivity impleme
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        month++;
+        String date = dayOfMonth+"-"+month+"-"+year;
+
+        if(flagD == 0)
+        {
+            start.setText(date);
+            startdate = date;
+        }
+        else if(flagD == 1)
+        {
+            end.setText(date);
+            enddate = date;
+        }
     }
 }

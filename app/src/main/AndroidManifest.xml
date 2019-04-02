@@ -14,48 +14,120 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Approved_Batch"></activity>
-        <activity android:name=".Approved_Students" />
-        <activity android:name=".Splash_Screen">
+        <activity android:name=".Center_Incharge.Rejected_Batch_Details"></activity>
+        <activity android:name=".Center_Incharge.Rejected_Batch" />
+        <activity
+            android:name=".Approved_Batch"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Approved_Students"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Splash_Screen"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Director.Director_Attendance_Report" />
-        <activity android:name=".Project_Manager.Project_Manager_Attendance_Report" />
-        <activity android:name=".Center_Incharge.Center_Incharge_Attendance_Report" />
-        <activity android:name=".Director.Director_Student_Report" />
-        <activity android:name=".Project_Manager.Project_Manager_Student_Report" />
-        <activity android:name=".Center_Incharge.Center_Incharge_Student_Report" />
-        <activity android:name=".Project_Manager.Center_Incharge_List" />
-        <activity android:name=".Private_message" />
+        <activity
+            android:name=".Director.Director_Attendance_Report"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Project_Manager.Project_Manager_Attendance_Report"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Center_Incharge.Center_Incharge_Attendance_Report"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Director.Director_Student_Report"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Project_Manager.Project_Manager_Student_Report"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Center_Incharge.Center_Incharge_Student_Report"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Project_Manager.Center_Incharge_List"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Private_message"
+            android:screenOrientation="portrait" />
         <activity android:name=".Chat" />
-        <activity android:name=".Center_Incharge.Attendance_Student_List" />
-        <activity android:name=".Center_Incharge.Attendance" />
-        <activity android:name=".Project_Manager.Project_Manager_Report" />
-        <activity android:name=".Director.Director_Report" />
-        <activity android:name=".Center_Incharge.Center_Incharge_Report" />
-        <activity android:name=".Director.Director_Batch_Report" />
-        <activity android:name=".Project_Manager.Project_Manager_Batch_Report" />
-        <activity android:name=".Center_Incharge.Center_Incharge_Batch_Report" />
-        <activity android:name=".Project_Manager.Request_Student_list" />
-        <activity android:name=".Pending_Student_Batch_List" />
-        <activity android:name=".Director.Director_Request_Details" />
-        <activity android:name=".Project_Manager.Request_Batch_Details" />
-        <activity android:name=".Pending_Batch_Request" />
-        <activity android:name=".Center_Incharge.Create_Batch" />
-        <activity android:name=".Center_Incharge.Enroll_Student" />
-        <activity android:name=".Project_Manager.ProjectManager_AssignBatch" />
-        <activity android:name=".Director.Project_Manager_Details" />
-        <activity android:name=".Director.Project_Manager_List" />
-        <activity android:name=".Director.Assign_Batch" />
-        <activity android:name=".Director.Add_Standard" />
-        <activity android:name=".Change_Password" />
-        <activity android:name=".Director.Registration" />
-        <activity android:name=".HomePage" />
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".Center_Incharge.Attendance_Student_List"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Center_Incharge.Attendance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Project_Manager.Project_Manager_Report"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Director.Director_Report"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Center_Incharge.Center_Incharge_Report"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Director.Director_Batch_Report"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Project_Manager.Project_Manager_Batch_Report"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Center_Incharge.Center_Incharge_Batch_Report"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Project_Manager.Request_Student_list"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Pending_Student_Batch_List"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Director.Director_Request_Details"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Project_Manager.Request_Batch_Details"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Pending_Batch_Request"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Center_Incharge.Create_Batch"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Center_Incharge.Enroll_Student"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Project_Manager.ProjectManager_AssignBatch"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Director.Project_Manager_Details"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Director.Project_Manager_List"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Director.Assign_Batch"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Director.Add_Standard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Change_Password"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Director.Registration"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".HomePage"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>

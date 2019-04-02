@@ -4,8 +4,6 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.icu.util.Calendar;
-import android.icu.util.GregorianCalendar;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
@@ -24,21 +22,22 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.auro.Adapter.Batch;
 import com.example.auro.DB.Database;
 import com.example.auro.R;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Create_Batch extends AppCompatActivity implements AdapterView.OnItemSelectedListener, TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
+public class Rejected_Batch_Details extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener{
 
+    String batch;
     private ImageView startDate,endDate,startTime,endTime;
-    private Button submit;
-    private TextView sD,eD,sT,eT;
+    private Button submit,reject;
+    private TextView sD,eD,sT,eT,remark;
+    private Spinner std;
     private EditText batchName,stdLimit;
     private CheckBox mon,tue,wed,thu,fri,sat,sun;
-    private Spinner std;
     private String standard,days,username,reporting;
     private int flagT = -1, flagD = -1;
     private StringBuffer day = new StringBuffer();
@@ -50,7 +49,7 @@ public class Create_Batch extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create__batch);
+        setContentView(R.layout.activity_rejected__batch__details);
 
         startDate = findViewById(R.id.sd);
         endDate = findViewById(R.id.ed);
@@ -58,6 +57,7 @@ public class Create_Batch extends AppCompatActivity implements AdapterView.OnIte
         endTime = findViewById(R.id.et);
         submit = findViewById(R.id.submit);
         std = findViewById(R.id.stds);
+        std.setOnItemSelectedListener(this);
         batchName = findViewById(R.id.batchNumber);
         stdLimit = findViewById(R.id.studentLimit);
         sD = findViewById(R.id.startD);
@@ -72,12 +72,16 @@ public class Create_Batch extends AppCompatActivity implements AdapterView.OnIte
         fri = findViewById(R.id.fri);
         sat = findViewById(R.id.sat);
         sun = findViewById(R.id.sun);
+        remark = findViewById(R.id.remark);
+        reject = findViewById(R.id.reject);
+
+        batch = getIntent().getStringExtra("data");
+
+        Database.getBatchDetail(batch,this);
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         username = prefs.getString("UserName",null);
         reporting = prefs.getString("Reporting",null);
-
-        std.setOnItemSelectedListener(this);
 
         Database.getStandards(username,this,getApplicationContext());
 
@@ -177,10 +181,44 @@ public class Create_Batch extends AppCompatActivity implements AdapterView.OnIte
 
                 days = day.substring(0,(day.length()-2));
 
-                Database.createBatch(batch,sDD,eDD,sTT,eTT,limit,username,days,standard,reporting,getApplicationContext());
+                Database.recreateBatch(batch,sDD,eDD,sTT,eTT,limit,username,days,standard,reporting,getApplicationContext());
 
             }
         });
+
+        reject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Database.deleteBatch(batchName.getText().toString());
+            }
+        });
+    }
+
+    public void setBatch(Batch b)
+    {
+        sD.setText(b.getStart_date());
+        eD.setText(b.getEnd_date());
+        sT.setText(b.getStart_time());
+        remark.setText(b.getRemark());
+        eT.setText(b.getEnd_time());
+        batchName.setText(b.getBatch_name());
+        stdLimit.setText(b.getStd_limit());
+        String dayss = b.getDays();
+        if(dayss.contains("Monday")){
+            mon.setChecked(true);
+        }if(dayss.contains("Tuesday")){
+            tue.setChecked(true);
+        }if(dayss.contains("Wednesday")) {
+            wed.setChecked(true);
+        }if(dayss.contains("Thursday")){
+            thu.setChecked(true);
+        }if(dayss.contains("Friday")){
+            fri.setChecked(true);
+        }if(dayss.contains("Saturday")){
+            sat.setChecked(true);
+        }if(dayss.contains("Sunday")){
+            sun.setChecked(true);
+        }
     }
 
     public void setStandardsSpinner(List<String> stds,List<Integer> list, Context c){
@@ -248,5 +286,4 @@ public class Create_Batch extends AppCompatActivity implements AdapterView.OnIte
             eD.setText(date);
         }
     }
-
 }

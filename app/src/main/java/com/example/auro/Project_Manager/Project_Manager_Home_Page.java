@@ -1,5 +1,7 @@
 package com.example.auro.Project_Manager;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.icu.util.Calendar;
@@ -10,6 +12,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static android.content.Context.MODE_PRIVATE;
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class Project_Manager_Home_Page extends Fragment {
 
@@ -39,6 +44,8 @@ public class Project_Manager_Home_Page extends Fragment {
     public String username, today;
     private Calendar currentDate;
     private Button approvedStudents,approvedBatches;
+    private final String CHANNEL_ID = "personal_notifications";
+    private final int NOTIFICATION_ID = 001, NOTIFICATION_ID2 = 002;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
@@ -65,6 +72,9 @@ public class Project_Manager_Home_Page extends Fragment {
         username = prefs.getString("UserName",null);
 
         name.setText(username);
+
+        Database.getPendingStudentNotification(username,this);
+        Database.getPendingBatchNotification(username,this);
 
         try{
             Date td = android.icu.util.Calendar.getInstance().getTime();
@@ -153,6 +163,59 @@ public class Project_Manager_Home_Page extends Fragment {
         });
 
         return  view;
+    }
+    public void setPendingStudentNotification(boolean note){
+        if(note){
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            {
+                CharSequence name = "Personal Notifications";
+                String description = "Include all the personal notifications";
+                int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+                NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID,name,importance);
+
+                notificationChannel.setDescription(description);
+
+                NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(NOTIFICATION_SERVICE);
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), CHANNEL_ID);
+            builder.setSmallIcon(R.drawable.notification);
+            builder.setContentTitle("Student Enrollment Request");
+            builder.setContentText("Students are waiting for approval to join batch");
+            builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
+            notificationManagerCompat.notify(NOTIFICATION_ID,builder.build());
+        }
+    }
+
+    public void setPendingBatchNotification(boolean note){
+        if(note){
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            {
+                CharSequence name = "Personal Notifications";
+                String description = "Include all the personal notifications";
+                int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+                NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID,name,importance);
+
+                notificationChannel.setDescription(description);
+
+                NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(NOTIFICATION_SERVICE);
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), CHANNEL_ID);
+            builder.setSmallIcon(R.drawable.notification);
+            builder.setContentTitle("Batch request pending");
+            builder.setContentText("Batches are created and waiting for approval");
+            builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
+            notificationManagerCompat.notify(NOTIFICATION_ID2,builder.build());
+        }
     }
 
     public void setNoOfBatches(int count)

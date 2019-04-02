@@ -80,7 +80,7 @@ public class Request_Batch_Details extends AppCompatActivity {
 
     public void rejectbatch()
     {
-        Database.rejectBatch(batch,remarks);
+        Database.rejectBatch(batch,remarks,incharge.getText().toString(),standard.getText().toString());
     }
 
     public void setBatchDetails(final Batch bt, final Context c){

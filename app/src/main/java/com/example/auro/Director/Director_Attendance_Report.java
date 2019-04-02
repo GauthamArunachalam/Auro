@@ -1,15 +1,20 @@
 package com.example.auro.Director;
 
+import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Environment;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.auro.Adapter.Attendance_Report;
@@ -28,15 +33,18 @@ import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
-public class Director_Attendance_Report extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class Director_Attendance_Report extends AppCompatActivity implements AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener {
 
     Spinner projectManager,centerInchsrge,batch,date;
     Button report;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
-    String username, manager, incharge, batches, dates;
+    String username, manager, incharge, batches, dates, startdate="start",enddate="end";
     WritableWorkbook workbook;
     WritableSheet sheet;
     EditText filename;
+    TextView start,end;
+    ImageView sdate,edate;
+    int flagD = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +61,32 @@ public class Director_Attendance_Report extends AppCompatActivity implements Ada
         batch.setOnItemSelectedListener(this);
         date.setOnItemSelectedListener(this);
         filename = findViewById(R.id.file);
+        start = findViewById(R.id.Start_Date);
+        end = findViewById(R.id.end_Date);
+        sdate = findViewById(R.id.start_date);
+        edate = findViewById(R.id.end_date);
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         username = prefs.getString("UserName",null);
 
         Database.getProjectManagerList(username,this,getApplicationContext());
+
+        sdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flagD = 0;
+                DialogFragment datepicker = new com.example.auro.Pickers.DatePicker();
+                datepicker.show(getSupportFragmentManager(), "date picker");
+            }
+        });
+        edate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flagD = 1;
+                DialogFragment datepicker = new com.example.auro.Pickers.DatePicker();
+                datepicker.show(getSupportFragmentManager(), "date picker");
+            }
+        });
 
         report.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,17 +98,17 @@ public class Director_Attendance_Report extends AppCompatActivity implements Ada
                 }
                 if(manager.equals("All"))
                 {
-                    Database.getAttendance(Director_Attendance_Report.this,getApplicationContext());
+                    Database.getAttendance(startdate,enddate,Director_Attendance_Report.this,getApplicationContext());
                 }
                 else
                 {
                     if(incharge.equals("All"))
                     {
-                        Database.getAttendance(username, Director_Attendance_Report.this, getApplicationContext());
+                        Database.getAttendance(startdate,enddate,username, Director_Attendance_Report.this, getApplicationContext());
                     }
                     else
                     {
-                        Database.getAttendance(incharge,batches,dates, Director_Attendance_Report.this,getApplicationContext());
+                        Database.getAttendance(startdate,enddate,incharge,batches,dates, Director_Attendance_Report.this,getApplicationContext());
                     }
                 }
 
@@ -100,7 +129,7 @@ public class Director_Attendance_Report extends AppCompatActivity implements Ada
         }
 
         try {
-            File file = new File(directory, "Attendance" + ".xls");
+            File file = new File(directory, filename.getText().toString() + ".xls");
             WorkbookSettings wbSettings = new WorkbookSettings();
             wbSettings.setLocale(new Locale("en", "EN"));
 
@@ -235,5 +264,22 @@ public class Director_Attendance_Report extends AppCompatActivity implements Ada
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        month++;
+        String date = dayOfMonth+"-"+month+"-"+year;
+
+        if(flagD == 0)
+        {
+            start.setText(date);
+            startdate = date;
+        }
+        else if(flagD == 1)
+        {
+            end.setText(date);
+            enddate = date;
+        }
     }
 }

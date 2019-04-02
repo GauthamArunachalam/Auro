@@ -1,5 +1,7 @@
 package com.example.auro.Center_Incharge;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.icu.util.Calendar;
@@ -10,6 +12,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,9 +35,10 @@ import com.example.auro.DB.Database;
 import com.example.auro.R;
 
 import static android.content.Context.MODE_PRIVATE;
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class Center_Incharge_Home_Page extends Fragment implements AdapterView.OnItemSelectedListener {
-    private CardView EnrollStudent,CreateBatch,Report,attendance,chat;
+    private CardView EnrollStudent,CreateBatch,Report,attendance,chat,rejecttedBatch;
     private String problemList[] = {"Select","Electricity Shutdown","Local Function","System Crash","Network Issue","Others"};
     private String today,todaysDay;
     private Calendar currentDate;
@@ -41,6 +46,8 @@ public class Center_Incharge_Home_Page extends Fragment implements AdapterView.O
     public static final String MY_PREFS_NAME = "MyPrefsFile";
     public String username,reporting;
     private Button approvedStudent,approvedBatches;
+    private final String CHANNEL_ID = "personal_notifications";
+    private final int NOTIFICATION_ID = 001;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
@@ -62,10 +69,13 @@ public class Center_Incharge_Home_Page extends Fragment implements AdapterView.O
         chat = view.findViewById(R.id.chat);
         approvedStudent = view.findViewById(R.id.approvedStudent);
         approvedBatches = view.findViewById(R.id.approvedBatches);
+        rejecttedBatch = view.findViewById(R.id.rejectedBatch);
 
         SharedPreferences prefs = getContext().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         username = prefs.getString("UserName",null);
         reporting = prefs.getString("Reporting",null);
+
+        Database.getRejectNotification(username,this);
 
         name.setText(username);
         manager.setText(reporting);
@@ -117,7 +127,6 @@ public class Center_Incharge_Home_Page extends Fragment implements AdapterView.O
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getContext(),Enroll_Student.class));
-
             }
         });
 
@@ -125,7 +134,6 @@ public class Center_Incharge_Home_Page extends Fragment implements AdapterView.O
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getContext(),Create_Batch.class));
-
             }
         });
 
@@ -162,7 +170,41 @@ public class Center_Incharge_Home_Page extends Fragment implements AdapterView.O
                 startActivity(new Intent(getContext(), Approved_Batch.class));
             }
         });
+
+        rejecttedBatch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), Rejected_Batch.class));
+            }
+        });
+
         return  view;
+    }
+    public void setNoti(boolean note){
+        if(note){
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            {
+                CharSequence name = "Personal Notifications";
+                String description = "Include all the personal notifications";
+                int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+                NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID,name,importance);
+
+                notificationChannel.setDescription(description);
+
+                NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(NOTIFICATION_SERVICE);
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), CHANNEL_ID);
+            builder.setSmallIcon(R.drawable.notification);
+            builder.setContentTitle("Batches Rejected");
+            builder.setContentText("Batches have been rejected with remarks");
+            builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
+            notificationManagerCompat.notify(NOTIFICATION_ID,builder.build());
+        }
     }
 
     public void setNoOfBatches(int count)

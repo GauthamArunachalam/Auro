@@ -282,11 +282,57 @@
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
                 <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="125dp"
+                app:cardBackgroundColor="#022747"
+                android:layout_margin="3dp"
+                android:id="@+id/attendance">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    android:background="#cfcfcf">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <ImageView
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="10dp"
+                            android:src="@drawable/attendence"
+                            />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginLeft="10dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Attendance"
+                                android:textSize="25dp"
+                                android:textStyle="bold"
+                                android:textColor="#022747"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Progress and attendance of a particular batch"
+                                android:textSize="18dp"
+                                android:layout_marginTop="10dp"
+                                android:textColor="#022747"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+                <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="125dp"
                     app:cardBackgroundColor="#022747"
                     android:layout_margin="3dp"
-                    android:id="@+id/attendance">
+                    android:id="@+id/rejectedBatch">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -312,14 +358,14 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Attendance"
+                                    android:text="Rejected Batch"
                                     android:textSize="25dp"
                                     android:textStyle="bold"
                                     android:textColor="#022747"/>
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Progress and attendance of a particular batch"
+                                    android:text="The batches which are not approved are listed"
                                     android:textSize="18dp"
                                     android:layout_marginTop="10dp"
                                     android:textColor="#022747"/>

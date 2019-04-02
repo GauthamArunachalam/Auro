@@ -1,16 +1,21 @@
 package com.example.auro.Project_Manager;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.auro.Adapter.Attendance_Report;
@@ -28,14 +33,17 @@ import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
-public class Project_Manager_Attendance_Report extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class Project_Manager_Attendance_Report extends AppCompatActivity implements AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener {
     private Button report;
     private Spinner centerIncharge,batch,date;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
-    String username, incharge, batches, dates;
+    String username, incharge, batches, dates, startdate="start", enddate="end";
     WritableWorkbook workbook;
     WritableSheet sheet;
     EditText filename;
+    TextView start,end;
+    ImageView sdate,edate;
+    int flagD = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +58,31 @@ public class Project_Manager_Attendance_Report extends AppCompatActivity impleme
         batch.setOnItemSelectedListener(this);
         date.setOnItemSelectedListener(this);
         filename = findViewById(R.id.file);
+        start = findViewById(R.id.Start_Date);
+        end = findViewById(R.id.end_Date);
+        sdate = findViewById(R.id.start_date);
+        edate = findViewById(R.id.end_date);
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         username = prefs.getString("UserName",null);
         Database.getCenterInchargeList(username,this,getApplicationContext());
+
+        sdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flagD = 0;
+                DialogFragment datepicker = new com.example.auro.Pickers.DatePicker();
+                datepicker.show(getSupportFragmentManager(), "date picker");
+            }
+        });
+        edate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flagD = 1;
+                DialogFragment datepicker = new com.example.auro.Pickers.DatePicker();
+                datepicker.show(getSupportFragmentManager(), "date picker");
+            }
+        });
 
         report.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,11 +94,11 @@ public class Project_Manager_Attendance_Report extends AppCompatActivity impleme
                 }
                 if(incharge.equals("All"))
                 {
-                    Database.getAttendance(username,Project_Manager_Attendance_Report.this, getApplicationContext());
+                    Database.getAttendance(username,startdate,enddate,Project_Manager_Attendance_Report.this, getApplicationContext());
                 }
                 else
                 {
-                    Database.getAttendance(incharge,batches,dates, Project_Manager_Attendance_Report.this,getApplicationContext());
+                    Database.getAttendance(incharge,batches,dates,startdate,enddate, Project_Manager_Attendance_Report.this,getApplicationContext());
                 }
             }
         });
@@ -196,5 +225,22 @@ public class Project_Manager_Attendance_Report extends AppCompatActivity impleme
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        month++;
+        String date = dayOfMonth+"-"+month+"-"+year;
+
+        if(flagD == 0)
+        {
+            start.setText(date);
+            startdate = date;
+        }
+        else if(flagD == 1)
+        {
+            end.setText(date);
+            enddate = date;
+        }
     }
 }

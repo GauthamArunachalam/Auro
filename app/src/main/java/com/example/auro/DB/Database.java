@@ -24,6 +24,8 @@ import com.example.auro.Center_Incharge.Center_Incharge_Home_Page;
 import com.example.auro.Center_Incharge.Center_Incharge_Student_Report;
 import com.example.auro.Center_Incharge.Create_Batch;
 import com.example.auro.Center_Incharge.Enroll_Student;
+import com.example.auro.Center_Incharge.Rejected_Batch;
+import com.example.auro.Center_Incharge.Rejected_Batch_Details;
 import com.example.auro.Chat;
 import com.example.auro.Director.Add_Standard;
 import com.example.auro.Director.Assign_Batch;
@@ -62,6 +64,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.sql.Date;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -460,18 +463,25 @@ public class Database {
         });
     }
 
-    public static void getStandards(final Create_Batch r, final Context c){
-        dr.child("CourseDetails").child("Standards").addListenerForSingleValueEvent(new ValueEventListener() {
+    public static void getStandards(final String name, final Create_Batch r, final Context c){
+        dr.child("Batches").child("Assignment").child("Center Incharge").child(name).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<String> list = new ArrayList<String>();
+                List<String> list = new ArrayList<>();
+                List<Integer> list2 = new ArrayList<>();
                 for(DataSnapshot postSnap : dataSnapshot.getChildren()){
-                    Standards u = postSnap.getValue(Standards.class);
+                    AssignBatches u = postSnap.getValue(AssignBatches.class);
+                    int x = Integer.parseInt(u.getNoOfBatches());
+                    int y = Integer.parseInt(u.getBatchesCreated());
+                    int z = x-y;
 
-                    list.add(u.getStd());
-
+                    if(z>0)
+                    {
+                        list.add(u.getStd());
+                        list2.add(z);
+                    }
                 }
-                r.setStandardsSpinner(list, c);
+                r.setStandardsSpinner(list,list2, c);
             }
 
             @Override
@@ -481,7 +491,107 @@ public class Database {
         });
     }
 
-    public static void createBatch(final String batch,final String sD,final String eD,final String sT,final String eT,final String limit,final String username,final String days,final String standard,final String reporting)
+    public static void getStandards(final String name, final Rejected_Batch_Details r, final Context c){
+        dr.child("Batches").child("Assignment").child("Center Incharge").child(name).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> list = new ArrayList<>();
+                List<Integer> list2 = new ArrayList<>();
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    AssignBatches u = postSnap.getValue(AssignBatches.class);
+                    int x = Integer.parseInt(u.getNoOfBatches());
+                    int y = Integer.parseInt(u.getBatchesCreated());
+                    int z = x-y;
+
+                    if(z>0)
+                    {
+                        list.add(u.getStd());
+                        list2.add(z);
+                    }
+                }
+                r.setStandardsSpinner(list,list2,c);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void deleteBatch(final String batch)
+    {
+        dr.child("Batches").child("Batch Details").child(batch).setValue(null);
+    }
+
+    public static void createBatch(final String batch,final String sD,final String eD,final String sT,final String eT,final String limit,final String username,final String days,final String standard,final String reporting, final Context c)
+    {
+        dr.child("Batches").child("Batch Details").child(batch).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Batch b = dataSnapshot.getValue(Batch.class);
+
+                if(b == null)
+                {
+                    Batch bt = new Batch();
+                    bt.setBatch_name(batch);
+                    bt.setDays(days);
+                    bt.setStart_date(sD);
+                    bt.setEnd_date(eD);
+                    bt.setStart_time(sT);
+                    bt.setEnd_time(eT);
+                    bt.setStandard(standard);
+                    bt.setIncharge(username);
+                    bt.setStatus(reporting);
+                    bt.setStd_limit(limit);
+                    bt.setManager(reporting);
+
+                    dr.child("Batches").child("Batch Details").child(batch).setValue(bt);
+
+                    dr.child("CourseDetails").child("Lessons").child(standard).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                                String data = postSnap.getValue().toString();
+                                dr.child("Batches").child("Batch Progress").child(batch).child("Topics").child(data).setValue("Incomplete");
+                            }
+
+                            dr.child("Batches").child("Assignment").child("Center Incharge").child(username).child(standard).child("batchesCreated").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    String data = dataSnapshot.getValue().toString();
+                                    int created = Integer.parseInt(data);
+                                    created++;
+                                    dr.child("Batches").child("Assignment").child("Center Incharge").child(username).child(standard).child("batchesCreated").setValue(""+created);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+                else
+                {
+                    Toast.makeText(c,"Batch already exists",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void recreateBatch(final String batch,final String sD,final String eD,final String sT,final String eT,final String limit,final String username,final String days,final String standard,final String reporting, final Context c)
     {
 
         Batch bt = new Batch();
@@ -506,6 +616,21 @@ public class Database {
                     String data = postSnap.getValue().toString();
                     dr.child("Batches").child("Batch Progress").child(batch).child("Topics").child(data).setValue("Incomplete");
                 }
+
+                dr.child("Batches").child("Assignment").child("Center Incharge").child(username).child(standard).child("batchesCreated").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String data = dataSnapshot.getValue().toString();
+                        int created = Integer.parseInt(data);
+                        created++;
+                        dr.child("Batches").child("Assignment").child("Center Incharge").child(username).child(standard).child("batchesCreated").setValue(""+created);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override
@@ -516,25 +641,44 @@ public class Database {
     }
 
     public static void enrollStudent(final String stdID, final String stdName, final String fN, final String fS, final String mN, final String mS, final String stdgender, final String batch, final String std, final String incharge, final String reporting, final String DOB, final String stdaddress, final String url, final Context c){
-        StudentDetails sd = new StudentDetails();
-        sd.setStudentID(stdID);
-        sd.setStudentName(stdName);
-        sd.setAddress(stdaddress);
-        sd.setGender(stdgender);
-        sd.setFatherName(fN);
-        sd.setFatherStatus(fS);
-        sd.setMotherName(mN);
-        sd.setMotherStatus(mS);
-        sd.setStandard(std);
-        sd.setDob(DOB);
-        sd.setStatus(reporting);
-        sd.setBatch(batch);
-        sd.setUrl(url);
-        sd.setIncharge(incharge);
-        sd.setManager(reporting);
-        dr.child("Batches").child("Student Details").child(stdID).setValue(sd);
 
-        Toast.makeText(c,"Student enrolled successfully",Toast.LENGTH_LONG).show();
+        dr.child("Batches").child("Student Details").child(stdID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                StudentDetails s = dataSnapshot.getValue(StudentDetails.class);
+
+                if (s == null) {
+                    StudentDetails sd = new StudentDetails();
+                    sd.setStudentID(stdID);
+                    sd.setStudentName(stdName);
+                    sd.setAddress(stdaddress);
+                    sd.setGender(stdgender);
+                    sd.setFatherName(fN);
+                    sd.setFatherStatus(fS);
+                    sd.setMotherName(mN);
+                    sd.setMotherStatus(mS);
+                    sd.setStandard(std);
+                    sd.setDob(DOB);
+                    sd.setStatus(reporting);
+                    sd.setBatch(batch);
+                    sd.setUrl(url);
+                    sd.setIncharge(incharge);
+                    sd.setManager(reporting);
+                    dr.child("Batches").child("Student Details").child(stdID).setValue(sd);
+
+                    Toast.makeText(c,"Student enrolled successfully",Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    Toast.makeText(c,"Student already exists",Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public static void uploadDP(final Uri filepath, final String stdID, final Enroll_Student r, final Context con){
@@ -606,6 +750,28 @@ public class Database {
         });
     }
 
+    public static void getRejectedBatch(final String username, final Rejected_Batch r, final Context c){
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> batches = new ArrayList<>();
+                for(DataSnapshot postSnap : dataSnapshot.getChildren()){
+                    Batch u = postSnap.getValue(Batch.class);
+                    if(u.getIncharge().equals(username) && u.getStatus().equals("Rejected"))
+                    {
+                        batches.add(u.getBatch_name());
+                    }
+                }
+                r.setBatches(batches);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public static void getStandard(final String batch, final Enroll_Student r){
         dr.child("Batches").child("Batch Details").child(batch).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -643,10 +809,24 @@ public class Database {
         dr.child("Batches").child("Batch Details").child(batch).child("status").setValue("Approved");
     }
 
-    public static void rejectBatch(final String batch,final String remark)
+    public static void rejectBatch(final String batch,final String remark, final String incharge, final String std)
     {
         dr.child("Batches").child("Batch Details").child(batch).child("status").setValue("Rejected");
-        dr.child("Batches").child("Batch Details").child(batch).child("Remark").setValue(remark);
+        dr.child("Batches").child("Batch Details").child(batch).child("remark").setValue(remark);
+        dr.child("Batches").child("Assignment").child("Center Incharge").child(incharge).child(std).child("batchesCreated").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String data = dataSnapshot.getValue().toString();
+                int crt = Integer.parseInt(data);
+                crt--;
+                dr.child("Batches").child("Assignment").child("Center Incharge").child(incharge).child(std).child("batchesCreated").setValue(""+crt);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public static void escalateBatch(final String batch, final String reporting)
@@ -731,7 +911,7 @@ public class Database {
     public static void rejectStudent(final String id, final String remark)
     {
         dr.child("Batches").child("Student Details").child(id).child("status").setValue("Rejected");
-        dr.child("Batches").child("Student Details").child(id).child("Remark").setValue(remark);
+        dr.child("Batches").child("Student Details").child(id).child("remark").setValue(remark);
     }
 
     public static void escalateStudent(final String id, final String reporting)
@@ -1358,6 +1538,24 @@ public class Database {
                 }
 
                 r.setBatchDetailList(bat,0);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getBatchDetail(final String batch_name, final Rejected_Batch_Details r)
+    {
+        dr.child("Batches").child("Batch Details").child(batch_name).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Batch b = dataSnapshot.getValue(Batch.class);
+
+                r.setBatch(b);
             }
 
             @Override
@@ -2302,11 +2500,12 @@ public class Database {
         });
     }
 
-    public static void getAttendance(final String incharge, final String batch, final String date, final Center_Incharge_Attendance_Report r, final Context c)
+    public static void getAttendance(final String incharge, final String batch, final String date,final String sd, final String ed, final Center_Incharge_Attendance_Report r, final Context c)
     {
         if(batch.equals("All"))
         {
             dr.child("Batches").child("Attendance").addValueEventListener(new ValueEventListener() {
+                @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -2340,19 +2539,63 @@ public class Database {
                                             {
                                                 dat = shot2.getKey();
 
-                                                for(DataSnapshot shot3 : shot2.getChildren())
+                                                if(sd.equals("start") || ed.equals("end"))
                                                 {
-                                                    id = shot3.getKey();
-                                                    stat = shot3.getValue().toString();
+                                                    for(DataSnapshot shot3 : shot2.getChildren())
+                                                    {
+                                                        id = shot3.getKey();
+                                                        stat = shot3.getValue().toString();
 
-                                                    Attendance_Report ar = new Attendance_Report();
+                                                        Attendance_Report ar = new Attendance_Report();
 
-                                                    ar.setBatch(batchs);
-                                                    ar.setDate(dat);
-                                                    ar.setId(id);
-                                                    ar.setStat(stat);
+                                                        ar.setBatch(batchs);
+                                                        ar.setDate(dat);
+                                                        ar.setId(id);
+                                                        ar.setStat(stat);
 
-                                                    list.add(ar);
+                                                        list.add(ar);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    java.util.Date startDate, date1, endDate;
+                                                    DateFormat dte = new SimpleDateFormat("dd-MM-yyyy");
+
+                                                    try
+                                                    {
+                                                        startDate = dte.parse(sd);
+                                                        endDate = dte.parse(ed);
+                                                        date1 = dte.parse(dat);
+
+                                                        Calendar calendar = new GregorianCalendar();
+                                                        calendar.setTime(startDate);
+
+                                                        Calendar endCalendar = new GregorianCalendar();
+                                                        endCalendar.setTime(endDate);
+
+                                                        Calendar dateCalendar = new GregorianCalendar();
+                                                        dateCalendar.setTime(date1);
+
+                                                        if((calendar.before(dateCalendar) || calendar.equals(dateCalendar)) && ((dateCalendar.equals(endCalendar)) || (dateCalendar.before(endCalendar))))
+                                                        {
+                                                            for(DataSnapshot shot3 : shot2.getChildren())
+                                                            {
+                                                                id = shot3.getKey();
+                                                                stat = shot3.getValue().toString();
+
+                                                                Attendance_Report ar = new Attendance_Report();
+
+                                                                ar.setBatch(batchs);
+                                                                ar.setDate(dat);
+                                                                ar.setId(id);
+                                                                ar.setStat(stat);
+
+                                                                list.add(ar);
+                                                            }                                                        }
+                                                    }
+                                                    catch (ParseException e) {
+                                                        e.printStackTrace();
+                                                    }
                                                 }
                                             }
                                         }
@@ -2377,6 +2620,7 @@ public class Database {
             if(date.equals("All"))
             {
                 dr.child("Batches").child("Attendance").child(batch).child("Dates").addValueEventListener(new ValueEventListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -2387,19 +2631,63 @@ public class Database {
                         {
                             dat = snapshot.getKey();
 
-                            for(DataSnapshot snap : snapshot.getChildren())
+                            if(sd.equals("start") || ed.equals("end"))
                             {
-                                id = snap.getKey();
-                                stat = snap.getValue().toString();
+                                for(DataSnapshot snap : snapshot.getChildren())
+                                {
+                                    id = snap.getKey();
+                                    stat = snap.getValue().toString();
 
-                                Attendance_Report ar = new Attendance_Report();
+                                    Attendance_Report ar = new Attendance_Report();
 
-                                ar.setBatch(batch);
-                                ar.setDate(dat);
-                                ar.setId(id);
-                                ar.setStat(stat);
+                                    ar.setBatch(batch);
+                                    ar.setDate(dat);
+                                    ar.setId(id);
+                                    ar.setStat(stat);
 
-                                list.add(ar);
+                                    list.add(ar);
+                                }
+                            }
+                            else
+                            {
+                                java.util.Date startDate, date1, endDate;
+                                DateFormat dte = new SimpleDateFormat("dd-MM-yyyy");
+
+                                try
+                                {
+                                    startDate = dte.parse(sd);
+                                    endDate = dte.parse(ed);
+                                    date1 = dte.parse(dat);
+
+                                    Calendar calendar = new GregorianCalendar();
+                                    calendar.setTime(startDate);
+
+                                    Calendar endCalendar = new GregorianCalendar();
+                                    endCalendar.setTime(endDate);
+
+                                    Calendar dateCalendar = new GregorianCalendar();
+                                    dateCalendar.setTime(date1);
+
+                                    if((calendar.before(dateCalendar) || calendar.equals(dateCalendar)) && ((dateCalendar.equals(endCalendar)) || (dateCalendar.before(endCalendar))))
+                                    {
+                                        for(DataSnapshot snap : snapshot.getChildren())
+                                        {
+                                            id = snap.getKey();
+                                            stat = snap.getValue().toString();
+
+                                            Attendance_Report ar = new Attendance_Report();
+
+                                            ar.setBatch(batch);
+                                            ar.setDate(dat);
+                                            ar.setId(id);
+                                            ar.setStat(stat);
+
+                                            list.add(ar);
+                                        }                                                      }
+                                }
+                                catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                         r.setAttendance(list);
@@ -2415,27 +2703,72 @@ public class Database {
             else
             {
                 dr.child("Batches").child("Attendance").child(batch).child("Dates").child(date).addValueEventListener(new ValueEventListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         String id, stat;
                         List<Attendance_Report> list = new ArrayList<>();
 
-                        for(DataSnapshot snap : dataSnapshot.getChildren())
+                        if(sd.equals("start") || ed.equals("end"))
                         {
-                            id = snap.getKey();
-                            stat = snap.getValue().toString();
+                            for(DataSnapshot snap : dataSnapshot.getChildren())
+                            {
+                                id = snap.getKey();
+                                stat = snap.getValue().toString();
 
-                            Attendance_Report ar = new Attendance_Report();
+                                Attendance_Report ar = new Attendance_Report();
 
-                            ar.setBatch(batch);
-                            ar.setDate(date);
-                            ar.setId(id);
-                            ar.setStat(stat);
+                                ar.setBatch(batch);
+                                ar.setDate(date);
+                                ar.setId(id);
+                                ar.setStat(stat);
 
-                            list.add(ar);
+                                list.add(ar);
+                            }
                         }
-                        r.setAttendance(list);
+                        else
+                        {
+                            java.util.Date startDate, date1, endDate;
+                            DateFormat dte = new SimpleDateFormat("dd-MM-yyyy");
 
+                            try
+                            {
+                                startDate = dte.parse(sd);
+                                endDate = dte.parse(ed);
+                                date1 = dte.parse(date);
+
+                                Calendar calendar = new GregorianCalendar();
+                                calendar.setTime(startDate);
+
+                                Calendar endCalendar = new GregorianCalendar();
+                                endCalendar.setTime(endDate);
+
+                                Calendar dateCalendar = new GregorianCalendar();
+                                dateCalendar.setTime(date1);
+
+                                if((calendar.before(dateCalendar) || calendar.equals(dateCalendar)) && ((dateCalendar.equals(endCalendar)) || (dateCalendar.before(endCalendar))))
+                                {
+                                    for(DataSnapshot snap : dataSnapshot.getChildren())
+                                    {
+                                        id = snap.getKey();
+                                        stat = snap.getValue().toString();
+
+                                        Attendance_Report ar = new Attendance_Report();
+
+                                        ar.setBatch(batch);
+                                        ar.setDate(date);
+                                        ar.setId(id);
+                                        ar.setStat(stat);
+
+                                        list.add(ar);
+                                    }                                                     }
+                            }
+                            catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        r.setAttendance(list);
                     }
 
                     @Override
@@ -2447,11 +2780,12 @@ public class Database {
         }
     }
 
-    public static void getAttendance(final String incharge, final String batch, final String date, final Project_Manager_Attendance_Report r, final Context c)
+    public static void getAttendance(final String incharge, final String batch, final String date, final String sd, final String ed, final Project_Manager_Attendance_Report r, final Context c)
     {
         if(batch.equals("All"))
         {
             dr.child("Batches").child("Attendance").addValueEventListener(new ValueEventListener() {
+                @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -2485,20 +2819,65 @@ public class Database {
                                             {
                                                 dat = shot2.getKey();
 
-                                                for(DataSnapshot shot3 : shot2.getChildren())
+                                                if(sd.equals("start") || ed.equals("end"))
                                                 {
-                                                    id = shot3.getKey();
-                                                    stat = shot3.getValue().toString();
+                                                    for(DataSnapshot shot3 : shot2.getChildren())
+                                                    {
+                                                        id = shot3.getKey();
+                                                        stat = shot3.getValue().toString();
 
-                                                    Attendance_Report ar = new Attendance_Report();
+                                                        Attendance_Report ar = new Attendance_Report();
 
-                                                    ar.setBatch(batchs);
-                                                    ar.setDate(dat);
-                                                    ar.setId(id);
-                                                    ar.setStat(stat);
+                                                        ar.setBatch(batchs);
+                                                        ar.setDate(dat);
+                                                        ar.setId(id);
+                                                        ar.setStat(stat);
 
-                                                    list.add(ar);
+                                                        list.add(ar);
+                                                    }
                                                 }
+                                                else
+                                                {
+                                                    java.util.Date startDate, date1, endDate;
+                                                    DateFormat dte = new SimpleDateFormat("dd-MM-yyyy");
+
+                                                    try
+                                                    {
+                                                        startDate = dte.parse(sd);
+                                                        endDate = dte.parse(ed);
+                                                        date1 = dte.parse(dat);
+
+                                                        Calendar calendar = new GregorianCalendar();
+                                                        calendar.setTime(startDate);
+
+                                                        Calendar endCalendar = new GregorianCalendar();
+                                                        endCalendar.setTime(endDate);
+
+                                                        Calendar dateCalendar = new GregorianCalendar();
+                                                        dateCalendar.setTime(date1);
+
+                                                        if((calendar.before(dateCalendar) || calendar.equals(dateCalendar)) && ((dateCalendar.equals(endCalendar)) || (dateCalendar.before(endCalendar))))
+                                                        {
+                                                            for(DataSnapshot shot3 : shot2.getChildren())
+                                                            {
+                                                                id = shot3.getKey();
+                                                                stat = shot3.getValue().toString();
+
+                                                                Attendance_Report ar = new Attendance_Report();
+
+                                                                ar.setBatch(batchs);
+                                                                ar.setDate(dat);
+                                                                ar.setId(id);
+                                                                ar.setStat(stat);
+
+                                                                list.add(ar);
+                                                            }                                                     }
+                                                    }
+                                                    catch (ParseException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+
                                             }
                                         }
                                     }
@@ -2522,6 +2901,7 @@ public class Database {
             if(date.equals("All"))
             {
                 dr.child("Batches").child("Attendance").child(batch).child("Dates").addValueEventListener(new ValueEventListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -2532,20 +2912,66 @@ public class Database {
                         {
                             dat = snapshot.getKey();
 
-                            for(DataSnapshot snap : snapshot.getChildren())
+                            if(sd.equals("start") || ed.equals("end"))
                             {
-                                id = snap.getKey();
-                                stat = snap.getValue().toString();
+                                for(DataSnapshot snap : snapshot.getChildren())
+                                {
+                                    id = snap.getKey();
+                                    stat = snap.getValue().toString();
 
-                                Attendance_Report ar = new Attendance_Report();
+                                    Attendance_Report ar = new Attendance_Report();
 
-                                ar.setBatch(batch);
-                                ar.setDate(dat);
-                                ar.setId(id);
-                                ar.setStat(stat);
+                                    ar.setBatch(batch);
+                                    ar.setDate(dat);
+                                    ar.setId(id);
+                                    ar.setStat(stat);
 
-                                list.add(ar);
+                                    list.add(ar);
+                                }
                             }
+                            else
+                            {
+                                java.util.Date startDate, date1, endDate;
+                                DateFormat dte = new SimpleDateFormat("dd-MM-yyyy");
+
+                                try
+                                {
+                                    startDate = dte.parse(sd);
+                                    endDate = dte.parse(ed);
+                                    date1 = dte.parse(dat);
+
+                                    Calendar calendar = new GregorianCalendar();
+                                    calendar.setTime(startDate);
+
+                                    Calendar endCalendar = new GregorianCalendar();
+                                    endCalendar.setTime(endDate);
+
+                                    Calendar dateCalendar = new GregorianCalendar();
+                                    dateCalendar.setTime(date1);
+
+                                    if((calendar.before(dateCalendar) || calendar.equals(dateCalendar)) && ((dateCalendar.equals(endCalendar)) || (dateCalendar.before(endCalendar))))
+                                    {
+                                        for(DataSnapshot snap : snapshot.getChildren())
+                                        {
+                                            id = snap.getKey();
+                                            stat = snap.getValue().toString();
+
+                                            Attendance_Report ar = new Attendance_Report();
+
+                                            ar.setBatch(batch);
+                                            ar.setDate(dat);
+                                            ar.setId(id);
+                                            ar.setStat(stat);
+
+                                            list.add(ar);
+                                        }                                                    }
+                                }
+                                catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+
                         }
                         r.setAttendance(list);
 
@@ -2560,25 +2986,71 @@ public class Database {
             else
             {
                 dr.child("Batches").child("Attendance").child(batch).child("Dates").child(date).addValueEventListener(new ValueEventListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         String id, stat;
                         List<Attendance_Report> list = new ArrayList<>();
 
-                        for(DataSnapshot snap : dataSnapshot.getChildren())
+                        if(sd.equals("start") || ed.equals("end"))
                         {
-                            id = snap.getKey();
-                            stat = snap.getValue().toString();
+                            for(DataSnapshot snap : dataSnapshot.getChildren())
+                            {
+                                id = snap.getKey();
+                                stat = snap.getValue().toString();
 
-                            Attendance_Report ar = new Attendance_Report();
+                                Attendance_Report ar = new Attendance_Report();
 
-                            ar.setBatch(batch);
-                            ar.setDate(date);
-                            ar.setId(id);
-                            ar.setStat(stat);
+                                ar.setBatch(batch);
+                                ar.setDate(date);
+                                ar.setId(id);
+                                ar.setStat(stat);
 
-                            list.add(ar);
+                                list.add(ar);
+                            }
                         }
+                        else
+                        {
+                            java.util.Date startDate, date1, endDate;
+                            DateFormat dte = new SimpleDateFormat("dd-MM-yyyy");
+
+                            try
+                            {
+                                startDate = dte.parse(sd);
+                                endDate = dte.parse(ed);
+                                date1 = dte.parse(date);
+
+                                Calendar calendar = new GregorianCalendar();
+                                calendar.setTime(startDate);
+
+                                Calendar endCalendar = new GregorianCalendar();
+                                endCalendar.setTime(endDate);
+
+                                Calendar dateCalendar = new GregorianCalendar();
+                                dateCalendar.setTime(date1);
+
+                                if((calendar.before(dateCalendar) || calendar.equals(dateCalendar)) && ((dateCalendar.equals(endCalendar)) || (dateCalendar.before(endCalendar))))
+                                {
+                                    for(DataSnapshot snap : dataSnapshot.getChildren())
+                                    {
+                                        id = snap.getKey();
+                                        stat = snap.getValue().toString();
+
+                                        Attendance_Report ar = new Attendance_Report();
+
+                                        ar.setBatch(batch);
+                                        ar.setDate(date);
+                                        ar.setId(id);
+                                        ar.setStat(stat);
+
+                                        list.add(ar);
+                                    }                                                  }
+                            }
+                            catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
                         r.setAttendance(list);
 
                     }
@@ -2592,9 +3064,10 @@ public class Database {
         }
     }
 
-    public static void getAttendance(final String manager, final Director_Attendance_Report r, final Context c)
+    public static void getAttendance(final String sd, final String ed, final String manager, final Director_Attendance_Report r, final Context c)
     {
         dr.child("Batches").child("Attendance").addValueEventListener(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -2628,19 +3101,63 @@ public class Database {
                                         {
                                             dat = shot2.getKey();
 
-                                            for(DataSnapshot shot3 : shot2.getChildren())
+                                            if(sd.equals("start") || ed.equals("end"))
                                             {
-                                                id = shot3.getKey();
-                                                stat = shot3.getValue().toString();
+                                                for(DataSnapshot shot3 : shot2.getChildren())
+                                                {
+                                                    id = shot3.getKey();
+                                                    stat = shot3.getValue().toString();
 
-                                                Attendance_Report ar = new Attendance_Report();
+                                                    Attendance_Report ar = new Attendance_Report();
 
-                                                ar.setBatch(batchs);
-                                                ar.setDate(dat);
-                                                ar.setId(id);
-                                                ar.setStat(stat);
+                                                    ar.setBatch(batchs);
+                                                    ar.setDate(dat);
+                                                    ar.setId(id);
+                                                    ar.setStat(stat);
 
-                                                list.add(ar);
+                                                    list.add(ar);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                java.util.Date startDate, date1, endDate;
+                                                DateFormat dte = new SimpleDateFormat("dd-MM-yyyy");
+
+                                                try
+                                                {
+                                                    startDate = dte.parse(sd);
+                                                    endDate = dte.parse(ed);
+                                                    date1 = dte.parse(dat);
+
+                                                    Calendar calendar = new GregorianCalendar();
+                                                    calendar.setTime(startDate);
+
+                                                    Calendar endCalendar = new GregorianCalendar();
+                                                    endCalendar.setTime(endDate);
+
+                                                    Calendar dateCalendar = new GregorianCalendar();
+                                                    dateCalendar.setTime(date1);
+
+                                                    if((calendar.before(dateCalendar) || calendar.equals(dateCalendar)) && ((dateCalendar.equals(endCalendar)) || (dateCalendar.before(endCalendar))))
+                                                    {
+                                                        for(DataSnapshot shot3 : shot2.getChildren())
+                                                        {
+                                                            id = shot3.getKey();
+                                                            stat = shot3.getValue().toString();
+
+                                                            Attendance_Report ar = new Attendance_Report();
+
+                                                            ar.setBatch(batchs);
+                                                            ar.setDate(dat);
+                                                            ar.setId(id);
+                                                            ar.setStat(stat);
+
+                                                            list.add(ar);
+                                                        }                                                      }
+                                                }
+                                                catch (ParseException e) {
+                                                    e.printStackTrace();
+                                                }
                                             }
                                         }
                                     }
@@ -2661,11 +3178,12 @@ public class Database {
         });
     }
 
-    public static void getAttendance(final String incharge, final String batch, final String date, final Director_Attendance_Report r, final Context c)
+    public static void getAttendance(final String sd, final String ed, final String incharge, final String batch, final String date, final Director_Attendance_Report r, final Context c)
     {
         if(batch.equals("All"))
         {
             dr.child("Batches").child("Attendance").addValueEventListener(new ValueEventListener() {
+                @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -2699,19 +3217,63 @@ public class Database {
                                             {
                                                 dat = shot2.getKey();
 
-                                                for(DataSnapshot shot3 : shot2.getChildren())
+                                                if(sd.equals("start") || ed.equals("end"))
                                                 {
-                                                    id = shot3.getKey();
-                                                    stat = shot3.getValue().toString();
+                                                    for(DataSnapshot shot3 : shot2.getChildren())
+                                                    {
+                                                        id = shot3.getKey();
+                                                        stat = shot3.getValue().toString();
 
-                                                    Attendance_Report ar = new Attendance_Report();
+                                                        Attendance_Report ar = new Attendance_Report();
 
-                                                    ar.setBatch(batchs);
-                                                    ar.setDate(dat);
-                                                    ar.setId(id);
-                                                    ar.setStat(stat);
+                                                        ar.setBatch(batchs);
+                                                        ar.setDate(dat);
+                                                        ar.setId(id);
+                                                        ar.setStat(stat);
 
-                                                    list.add(ar);
+                                                        list.add(ar);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    java.util.Date startDate, date1, endDate;
+                                                    DateFormat dte = new SimpleDateFormat("dd-MM-yyyy");
+
+                                                    try
+                                                    {
+                                                        startDate = dte.parse(sd);
+                                                        endDate = dte.parse(ed);
+                                                        date1 = dte.parse(dat);
+
+                                                        Calendar calendar = new GregorianCalendar();
+                                                        calendar.setTime(startDate);
+
+                                                        Calendar endCalendar = new GregorianCalendar();
+                                                        endCalendar.setTime(endDate);
+
+                                                        Calendar dateCalendar = new GregorianCalendar();
+                                                        dateCalendar.setTime(date1);
+
+                                                        if((calendar.before(dateCalendar) || calendar.equals(dateCalendar)) && ((dateCalendar.equals(endCalendar)) || (dateCalendar.before(endCalendar))))
+                                                        {
+                                                            for(DataSnapshot shot3 : shot2.getChildren())
+                                                            {
+                                                                id = shot3.getKey();
+                                                                stat = shot3.getValue().toString();
+
+                                                                Attendance_Report ar = new Attendance_Report();
+
+                                                                ar.setBatch(batchs);
+                                                                ar.setDate(dat);
+                                                                ar.setId(id);
+                                                                ar.setStat(stat);
+
+                                                                list.add(ar);
+                                                            }                                                    }
+                                                    }
+                                                    catch (ParseException e) {
+                                                        e.printStackTrace();
+                                                    }
                                                 }
                                             }
                                         }
@@ -2736,6 +3298,7 @@ public class Database {
             if(date.equals("All"))
             {
                 dr.child("Batches").child("Attendance").child(batch).child("Dates").addValueEventListener(new ValueEventListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -2746,19 +3309,63 @@ public class Database {
                         {
                             dat = snapshot.getKey();
 
-                            for(DataSnapshot snap : snapshot.getChildren())
+                            if(sd.equals("start") || ed.equals("end"))
                             {
-                                id = snap.getKey();
-                                stat = snap.getValue().toString();
+                                for(DataSnapshot snap : snapshot.getChildren())
+                                {
+                                    id = snap.getKey();
+                                    stat = snap.getValue().toString();
 
-                                Attendance_Report ar = new Attendance_Report();
+                                    Attendance_Report ar = new Attendance_Report();
 
-                                ar.setBatch(batch);
-                                ar.setDate(dat);
-                                ar.setId(id);
-                                ar.setStat(stat);
+                                    ar.setBatch(batch);
+                                    ar.setDate(dat);
+                                    ar.setId(id);
+                                    ar.setStat(stat);
 
-                                list.add(ar);
+                                    list.add(ar);
+                                }
+                            }
+                            else
+                            {
+                                java.util.Date startDate, date1, endDate;
+                                DateFormat dte = new SimpleDateFormat("dd-MM-yyyy");
+
+                                try
+                                {
+                                    startDate = dte.parse(sd);
+                                    endDate = dte.parse(ed);
+                                    date1 = dte.parse(dat);
+
+                                    Calendar calendar = new GregorianCalendar();
+                                    calendar.setTime(startDate);
+
+                                    Calendar endCalendar = new GregorianCalendar();
+                                    endCalendar.setTime(endDate);
+
+                                    Calendar dateCalendar = new GregorianCalendar();
+                                    dateCalendar.setTime(date1);
+
+                                    if((calendar.before(dateCalendar) || calendar.equals(dateCalendar)) && ((dateCalendar.equals(endCalendar)) || (dateCalendar.before(endCalendar))))
+                                    {
+                                        for(DataSnapshot snap : snapshot.getChildren())
+                                        {
+                                            id = snap.getKey();
+                                            stat = snap.getValue().toString();
+
+                                            Attendance_Report ar = new Attendance_Report();
+
+                                            ar.setBatch(batch);
+                                            ar.setDate(dat);
+                                            ar.setId(id);
+                                            ar.setStat(stat);
+
+                                            list.add(ar);
+                                        }                                                       }
+                                }
+                                catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                         r.setAttendance(list);
@@ -2774,25 +3381,71 @@ public class Database {
             else
             {
                 dr.child("Batches").child("Attendance").child(batch).child("Dates").child(date).addValueEventListener(new ValueEventListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         String id, stat;
                         List<Attendance_Report> list = new ArrayList<>();
 
-                        for(DataSnapshot snap : dataSnapshot.getChildren())
+                        if(sd.equals("start") || ed.equals("end"))
                         {
-                            id = snap.getKey();
-                            stat = snap.getValue().toString();
+                            for(DataSnapshot snap : dataSnapshot.getChildren())
+                            {
+                                id = snap.getKey();
+                                stat = snap.getValue().toString();
 
-                            Attendance_Report ar = new Attendance_Report();
+                                Attendance_Report ar = new Attendance_Report();
 
-                            ar.setBatch(batch);
-                            ar.setDate(date);
-                            ar.setId(id);
-                            ar.setStat(stat);
+                                ar.setBatch(batch);
+                                ar.setDate(date);
+                                ar.setId(id);
+                                ar.setStat(stat);
 
-                            list.add(ar);
+                                list.add(ar);
+                            }
                         }
+                        else
+                        {
+                            java.util.Date startDate, date1, endDate;
+                            DateFormat dte = new SimpleDateFormat("dd-MM-yyyy");
+
+                            try
+                            {
+                                startDate = dte.parse(sd);
+                                endDate = dte.parse(ed);
+                                date1 = dte.parse(date);
+
+                                Calendar calendar = new GregorianCalendar();
+                                calendar.setTime(startDate);
+
+                                Calendar endCalendar = new GregorianCalendar();
+                                endCalendar.setTime(endDate);
+
+                                Calendar dateCalendar = new GregorianCalendar();
+                                dateCalendar.setTime(date1);
+
+                                if((calendar.before(dateCalendar) || calendar.equals(dateCalendar)) && ((dateCalendar.equals(endCalendar)) || (dateCalendar.before(endCalendar))))
+                                {
+                                    for(DataSnapshot snap : dataSnapshot.getChildren())
+                                    {
+                                        id = snap.getKey();
+                                        stat = snap.getValue().toString();
+
+                                        Attendance_Report ar = new Attendance_Report();
+
+                                        ar.setBatch(batch);
+                                        ar.setDate(date);
+                                        ar.setId(id);
+                                        ar.setStat(stat);
+
+                                        list.add(ar);
+                                    }                                                 }
+                            }
+                            catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
                         r.setAttendance(list);
 
                     }
@@ -2806,9 +3459,10 @@ public class Database {
         }
     }
 
-    public static void getAttendance(final String manager, final Project_Manager_Attendance_Report r, final Context c)
+    public static void getAttendance(final String manager, final String sd, final String ed, final Project_Manager_Attendance_Report r, final Context c)
     {
         dr.child("Batches").child("Attendance").addValueEventListener(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -2842,19 +3496,63 @@ public class Database {
                                         {
                                             dat = shot2.getKey();
 
-                                            for(DataSnapshot shot3 : shot2.getChildren())
+                                            if(sd.equals("start") || ed.equals("end"))
                                             {
-                                                id = shot3.getKey();
-                                                stat = shot3.getValue().toString();
+                                                for(DataSnapshot shot3 : shot2.getChildren())
+                                                {
+                                                    id = shot3.getKey();
+                                                    stat = shot3.getValue().toString();
 
-                                                Attendance_Report ar = new Attendance_Report();
+                                                    Attendance_Report ar = new Attendance_Report();
 
-                                                ar.setBatch(batchs);
-                                                ar.setDate(dat);
-                                                ar.setId(id);
-                                                ar.setStat(stat);
+                                                    ar.setBatch(batchs);
+                                                    ar.setDate(dat);
+                                                    ar.setId(id);
+                                                    ar.setStat(stat);
 
-                                                list.add(ar);
+                                                    list.add(ar);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                java.util.Date startDate, date1, endDate;
+                                                DateFormat dte = new SimpleDateFormat("dd-MM-yyyy");
+
+                                                try
+                                                {
+                                                    startDate = dte.parse(sd);
+                                                    endDate = dte.parse(ed);
+                                                    date1 = dte.parse(dat);
+
+                                                    Calendar calendar = new GregorianCalendar();
+                                                    calendar.setTime(startDate);
+
+                                                    Calendar endCalendar = new GregorianCalendar();
+                                                    endCalendar.setTime(endDate);
+
+                                                    Calendar dateCalendar = new GregorianCalendar();
+                                                    dateCalendar.setTime(date1);
+
+                                                    if((calendar.before(dateCalendar) || calendar.equals(dateCalendar)) && ((dateCalendar.equals(endCalendar)) || (dateCalendar.before(endCalendar))))
+                                                    {
+                                                        for(DataSnapshot shot3 : shot2.getChildren())
+                                                        {
+                                                            id = shot3.getKey();
+                                                            stat = shot3.getValue().toString();
+
+                                                            Attendance_Report ar = new Attendance_Report();
+
+                                                            ar.setBatch(batchs);
+                                                            ar.setDate(dat);
+                                                            ar.setId(id);
+                                                            ar.setStat(stat);
+
+                                                            list.add(ar);
+                                                        }                                                     }
+                                                }
+                                                catch (ParseException e) {
+                                                    e.printStackTrace();
+                                                }
                                             }
                                         }
                                     }
@@ -2875,9 +3573,10 @@ public class Database {
         });
     }
 
-    public static void getAttendance(final Director_Attendance_Report r, final Context c)
+    public static void getAttendance(final String sd, final String ed, final Director_Attendance_Report r, final Context c)
     {
         dr.child("Batches").child("Attendance").addValueEventListener(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -2899,19 +3598,63 @@ public class Database {
                             {
                                 dat = shot2.getKey();
 
-                                for(DataSnapshot shot3 : shot2.getChildren())
+                                if(sd.equals("start") || ed.equals("end"))
                                 {
-                                    id = shot3.getKey();
-                                    stat = shot3.getValue().toString();
+                                    for(DataSnapshot shot3 : shot2.getChildren())
+                                    {
+                                        id = shot3.getKey();
+                                        stat = shot3.getValue().toString();
 
-                                    Attendance_Report ar = new Attendance_Report();
+                                        Attendance_Report ar = new Attendance_Report();
 
-                                    ar.setBatch(batch);
-                                    ar.setDate(dat);
-                                    ar.setId(id);
-                                    ar.setStat(stat);
+                                        ar.setBatch(batch);
+                                        ar.setDate(dat);
+                                        ar.setId(id);
+                                        ar.setStat(stat);
 
-                                    list.add(ar);
+                                        list.add(ar);
+                                    }
+                                }
+                                else
+                                {
+                                    java.util.Date startDate, date1, endDate;
+                                    DateFormat dte = new SimpleDateFormat("dd-MM-yyyy");
+
+                                    try
+                                    {
+                                        startDate = dte.parse(sd);
+                                        endDate = dte.parse(ed);
+                                        date1 = dte.parse(dat);
+
+                                        Calendar calendar = new GregorianCalendar();
+                                        calendar.setTime(startDate);
+
+                                        Calendar endCalendar = new GregorianCalendar();
+                                        endCalendar.setTime(endDate);
+
+                                        Calendar dateCalendar = new GregorianCalendar();
+                                        dateCalendar.setTime(date1);
+
+                                        if((calendar.before(dateCalendar) || calendar.equals(dateCalendar)) && ((dateCalendar.equals(endCalendar)) || (dateCalendar.before(endCalendar))))
+                                        {
+                                            for(DataSnapshot shot3 : shot2.getChildren())
+                                            {
+                                                id = shot3.getKey();
+                                                stat = shot3.getValue().toString();
+
+                                                Attendance_Report ar = new Attendance_Report();
+
+                                                ar.setBatch(batch);
+                                                ar.setDate(dat);
+                                                ar.setId(id);
+                                                ar.setStat(stat);
+
+                                                list.add(ar);
+                                            }                                                    }
+                                    }
+                                    catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
                         }
@@ -3162,6 +3905,126 @@ public class Database {
                 }
 
                 r.setBatchDetails(list);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getRejectNotification(final String name, final Center_Incharge_Home_Page r)
+    {
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    Batch b = snapshot.getValue(Batch.class);
+
+                    if(b.getStatus().equals("Rejected") && b.getIncharge().equals(name))
+                    {
+                        r.setNoti(true);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getPendingStudentNotification(final String name, final Project_Manager_Home_Page r)
+    {
+        dr.child("Batches").child("Student Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    StudentDetails b = snapshot.getValue(StudentDetails.class);
+
+                    if(b.getStatus().equals(name))
+                    {
+                        r.setPendingStudentNotification(true);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getPendingBatchNotification(final String name, final Project_Manager_Home_Page r)
+    {
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    Batch b = snapshot.getValue(Batch.class);
+
+                    if(b.getStatus().equals(name))
+                    {
+                        r.setPendingBatchNotification(true);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getPendingStudentNotification(final String name, final Director_Home_Page r)
+    {
+        dr.child("Batches").child("Student Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    StudentDetails b = snapshot.getValue(StudentDetails.class);
+
+                    if(b.getStatus().equals(name))
+                    {
+                        r.setPendingStudentNotification(true);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getPendingBatchNotification(final String name, final Director_Home_Page r)
+    {
+        dr.child("Batches").child("Batch Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    Batch b = snapshot.getValue(Batch.class);
+
+                    if(b.getStatus().equals(name))
+                    {
+                        r.setPendingBatchNotification(true);
+                    }
+                }
             }
 
             @Override
