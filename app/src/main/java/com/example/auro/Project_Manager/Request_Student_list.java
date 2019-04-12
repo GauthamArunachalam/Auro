@@ -94,7 +94,7 @@ public class Request_Student_list extends AppCompatActivity {
 
                     if(con==1)
                     {
-                        Database.approveStudent(up.getStudentID());
+                        Database.approveStudent(up.getStudentID(),getApplicationContext(),Request_Student_list.this);
                     }
                 }
             }
@@ -114,7 +114,7 @@ public class Request_Student_list extends AppCompatActivity {
 
                     if(con==1)
                     {
-                        Database.escalateStudent(up.getStudentID(),reporting);
+                        Database.escalateStudent(up.getStudentID(),reporting,getApplicationContext(),Request_Student_list.this);
                     }
                 }
             }
@@ -190,7 +190,7 @@ public class Request_Student_list extends AppCompatActivity {
 
             if(con==1)
             {
-                Database.rejectStudent(up.getStudentID(),remarks);
+                Database.rejectStudent(up.getStudentID(),remarks,getApplicationContext(),Request_Student_list.this);
             }
         }
     }

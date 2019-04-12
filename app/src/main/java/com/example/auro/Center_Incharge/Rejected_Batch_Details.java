@@ -181,7 +181,7 @@ public class Rejected_Batch_Details extends AppCompatActivity implements TimePic
 
                 days = day.substring(0,(day.length()-2));
 
-                Database.recreateBatch(batch,sDD,eDD,sTT,eTT,limit,username,days,standard,reporting,getApplicationContext());
+                Database.recreateBatch(batch,sDD,eDD,sTT,eTT,limit,username,days,standard,reporting,getApplicationContext(),Rejected_Batch_Details.this);
 
             }
         });
@@ -189,7 +189,7 @@ public class Rejected_Batch_Details extends AppCompatActivity implements TimePic
         reject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Database.deleteBatch(batchName.getText().toString());
+                Database.deleteBatch(batchName.getText().toString(),Rejected_Batch_Details.this,getApplicationContext());
             }
         });
     }

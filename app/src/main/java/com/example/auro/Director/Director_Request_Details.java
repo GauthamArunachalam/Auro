@@ -59,12 +59,12 @@ public class Director_Request_Details extends AppCompatActivity {
 
 
     public void approvebatch(){
-        Database.approveBatch(batch);
+        Database.approveBatch(batch,getApplication(),this);
     }
 
     public void rejectbatch()
     {
-        Database.rejectBatch(batch,remarks,incharge.getText().toString(),standard.getText().toString());
+        Database.rejectBatch(batch,remarks,incharge.getText().toString(),standard.getText().toString(),getApplication(),Director_Request_Details.this);
     }
 
     public void setBatchDetails(final Batch bt, final Context c){

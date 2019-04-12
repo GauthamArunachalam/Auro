@@ -54,6 +54,8 @@ public class Add_Standard extends AppCompatActivity implements AdapterView.OnIte
 
                 createStandard(standards,getApplicationContext());
 
+                AddStandard.setText("");
+
                 getStd();
 
             }
@@ -70,8 +72,8 @@ public class Add_Standard extends AppCompatActivity implements AdapterView.OnIte
                     AddTopics.requestFocus();
                     return;
                 }
+                AddTopics.setText("");
                 createTopic(stdSpinner,topics,getApplicationContext());
-
             }
         });
 

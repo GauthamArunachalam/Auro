@@ -69,7 +69,7 @@ public class ProjectManager_AssignBatch extends AppCompatActivity implements Ada
 
                 if(x<=number)
                 {
-                    Database.addAssignBatchCenterIncharge(""+x, center, std,username, getApplicationContext());
+                    Database.addAssignBatchCenterIncharge(""+x, center, std,username, getApplicationContext(),ProjectManager_AssignBatch.this);
                 }
                 else
                 {

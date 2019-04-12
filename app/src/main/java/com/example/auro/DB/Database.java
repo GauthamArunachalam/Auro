@@ -7,6 +7,7 @@ import android.icu.util.Calendar;
 import android.icu.util.GregorianCalendar;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.widget.EditText;
@@ -77,7 +78,7 @@ public class Database {
     public static final String MY_PREFS_NAME = "MyPrefsFile";
 
 
-    public static void login(final String userName, final String password, final Context con, final EditText name, final EditText pass){
+    public static void login(final String userName, final String password, final Context con, final EditText name, final EditText pass, final MainActivity r){
         dr.child("Users").child(userName).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -99,7 +100,7 @@ public class Database {
                        Intent i = new Intent(con, HomePage.class);
                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                        con.startActivity(i);
-
+                       r.finish();
                     }
                     else{
                         pass.setError("Invalid password");
@@ -297,7 +298,7 @@ public class Database {
         });
     }
 
-    public static void addAssignBatch(final String batch, final String projectManager, final String std, final Context c){
+    public static void addAssignBatch(final String batch, final String projectManager, final String std, final Context c,final Assign_Batch r){
 
         AssignBatches ab = new AssignBatches();
         ab.setNoOfBatches(batch);
@@ -307,11 +308,9 @@ public class Database {
 
         dr.child("Batches").child("Assignment").child("Project Manager").child(projectManager).child(std).setValue(ab);
 
-        Toast.makeText(c,"Success",Toast.LENGTH_SHORT).show();
+        Toast.makeText(c,"Batch assigned",Toast.LENGTH_SHORT).show();
+        r.finish();
 
-        Intent i = new Intent(c, HomePage.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        c.startActivity(i);
     }
 
     public static void getProjectManagerList(final String username, final Project_Manager_List r, final Context c){
@@ -428,7 +427,7 @@ public class Database {
         });
     }
 
-    public static void addAssignBatchCenterIncharge(final String batch, final String centerIncharge, final String std, final String name, final Context c){
+    public static void addAssignBatchCenterIncharge(final String batch, final String centerIncharge, final String std, final String name, final Context c,final ProjectManager_AssignBatch r){
 
         dr.child("Batches").child("Assignment").child("Project Manager").child(name).child(std).child("batchesCreated").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -461,6 +460,8 @@ public class Database {
 
             }
         });
+        Toast.makeText(c,"Batches assigned successfully",Toast.LENGTH_LONG).show();
+        r.finish();
     }
 
     public static void getStandards(final String name, final Create_Batch r, final Context c){
@@ -519,12 +520,14 @@ public class Database {
         });
     }
 
-    public static void deleteBatch(final String batch)
+    public static void deleteBatch(final String batch,final Rejected_Batch_Details r,Context con)
     {
         dr.child("Batches").child("Batch Details").child(batch).setValue(null);
+        Toast.makeText(con,"Batch removed successfully",Toast.LENGTH_LONG).show();
+        r.finish();
     }
 
-    public static void createBatch(final String batch,final String sD,final String eD,final String sT,final String eT,final String limit,final String username,final String days,final String standard,final String reporting, final Context c)
+    public static void createBatch(final String batch,final String sD,final String eD,final String sT,final String eT,final String limit,final String username,final String days,final String standard,final String reporting, final Context c,final Create_Batch r)
     {
         dr.child("Batches").child("Batch Details").child(batch).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -577,6 +580,10 @@ public class Database {
 
                         }
                     });
+
+                    Toast.makeText(c,"Batch created successfully",Toast.LENGTH_LONG).show();
+                    r.finish();
+
                 }
                 else
                 {
@@ -591,7 +598,7 @@ public class Database {
         });
     }
 
-    public static void recreateBatch(final String batch,final String sD,final String eD,final String sT,final String eT,final String limit,final String username,final String days,final String standard,final String reporting, final Context c)
+    public static void recreateBatch(final String batch,final String sD,final String eD,final String sT,final String eT,final String limit,final String username,final String days,final String standard,final String reporting, final Context c,final Rejected_Batch_Details r)
     {
 
         Batch bt = new Batch();
@@ -638,9 +645,13 @@ public class Database {
 
             }
         });
+
+        Toast.makeText(c,"Batch resubmitted successfully",Toast.LENGTH_LONG).show();
+        r.finish();
+
     }
 
-    public static void enrollStudent(final String stdID, final String stdName, final String fN, final String fS, final String mN, final String mS, final String stdgender, final String batch, final String std, final String incharge, final String reporting, final String DOB, final String stdaddress, final String url, final Context c){
+    public static void enrollStudent(final String stdID, final String stdName, final String fN, final String fS, final String mN, final String mS, final String stdgender, final String batch, final String std, final String incharge, final String reporting, final String DOB, final String stdaddress, final String url, final Context c,final Enroll_Student r){
 
         dr.child("Batches").child("Student Details").child(stdID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -667,10 +678,11 @@ public class Database {
                     dr.child("Batches").child("Student Details").child(stdID).setValue(sd);
 
                     Toast.makeText(c,"Student enrolled successfully",Toast.LENGTH_LONG).show();
+                    r.finish();
                 }
                 else
                 {
-                    Toast.makeText(c,"Student already exists",Toast.LENGTH_LONG).show();
+                    Toast.makeText(c,"Student ID already exists",Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -802,14 +814,23 @@ public class Database {
 
             }
         });
+
     }
 
-    public static void approveBatch(final String batch)
+    public static void approveBatch(final String batch,final Context con,final Request_Batch_Details r)
     {
         dr.child("Batches").child("Batch Details").child(batch).child("status").setValue("Approved");
+        Toast.makeText(con,"Batch accecpted",Toast.LENGTH_LONG).show();
+        r.finish();
+    }
+    public static void approveBatch(final String batch,final Context con,final Director_Request_Details r)
+    {
+        dr.child("Batches").child("Batch Details").child(batch).child("status").setValue("Approved");
+        Toast.makeText(con,"Batch accecpted",Toast.LENGTH_LONG).show();
+        r.finish();
     }
 
-    public static void rejectBatch(final String batch,final String remark, final String incharge, final String std)
+    public static void rejectBatch(final String batch,final String remark, final String incharge, final String std,final Context c,final  Request_Batch_Details r)
     {
         dr.child("Batches").child("Batch Details").child(batch).child("status").setValue("Rejected");
         dr.child("Batches").child("Batch Details").child(batch).child("remark").setValue(remark);
@@ -827,11 +848,36 @@ public class Database {
 
             }
         });
+        Toast.makeText(c,"Batch rejected with remark",Toast.LENGTH_LONG).show();
+        r.finish();
+    }
+    public static void rejectBatch(final String batch,final String remark, final String incharge, final String std,final Context c,final  Director_Request_Details r)
+    {
+        dr.child("Batches").child("Batch Details").child(batch).child("status").setValue("Rejected");
+        dr.child("Batches").child("Batch Details").child(batch).child("remark").setValue(remark);
+        dr.child("Batches").child("Assignment").child("Center Incharge").child(incharge).child(std).child("batchesCreated").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String data = dataSnapshot.getValue().toString();
+                int crt = Integer.parseInt(data);
+                crt--;
+                dr.child("Batches").child("Assignment").child("Center Incharge").child(incharge).child(std).child("batchesCreated").setValue(""+crt);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        Toast.makeText(c,"Students rejected with remark",Toast.LENGTH_LONG).show();
+        r.finish();
     }
 
-    public static void escalateBatch(final String batch, final String reporting)
+    public static void escalateBatch(final String batch, final String reporting,final Context con,final Request_Batch_Details r)
     {
         dr.child("Batches").child("Batch Details").child(batch).child("status").setValue(reporting);
+        Toast.makeText(con,"Escalated to director",Toast.LENGTH_LONG).show();
+        r.finish();
     }
 
     public static void getBatchDetails(final String batch, final Director_Request_Details r, final Context c){
@@ -847,6 +893,7 @@ public class Database {
 
             }
         });
+
     }
 
     public static void getBatchList(final String status, final Pending_Student_Batch_List r, Context c){
@@ -903,20 +950,26 @@ public class Database {
         });
     }
 
-    public static void approveStudent(final String id)
+    public static void approveStudent(final String id,final Context con,final Request_Student_list r)
     {
         dr.child("Batches").child("Student Details").child(id).child("status").setValue("Approved");
+        Toast.makeText(con,"Students Approved",Toast.LENGTH_LONG).show();
+        r.finish();
     }
 
-    public static void rejectStudent(final String id, final String remark)
+    public static void rejectStudent(final String id, final String remark,final Context con,final Request_Student_list r)
     {
         dr.child("Batches").child("Student Details").child(id).child("status").setValue("Rejected");
         dr.child("Batches").child("Student Details").child(id).child("remark").setValue(remark);
+        Toast.makeText(con,"Students rejected",Toast.LENGTH_LONG).show();
+        r.finish();
     }
 
-    public static void escalateStudent(final String id, final String reporting)
+    public static void escalateStudent(final String id, final String reporting,final Context con,final Request_Student_list r)
     {
         dr.child("Batches").child("Student Details").child(id).child("status").setValue(reporting);
+        Toast.makeText(con,"Escalatted to director",Toast.LENGTH_LONG).show();
+        r.finish();
     }
 
     public static void getBatchList(final String incharge, final Center_Incharge_Batch_Report r, Context c){
@@ -1913,7 +1966,7 @@ public class Database {
         });
     }
 
-    public static void putAttendance(final String batch, final String date, final List<String> list, final List<Status> list2,final String stat, final String topics_covered,final String incharge, final String manager, final Context c)
+    public static void putAttendance(final String batch, final String date, final List<String> list, final List<Status> list2,final String stat, final String topics_covered,final String incharge, final String manager, final Context c,final Attendance_Student_List r)
     {
         if(stat.equals("Open"))
         {
@@ -1942,6 +1995,9 @@ public class Database {
         {
             dr.child("Batches").child("Batch Progress").child(batch).child("Status").child(date).setValue(stat);
         }
+
+        Toast.makeText(c,"Progress Submitted",Toast.LENGTH_LONG).show();
+        r.finish();
     }
 
     public static void getTopics(final String batch, final Attendance_Student_List a, final Context c)

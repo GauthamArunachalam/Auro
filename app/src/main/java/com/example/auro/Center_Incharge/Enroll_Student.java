@@ -198,7 +198,7 @@ public class Enroll_Student extends AppCompatActivity implements DatePickerDialo
         fN = fatherName.getText().toString();
         mN = motherName.getText().toString();
 
-        Database.enrollStudent(stdID,stdName,fN,fS,mN,mS,stdgender,batch,std,username,reporting,birthDate,stdaddress,url,getApplicationContext());
+        Database.enrollStudent(stdID,stdName,fN,fS,mN,mS,stdgender,batch,std,username,reporting,birthDate,stdaddress,url,getApplicationContext(),Enroll_Student.this);
     }
 
     @Override

@@ -131,6 +131,7 @@ public class Center_Incharge_Batch_Report extends AppCompatActivity implements A
             workbook.close();
 
             Toast.makeText(getApplicationContext(),"Report Generated",Toast.LENGTH_LONG).show();
+            finish();
 
         }
         catch (Exception e)

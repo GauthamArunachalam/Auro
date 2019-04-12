@@ -50,6 +50,7 @@ public class Pending_Student_Batch_List extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), Request_Student_list.class);
                 intent.putExtra("batch",batch);
                 startActivity(intent);
+                finish();
             }
         }));
 

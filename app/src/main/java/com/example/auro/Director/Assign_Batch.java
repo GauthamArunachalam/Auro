@@ -63,8 +63,7 @@ public class Assign_Batch extends AppCompatActivity implements AdapterView.OnIte
                     numberOfBatch.requestFocus();
                     return;
                 }
-                Database.addAssignBatch(batch, project_manager, standard, getApplicationContext());
-
+                Database.addAssignBatch(batch, project_manager, standard, getApplicationContext(),Assign_Batch.this);
             }
         });
 

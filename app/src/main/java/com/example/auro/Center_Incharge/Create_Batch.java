@@ -177,7 +177,7 @@ public class Create_Batch extends AppCompatActivity implements AdapterView.OnIte
 
                 days = day.substring(0,(day.length()-2));
 
-                Database.createBatch(batch,sDD,eDD,sTT,eTT,limit,username,days,standard,reporting,getApplicationContext());
+                Database.createBatch(batch,sDD,eDD,sTT,eTT,limit,username,days,standard,reporting,getApplicationContext(),Create_Batch.this);
 
             }
         });

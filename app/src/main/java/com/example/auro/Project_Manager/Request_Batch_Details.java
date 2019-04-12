@@ -71,16 +71,16 @@ public class Request_Batch_Details extends AppCompatActivity {
     }
 
     public void escalatebatch(){
-        Database.escalateBatch(batch,reporting);
+        Database.escalateBatch(batch,reporting,getApplicationContext(),Request_Batch_Details.this);
     }
 
     public void approvebatch(){
-        Database.approveBatch(batch);
+        Database.approveBatch(batch,getApplicationContext(),Request_Batch_Details.this);
     }
 
     public void rejectbatch()
     {
-        Database.rejectBatch(batch,remarks,incharge.getText().toString(),standard.getText().toString());
+        Database.rejectBatch(batch,remarks,incharge.getText().toString(),standard.getText().toString(),getApplication(),Request_Batch_Details.this);
     }
 
     public void setBatchDetails(final Batch bt, final Context c){

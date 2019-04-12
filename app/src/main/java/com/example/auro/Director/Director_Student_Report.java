@@ -146,6 +146,7 @@ public class Director_Student_Report extends AppCompatActivity implements Adapte
             workbook.close();
 
             Toast.makeText(getApplicationContext(),"Report Generated",Toast.LENGTH_LONG).show();
+            finish();
 
         }
         catch (Exception e)

@@ -9,9 +9,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logos"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/logos"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Center_Incharge.Rejected_Batch_Details"></activity>
@@ -24,6 +24,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".Splash_Screen"
+            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

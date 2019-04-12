@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 Context con = getApplicationContext();
-                Database.login(userName, password, con, name , pass);
+                Database.login(userName, password, con, name , pass, MainActivity.this);
             }
         });
     }

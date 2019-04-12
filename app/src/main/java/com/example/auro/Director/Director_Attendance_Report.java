@@ -164,6 +164,7 @@ public class Director_Attendance_Report extends AppCompatActivity implements Ada
             workbook.close();
 
             Toast.makeText(getApplicationContext(),"Report Generated",Toast.LENGTH_LONG).show();
+            finish();
 
         }
         catch (Exception e)

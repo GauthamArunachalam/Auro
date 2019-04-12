@@ -55,7 +55,7 @@ public class Registration extends AppCompatActivity implements AdapterView.OnIte
         spinnerList.add("Center Incharge");
 
         final ArrayAdapter desi = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, spinnerList);
-    desi.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        desi.setDropDownViewResource(android.R.layout.simple_spinner_item);
         designation.setAdapter(desi);
 
         register.setOnClickListener(new View.OnClickListener() {

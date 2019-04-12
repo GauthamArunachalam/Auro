@@ -209,7 +209,7 @@ public class Attendance_Student_List extends AppCompatActivity implements Adapte
                     status = others.getText().toString();
                 }
 
-                Database.putAttendance(batch_name,date,list,list2,status,topic_covered,username,reporting,getApplicationContext());
+                Database.putAttendance(batch_name,date,list,list2,status,topic_covered,username,reporting,getApplicationContext(),Attendance_Student_List.this);
 
 
             }

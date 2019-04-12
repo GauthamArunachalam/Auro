@@ -55,12 +55,14 @@ public class Pending_Batch_Request extends AppCompatActivity {
                     Intent i = new Intent(getApplicationContext(), Request_Batch_Details.class);
                     i.putExtra("name",bt);
                     startActivity(i);
+                    finish();
                 }
                 else if(designation.equals("Director"))
                 {
                     Intent i = new Intent(getApplicationContext(), Director_Request_Details.class);
                     i.putExtra("name",bt);
                     startActivity(i);
+                    finish();
                 }
             }
         }));
